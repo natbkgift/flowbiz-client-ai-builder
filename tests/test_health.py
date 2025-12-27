@@ -87,8 +87,10 @@ def test_version_response_structure():
 
 def test_version_info():
     """Test that version endpoint returns correct version info."""
+    from packages.core.config import settings
+
     response = client.get("/version")
     data = response.json()
 
-    assert data["version"] == "0.1.0"
-    assert data["service"] == "flowbiz-template-service"
+    assert data["version"] == settings.flowbiz_version
+    assert data["service"] == settings.flowbiz_service_name
