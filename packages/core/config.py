@@ -17,5 +17,9 @@ class Settings(BaseSettings):
     flowbiz_version: str = "0.1.0"
     flowbiz_build_sha: str = "local"
 
+    # Core Integration (CORE_*)
+    core_service_mode: str = "mock"  # "mock" or "real"
+    core_service_url: str = ""  # URL for real Core service (when mode=real)
+
 
 settings = Settings()
