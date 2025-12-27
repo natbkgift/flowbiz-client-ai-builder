@@ -27,11 +27,11 @@
 ## Scope Lock
 <!-- In-scope / Out-of-scope boundaries -->
 **In-scope:**
-- 
+- [Add specific items included in this PR]
 
 **Out-of-scope:**
-- 
+- [Add items explicitly excluded from this PR]
 
 ## Knowledge Notes
 <!-- Lessons learned / risks / future notes -->
-- 
+- [Add lessons learned, risks, or future considerations here]
