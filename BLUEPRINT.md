@@ -187,6 +187,47 @@ Integration with `flowbiz-ai-core`:
 
 ---
 
+## 11) PR Index (Milestones / Source of Truth)
+
+Rule:
+- 1 PR = 1 milestone (scope lock)
+- PR title MUST be: PR##: <milestone name>
+- PR body MUST include:
+- MILESTONE_ID: PR##
+- BLUEPRINT_REF: Section 11 / PR## (this list)
+
+### Milestone Checklist
+PR9 — Foundation + Human Model + PR Policy (Template)
+PR10 — CI Baseline + Security Scan (ขั้นต่ำ)
+PR11 — GitHub Adapter v1 (เปิด PR ได้จริง)
+PR12 — Gate Framework v1 (Planning/CI/Staging/Prod/Learning)
+PR13 — Evidence Model + Artifact Registry v1
+PR14 — Policy Enforcer (PR policy + forbidden paths + deps)
+PR15 — Webhook Watcher + Notifications v1
+PR16 — Orchestrator (Squad Lead)
+PR17 — BA Agent (PRD/DoD generator)
+PR18 — QA Agent (test plan + smoke)
+PR19 — SRE Agent (deploy/verify/rollback plan)
+PR20 — Dev Agent (Codex prompt consumer)
+PR21 — Codex Prompt Engine (draft→refine→final)
+PR22 — Auto Review v1 (risk + policy checks + summary)
+PR23 — Docker Compose + systemd (builder)
+PR24 — CD Staging Automation (deploy PR SHA → verify)
+PR25 — CD Production + Rollback (deploy main → verify → rollback)
+PR26 — Feature Flags / Kill Switch (runtime override)
+PR27 — Concurrency Locks + Idempotency
+PR28 — Project Registry (multi-repo)
+PR29 — Repo Readiness Checker (score + gaps)
+PR30 — Onboarding PR Generator (golden templates)
+PR31 — Multi-project deploy controller (per-project configs)
+PR32 — Post-run Analyzer (root cause + lessons)
+PR33 — Knowledge Sharing System (auto artifacts pack)
+PR34 — Prompt/Workflow Tuning (safe scope)
+PR35 — Secrets & Permissions Model (least-privilege)
+PR36 — Core Adapter Boundary (mock→core switch + contract tests)
+
+---
+
 ## Final Note
 
 This blueprint encodes **how a mature engineering organization works** into an AI-driven system.
