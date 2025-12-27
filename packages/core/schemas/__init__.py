@@ -50,6 +50,7 @@ from packages.core.schemas.repository import (
 )
 from packages.core.schemas.workflow import (
     ApprovalRequired,
+    AutoApprovalConfig,
     BuildPhaseOutput,
     DiscoveryPhaseOutput,
     HotfixWorkflow,
@@ -109,6 +110,7 @@ __all__ = [
     "VersionInfo",
     # Workflow schemas
     "ApprovalRequired",
+    "AutoApprovalConfig",
     "BuildPhaseOutput",
     "DiscoveryPhaseOutput",
     "HotfixWorkflow",

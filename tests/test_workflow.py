@@ -2,6 +2,7 @@
 
 from packages.core.schemas.workflow import (
     ApprovalRequired,
+    AutoApprovalConfig,
     BuildPhaseOutput,
     DiscoveryPhaseOutput,
     HotfixWorkflow,
@@ -144,3 +145,151 @@ def test_workflow_status_enum():
     assert WorkflowStatus.PENDING == "pending"
     assert WorkflowStatus.IN_PROGRESS == "in_progress"
     assert WorkflowStatus.COMPLETED == "completed"
+
+
+def test_approval_auto_approve_disabled():
+    """Test that auto-approval doesn't work when disabled."""
+    approval = ApprovalRequired(
+        approval_id="appr-002",
+        workflow_id="wf-002",
+        reason="Environment deployment",
+        approval_type="environment_approval",
+        auto_approve_enabled=False,
+    )
+
+    approval.auto_approve()
+
+    # Should not be approved because auto_approve_enabled is False
+    assert approval.approved is None
+    assert approval.approved_by is None
+    assert approval.approved_at is None
+
+
+def test_approval_auto_approve_enabled():
+    """Test that auto-approval works when enabled."""
+    approval = ApprovalRequired(
+        approval_id="appr-003",
+        workflow_id="wf-003",
+        reason="Workflow approval",
+        approval_type="workflow_approval",
+        auto_approve_enabled=True,
+    )
+
+    approval.auto_approve()
+
+    # Should be approved
+    assert approval.approved is True
+    assert approval.approved_by == "system"
+    assert approval.approved_at is not None
+    assert approval.comments == "Auto-approved by system"
+
+
+def test_approval_auto_approve_with_custom_approver():
+    """Test auto-approval with a custom approver name."""
+    approval = ApprovalRequired(
+        approval_id="appr-004",
+        workflow_id="wf-004",
+        reason="Workflow approval",
+        approval_type="workflow_approval",
+        auto_approve_enabled=True,
+    )
+
+    approval.auto_approve(approver="ci-bot")
+
+    assert approval.approved is True
+    assert approval.approved_by == "ci-bot"
+    assert approval.comments == "Auto-approved by system"
+
+
+def test_auto_approval_config_disabled():
+    """Test auto-approval config when globally disabled."""
+    config = AutoApprovalConfig(enabled=False)
+
+    approval = ApprovalRequired(
+        approval_id="appr-005",
+        workflow_id="wf-005",
+        reason="Test approval",
+        approval_type="workflow_approval",
+    )
+
+    assert config.can_auto_approve(approval, ci_passed=True) is False
+
+
+def test_auto_approval_config_enabled():
+    """Test auto-approval config when enabled with matching type."""
+    config = AutoApprovalConfig(
+        enabled=True,
+        approval_types=["workflow_approval", "environment_approval"],
+        require_ci_pass=True,
+    )
+
+    approval = ApprovalRequired(
+        approval_id="appr-006",
+        workflow_id="wf-006",
+        reason="Test approval",
+        approval_type="workflow_approval",
+    )
+
+    # Should allow auto-approval when CI passed
+    assert config.can_auto_approve(approval, ci_passed=True) is True
+
+    # Should not allow when CI hasn't passed
+    assert config.can_auto_approve(approval, ci_passed=False) is False
+
+
+def test_auto_approval_config_excluded_workflow():
+    """Test that excluded workflows cannot be auto-approved."""
+    config = AutoApprovalConfig(
+        enabled=True,
+        approval_types=["workflow_approval"],
+        excluded_workflows=["wf-007"],
+    )
+
+    approval = ApprovalRequired(
+        approval_id="appr-007",
+        workflow_id="wf-007",
+        reason="Test approval",
+        approval_type="workflow_approval",
+    )
+
+    # Should not allow because workflow is excluded
+    assert config.can_auto_approve(approval, ci_passed=True) is False
+
+
+def test_auto_approval_config_wrong_type():
+    """Test that approvals with non-whitelisted types cannot be auto-approved."""
+    config = AutoApprovalConfig(
+        enabled=True,
+        approval_types=["workflow_approval"],
+        require_ci_pass=True,
+    )
+
+    approval = ApprovalRequired(
+        approval_id="appr-008",
+        workflow_id="wf-008",
+        reason="Breaking API change",
+        approval_type="breaking_api",
+    )
+
+    # Should not allow because breaking_api is not in approval_types
+    assert config.can_auto_approve(approval, ci_passed=True) is False
+
+
+def test_auto_approval_config_no_ci_requirement():
+    """Test auto-approval config when CI pass is not required."""
+    config = AutoApprovalConfig(
+        enabled=True,
+        approval_types=["workflow_approval"],
+        require_ci_pass=False,
+    )
+
+    approval = ApprovalRequired(
+        approval_id="appr-009",
+        workflow_id="wf-009",
+        reason="Test approval",
+        approval_type="workflow_approval",
+    )
+
+    # Should allow auto-approval even when CI hasn't passed
+    assert config.can_auto_approve(approval, ci_passed=False) is True
+    assert config.can_auto_approve(approval, ci_passed=True) is True
