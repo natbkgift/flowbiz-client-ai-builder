@@ -1,20 +1,37 @@
-## Summary
-<!-- Describe what this PR does and why -->
+## Feature / Problem [BA]
+<!-- Problem statement and value (link PRD/DoD) -->
 
-## Testing
-<!-- Describe how this was tested -->
-- [ ] Tested locally with `docker compose up`
+## Acceptance Criteria [BA]
+<!-- Business acceptance criteria -->
+- [ ] ...
+
+## Test Impact [QA]
+<!-- Tests added/updated and coverage -->
+- [ ] Tests added/updated
+- [ ] Smoke/Regression coverage
 - [ ] All tests pass (`pytest -q`)
 - [ ] Linting passes (`ruff check .`)
 
-## Checklist
-- [ ] Changes are within scope
-- [ ] Documentation updated (if applicable)
-- [ ] No security vulnerabilities introduced
-- [ ] Appropriate persona labels added (persona:core|infra|docs)
+## Deploy / Verify Notes [SRE]
+<!-- Deployment impact and verification steps -->
+- [ ] Deployment impact assessed
+- [ ] Verify and rollback steps documented
 
-## Pre-flight
-<!-- Reference docs/CODEX_PREFLIGHT.md for complete checklist -->
-- [ ] API contracts maintained
-- [ ] Environment conventions followed
-- [ ] No scope creep
+## Automation & Quality [DEV]
+<!-- Developer notes on implementation -->
+- [ ] Tests updated
+- [ ] No new manual steps
+- [ ] No security vulnerabilities introduced
+- [ ] Tested locally with `docker compose up` (if applicable)
+
+## Scope Lock
+<!-- In-scope / Out-of-scope boundaries -->
+**In-scope:**
+- 
+
+**Out-of-scope:**
+- 
+
+## Knowledge Notes
+<!-- Lessons learned / risks / future notes -->
+- 
