@@ -197,7 +197,7 @@ Rule:
 - BLUEPRINT_REF: Section 11 / PR ### (this list)
 
 ### Milestone Checklist
-PR #10 — Foundation + Human Model + PR Policy (Template)
+PR #11 — Foundation + Human Model + PR Policy (Template)
 
 เป้าหมาย: วาง “กฎหมายสูงสุด” ของระบบ
 Agent ต้องทำ:
@@ -215,7 +215,7 @@ Agent ต้องทำ:
 ห้ามทำ: business logic, agent, deploy
 Done เมื่อ: เปิด PR ได้ + CI ยังไม่ต้องครบ
 
-PR #11 — CI Baseline + Security Scan (ขั้นต่ำ)
+PR #12 — CI Baseline + Security Scan (ขั้นต่ำ)
 
 เป้าหมาย: ทุก PR ต้อง “ไม่พังเงียบ”
 Agent ต้องทำ:
@@ -230,7 +230,7 @@ update RUNBOOK: ถ้า CI fail ทำยังไง
 
 Done เมื่อ: push แล้ว CI เขียว
 
-PR #12 — GitHub Adapter v1 (เปิด PR ได้จริง)
+PR #13 — GitHub Adapter v1 (เปิด PR ได้จริง)
 
 เป้าหมาย: ระบบสร้าง PR ได้เอง
 Agent ต้องทำ:
@@ -244,7 +244,7 @@ update PR body อัตโนมัติ (ตาม template)
 ห้ามทำ: webhook / policy enforcement
 Done เมื่อ: สร้าง PR จริงใน repo ทดสอบได้
 
-PR #13 — Gate Framework v1 (Planning/CI/Staging/Prod/Learning)
+PR #14 — Gate Framework v1 (Planning/CI/Staging/Prod/Learning)
 
 เป้าหมาย: รวม “ด่านทั้งหมด” เป็น framework เดียว
 Agent ต้องทำ:
@@ -258,7 +258,7 @@ state machine ของ run
 ห้ามทำ: deploy จริง
 Done เมื่อ: run หนึ่งตัวเดินผ่าน gate แบบ mock ได้ครบ
 
-PR #14 — Evidence Model + Artifact Registry v1
+PR #15 — Evidence Model + Artifact Registry v1
 
 เป้าหมาย: ทุกการตัดสินใจต้องมีหลักฐาน
 Agent ต้องทำ:
@@ -271,7 +271,7 @@ artifact registry (file/link-based)
 
 Done เมื่อ: ดู run แล้วรู้ว่า “ทำอะไรไปบ้าง”
 
-PR #15 — Policy Enforcer (PR policy + forbidden paths + deps)
+PR #16 — Policy Enforcer (PR policy + forbidden paths + deps)
 
 เป้าหมาย: บังคับกติกาจริง
 Agent ต้องทำ:
@@ -286,7 +286,7 @@ comment/label/block PR อัตโนมัติ
 
 Done เมื่อ: PR ที่ผิด policy ถูก block จริง
 
-PR #16 — Webhook Watcher + Notifications v1
+PR #17 — Webhook Watcher + Notifications v1
 
 เป้าหมาย: ระบบรู้สถานะโดยไม่ต้อง poll
 Agent ต้องทำ:
@@ -299,7 +299,7 @@ notify 1 ช่องทางก่อน (เช่น Discord)
 
 Done เมื่อ: CI fail/green มีแจ้งเตือน
 
-PR #17 — Orchestrator (Squad Lead)
+PR #18 — Orchestrator (Squad Lead)
 
 เป้าหมาย: สมองคุมลำดับงาน
 Agent ต้องทำ:
@@ -312,7 +312,7 @@ Agent ต้องทำ:
 
 Done เมื่อ: 1 feature run ถูกควบคุมจากจุดเดียว
 
-PR #18 — BA Agent (PRD/DoD generator)
+PR #19 — BA Agent (PRD/DoD generator)
 
 เป้าหมาย: แปลง idea → PRD
 Agent ต้องทำ:
@@ -325,7 +325,7 @@ output เป็นไฟล์/section ที่ gate อ่านได้
 
 Done เมื่อ: Planning Gate ใช้ BA output ได้จริง
 
-PR #19 — QA Agent (test plan + smoke)
+PR #20 — QA Agent (test plan + smoke)
 
 เป้าหมาย: คุณภาพตั้งแต่ต้น
 Agent ต้องทำ:
@@ -338,7 +338,7 @@ map test กับ acceptance criteria
 
 Done เมื่อ: CI/Staging gate อ่าน test plan ได้
 
-PR #20 — SRE Agent (deploy/verify/rollback plan)
+PR #21 — SRE Agent (deploy/verify/rollback plan)
 
 เป้าหมาย: ส่งของอย่างรับผิดชอบ
 Agent ต้องทำ:
@@ -351,7 +351,7 @@ rollback plan (ชัดเจน)
 
 Done เมื่อ: Prod Gate ใช้ plan นี้ตัดสินใจได้
 
-PR #21 — Dev Agent (Codex prompt consumer)
+PR #22 — Dev Agent (Codex prompt consumer)
 
 เป้าหมาย: เขียนโค้ดตาม spec
 Agent ต้องทำ:
@@ -364,7 +364,7 @@ Agent ต้องทำ:
 
 Done เมื่อ: PR ที่เปิดผ่าน policy ขั้นต้น
 
-PR #22 — Codex Prompt Engine (draft→refine→final)
+PR #23 — Codex Prompt Engine (draft→refine→final)
 
 เป้าหมาย: ลด PR หลุด scope
 Agent ต้องทำ:
@@ -377,7 +377,7 @@ generate final Codex prompt
 
 Done เมื่อ: prompt มี acceptance + test hint
 
-PR #23 — Auto Review v1 (risk + policy checks + summary)
+PR #24 — Auto Review v1 (risk + policy checks + summary)
 
 เป้าหมาย: รีวิวอัตโนมัติแบบมีสมอง
 Agent ต้องทำ:
@@ -392,7 +392,7 @@ comment ลง PR
 
 Done เมื่อ: reviewer เห็นภาพใน 1 comment
 
-PR #24 — Docker Compose + systemd (builder)
+PR #25 — Docker Compose + systemd (builder)
 
 เป้าหมาย: รัน production ได้จริง
 Agent ต้องทำ:
@@ -405,7 +405,7 @@ env separation
 
 Done เมื่อ: reboot VPS แล้วยังรันอยู่
 
-PR #25 — CD Staging Automation (deploy PR SHA → verify)
+PR #26 — CD Staging Automation (deploy PR SHA → verify)
 
 เป้าหมาย: feedback เร็วก่อน merge
 Agent ต้องทำ:
@@ -418,7 +418,7 @@ run smoke
 
 Done เมื่อ: Staging Gate ทำงานอัตโนมัติ
 
-PR #26 — CD Production + Rollback (deploy main → verify → rollback)
+PR #27 — CD Production + Rollback (deploy main → verify → rollback)
 
 เป้าหมาย: production safety
 Agent ต้องทำ:
@@ -431,7 +431,7 @@ rollback auto เมื่อ fail
 
 Done เมื่อ: fail test → rollback ได้จริง
 
-PR #27 — Feature Flags / Kill Switch (runtime override)
+PR #28 — Feature Flags / Kill Switch (runtime override)
 
 เป้าหมาย: แก้ปัญหาโดยไม่ redeploy
 Agent ต้องทำ:
@@ -444,7 +444,7 @@ audit override
 
 Done เมื่อ: ปิด feature ได้ทันที
 
-PR #28 — Concurrency Locks + Idempotency
+PR #29 — Concurrency Locks + Idempotency
 
 เป้าหมาย: กันงานชน / ซ้ำ
 Agent ต้องทำ:
@@ -457,7 +457,7 @@ idempotent run handling
 
 Done เมื่อ: deploy ซ้อนกันไม่ได้
 
-PR #29 — Project Registry (multi-repo)
+PR #30 — Project Registry (multi-repo)
 
 เป้าหมาย: ดูแลหลาย repo
 Agent ต้องทำ:
@@ -470,7 +470,7 @@ map repo → pipeline
 
 Done เมื่อ: เลือก repo แล้ว run ได้
 
-PR #30 — Repo Readiness Checker (score + gaps)
+PR #1 — Repo Readiness Checker (score + gaps)
 
 เป้าหมาย: ไม่ดึง repo ที่ยังไม่พร้อม
 Agent ต้องทำ:
@@ -483,7 +483,7 @@ Agent ต้องทำ:
 
 Done เมื่อ: รู้ว่า repo พร้อม production ไหม
 
-PR #31 — Onboarding PR Generator (golden templates)
+PR #32 — Onboarding PR Generator (golden templates)
 
 เป้าหมาย: ยกระดับ repo อัตโนมัติ
 Agent ต้องทำ:
@@ -494,7 +494,7 @@ generate PR เติมมาตรฐาน
 
 Done เมื่อ: repo ใหม่ถูกยกระดับด้วย PR เดียว
 
-PR #32 — Multi-project deploy controller (per-project configs)
+PR #33 — Multi-project deploy controller (per-project configs)
 
 เป้าหมาย: deploy หลายโปรเจคพร้อมกัน
 Agent ต้องทำ:
@@ -507,7 +507,7 @@ respect locks
 
 Done เมื่อ: builder คุมหลาย project ได้
 
-PR #33 — Post-run Analyzer (root cause + lessons)
+PR #34 — Post-run Analyzer (root cause + lessons)
 
 เป้าหมาย: เรียนรู้จากทุก run
 Agent ต้องทำ:
@@ -520,7 +520,7 @@ generate lessons
 
 Done เมื่อ: มี report หลัง run ทุกครั้ง
 
-PR #34 — Knowledge Sharing System (auto artifacts pack)
+PR #35 — Knowledge Sharing System (auto artifacts pack)
 
 เป้าหมาย: ความรู้ไม่หาย
 Agent ต้องทำ:
@@ -531,7 +531,7 @@ link กับ run/PR
 
 Done เมื่อ: เปิด run เก่าแล้วเข้าใจทันที
 
-PR #35 — Prompt/Workflow Tuning (safe scope)
+PR #36 — Prompt/Workflow Tuning (safe scope)
 
 เป้าหมาย: AI เก่งขึ้นแบบไม่อันตราย
 Agent ต้องทำ:
@@ -542,7 +542,7 @@ Agent ต้องทำ:
 
 Done เมื่อ: คุณภาพดีขึ้นโดยไม่พังของเก่า
 
-PR #36 — Secrets & Permissions Model (least-privilege)
+PR #37 — Secrets & Permissions Model (least-privilege)
 
 เป้าหมาย: security ระดับ production
 Agent ต้องทำ:
@@ -555,7 +555,7 @@ permission matrix
 
 Done เมื่อ: secret หลุดยากมาก
 
-PR #37 — Core Adapter Boundary (mock→core switch + contract tests)
+PR #38 — Core Adapter Boundary (mock→core switch + contract tests)
 
 เป้าหมาย: เชื่อม core อย่างปลอดภัย
 Agent ต้องทำ:
