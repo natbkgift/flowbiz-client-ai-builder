@@ -20,25 +20,25 @@ class GitHubError(Exception):
 class GitHubAuthError(GitHubError):
     """Authentication error (401)."""
 
-    pass
+    ...
 
 
 class GitHubForbiddenError(GitHubError):
     """Forbidden error (403)."""
 
-    pass
+    ...
 
 
 class GitHubNotFoundError(GitHubError):
     """Not found error (404)."""
 
-    pass
+    ...
 
 
 class GitHubValidationError(GitHubError):
     """Validation error (422)."""
 
-    pass
+    ...
 
 
 class GitHubAdapter:
