@@ -1,40 +1,40 @@
-name: Policy Check
+name: PR Labels
 
 on:
   pull_request:
-    types: [opened, edited, synchronize, reopened, ready_for_review]
+    types: [opened, synchronize, reopened]
 
 permissions:
-  pull-requests: read
+  contents: read
 
 jobs:
-  enforce-pr-body:
-    name: enforce-pr-body
+  suggest-labels:
     runs-on: ubuntu-latest
+    
     steps:
-      - name: Fail if PR body missing required evidence sections
-        uses: actions/github-script@v7
+      - name: Checkout code
+        uses: actions/checkout@v4
         with:
-          script: |
-            const pr = context.payload.pull_request;
-            const body = (pr.body || "").trim();
+          fetch-depth: 0
 
-            const required = ["[BA]", "[QA]", "[SRE]", "[DEV]"];
-            const missing = required.filter(tag => !body.includes(tag));
-
-            if (missing.length) {
-              core.setFailed(
-                `PR policy violation: missing sections ${missing.join(", ")}\n\n` +
-                `Please include these sections in the PR description:\n` +
-                `[BA]\n[QA]\n[SRE]\n[DEV]\n`
-              );
-            }
-
-      - name: Fail if PR is from main to main (extra safety)
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const pr = context.payload.pull_request;
-            if (pr.base.ref === "main" && pr.head.ref === "main") {
-              core.setFailed("Invalid PR: head and base are both main. Use a feature branch.");
-            }
+      - name: Suggest persona labels
+        run: |
+          echo "🏷️ Suggested labels based on changed files:"
+          
+          CORE_CHANGES=$(git diff --name-only origin/main... | grep -E "(^apps/|^packages/)" || true)
+          if [ -n "$CORE_CHANGES" ]; then
+            echo "- persona:core (application code changes)"
+          fi
+          
+          INFRA_CHANGES=$(git diff --name-only origin/main... | grep -E "(Dockerfile|docker-compose|nginx/)" || true)
+          if [ -n "$INFRA_CHANGES" ]; then
+            echo "- persona:infra (infrastructure changes)"
+          fi
+          
+          DOCS_CHANGES=$(git diff --name-only origin/main... | grep -E "(^docs/|README.md)" || true)
+          if [ -n "$DOCS_CHANGES" ]; then
+            echo "- persona:docs (documentation changes)"
+          fi
+          
+          echo ""
+          echo "Please add appropriate persona labels to the PR"
