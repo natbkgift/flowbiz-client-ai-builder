@@ -86,11 +86,19 @@ Defines the Human-Inspired Engineering Model workflow phases.
   - `ReleasePhaseOutput`: Staging and production deployment
   - `LearnPhaseOutput`: Knowledge artifacts and metrics
 - `WorkflowExecution`: Complete workflow record across all phases
-- `ApprovalRequired`: Human approval checkpoints
+- `ApprovalRequired`: Human approval checkpoints with auto-approval support
+  - `auto_approve_enabled`: Flag to enable automatic approval
+  - `auto_approve()`: Method to automatically approve workflows
+- `AutoApprovalConfig`: Configuration for auto-approval rules
+  - `enabled`: Global toggle for auto-approval
+  - `approval_types`: Whitelist of approval types that can be auto-approved
+  - `excluded_workflows`: Blacklist of workflows that should never be auto-approved
+  - `require_ci_pass`: Require CI to pass before auto-approval
+  - `can_auto_approve()`: Method to check if approval can be auto-approved
 - `HotfixWorkflow`: Special workflow for fail-safe hotfixes
 
 **Purpose:**  
-Implements Discovery → Plan → Build → Release → Learn model.
+Implements Discovery → Plan → Build → Release → Learn model with automated approval capabilities.
 
 ### 5. Repository Schemas (`packages/core/schemas/repository.py`)
 
@@ -181,6 +189,36 @@ execution = WorkflowExecution(
     current_phase=WorkflowPhase.BUILD,
     status=WorkflowStatus.IN_PROGRESS
 )
+```
+
+### Using Auto-Approval
+
+```python
+from packages.core.schemas import ApprovalRequired, AutoApprovalConfig
+
+# Create an approval that can be auto-approved
+approval = ApprovalRequired(
+    approval_id="appr-001",
+    workflow_id="wf-001",
+    reason="Workflow approval for standard deployment",
+    approval_type="workflow_approval",
+    auto_approve_enabled=True
+)
+
+# Automatically approve it
+approval.auto_approve()
+
+# Configure auto-approval rules
+config = AutoApprovalConfig(
+    enabled=True,
+    approval_types=["workflow_approval", "environment_approval"],
+    excluded_workflows=["wf-critical-001"],
+    require_ci_pass=True
+)
+
+# Check if an approval can be auto-approved
+if config.can_auto_approve(approval, ci_passed=True):
+    approval.auto_approve(approver="ci-bot")
 ```
 
 ## Next Steps
