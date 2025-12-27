@@ -26,6 +26,7 @@ jobs:
         id: checks
         uses: actions/github-script@v7
         with:
+          github-token: ${{ secrets.AUTORUN_GH_TOKEN != '' && secrets.AUTORUN_GH_TOKEN || github.token }}
           script: |
             const { owner, repo } = context.repo;
             const sha = context.sha;
@@ -79,6 +80,7 @@ jobs:
         id: prs
         uses: actions/github-script@v7
         with:
+          github-token: ${{ secrets.AUTORUN_GH_TOKEN != '' && secrets.AUTORUN_GH_TOKEN || github.token }}
           script: |
             const { owner, repo } = context.repo;
 
@@ -104,6 +106,7 @@ jobs:
       - name: Comment to continue AUTO_RUN
         uses: actions/github-script@v7
         with:
+          github-token: ${{ secrets.AUTORUN_GH_TOKEN != '' && secrets.AUTORUN_GH_TOKEN || github.token }}
           script: |
             const { owner, repo } = context.repo;
             const ISSUE_NUMBER = parseInt(process.env.AUTO_RUN_ISSUE_NUMBER);
