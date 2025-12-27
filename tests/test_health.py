@@ -34,7 +34,7 @@ def test_health_check_service_name():
     response = client.get("/healthz")
     data = response.json()
 
-    assert data["service"] == "flowbiz-template-service"
+    assert data["service"] == "flowbiz-client-ai-builder"
 
 
 def test_health_check_version():

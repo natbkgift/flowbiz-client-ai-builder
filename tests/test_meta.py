@@ -27,7 +27,7 @@ def test_meta_service_name():
     response = client.get("/v1/meta")
     data = response.json()
 
-    assert data["service"] == "flowbiz-template-service"
+    assert data["service"] == "flowbiz-client-ai-builder"
 
 
 def test_meta_environment():

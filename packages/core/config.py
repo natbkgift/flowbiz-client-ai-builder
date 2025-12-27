@@ -13,7 +13,7 @@ class Settings(BaseSettings):
     app_log_level: str = "info"
 
     # Metadata (FLOWBIZ_*)
-    flowbiz_service_name: str = "flowbiz-template-service"
+    flowbiz_service_name: str = "flowbiz-client-ai-builder"
     flowbiz_version: str = "0.1.0"
     flowbiz_build_sha: str = "local"
 

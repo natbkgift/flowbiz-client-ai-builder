@@ -6,7 +6,7 @@ and the FlowBiz AI Core system, following contract-first design principles.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel
 
@@ -40,8 +40,8 @@ class ValidationResponse(BaseModel):
     """Response from validation operation."""
 
     valid: bool
-    errors: list[str] = []
-    warnings: list[str] = []
+    errors: List[str] = []
+    warnings: List[str] = []
 
 
 # Core Service Interface (Contract)
