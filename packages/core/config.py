@@ -17,5 +17,9 @@ class Settings(BaseSettings):
     flowbiz_version: str = "0.1.0"
     flowbiz_build_sha: str = "local"
 
+    # GitHub API Configuration (GITHUB_*)
+    github_token: str | None = None
+    github_base_url: str = "https://api.github.com"
+
 
 settings = Settings()
