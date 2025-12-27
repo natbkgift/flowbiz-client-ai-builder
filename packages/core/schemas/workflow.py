@@ -1,6 +1,6 @@
 """Workflow definitions for PR automation and orchestration."""
 
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import Enum
 from typing import Optional
 
@@ -138,8 +138,8 @@ class ApprovalRequired(BaseModel):
         if self.auto_approve_enabled:
             self.approved = True
             self.approved_by = approver
-            self.approved_at = datetime.utcnow()
-            self.comments = "Auto-approved by system"
+            self.approved_at = datetime.now(timezone.utc)
+            self.comments = f"Auto-approved by {approver}"
 
 
 class AutoApprovalConfig(BaseModel):

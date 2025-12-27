@@ -198,7 +198,7 @@ def test_approval_auto_approve_with_custom_approver():
 
     assert approval.approved is True
     assert approval.approved_by == "ci-bot"
-    assert approval.comments == "Auto-approved by system"
+    assert approval.comments == "Auto-approved by ci-bot"
 
 
 def test_auto_approval_config_disabled():
