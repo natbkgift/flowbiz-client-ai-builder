@@ -14,6 +14,9 @@ concurrency:
   group: autorun-controller
   cancel-in-progress: false
 
+env:
+  AUTO_RUN_ISSUE_NUMBER: 1
+
 jobs:
   nudge-copilot-success:
     # ทำงานเฉพาะเมื่อ workflow_run เป็นของ branch main และสำเร็จ
@@ -49,8 +52,7 @@ jobs:
           script: |
             const { owner, repo } = context.repo;
 
-            // 👉 ใส่เลข issue AUTO_RUN CONTROL ตรงนี้
-            const ISSUE_NUMBER = 1;
+            const ISSUE_NUMBER = parseInt(process.env.AUTO_RUN_ISSUE_NUMBER);
 
             const body = [
               "@copilot Continue AUTO_RUN from BLUEPRINT.md next milestone.",
@@ -105,8 +107,7 @@ jobs:
           script: |
             const { owner, repo } = context.repo;
 
-            // 👉 ใส่เลข issue AUTO_RUN CONTROL ตรงนี้
-            const ISSUE_NUMBER = 1;
+            const ISSUE_NUMBER = parseInt(process.env.AUTO_RUN_ISSUE_NUMBER);
 
             const workflowName = context.payload.workflow_run.name;
             const workflowUrl = context.payload.workflow_run.html_url;
