@@ -1,0 +1,40 @@
+name: Policy Check
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened, ready_for_review]
+
+permissions:
+  pull-requests: read
+
+jobs:
+  enforce-pr-body:
+    name: enforce-pr-body
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fail if PR body missing required evidence sections
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const body = (pr.body || "").trim();
+
+            const required = ["[BA]", "[QA]", "[SRE]", "[DEV]"];
+            const missing = required.filter(tag => !body.includes(tag));
+
+            if (missing.length) {
+              core.setFailed(
+                `PR policy violation: missing sections ${missing.join(", ")}\n\n` +
+                `Please include these sections in the PR description:\n` +
+                `[BA]\n[QA]\n[SRE]\n[DEV]\n`
+              );
+            }
+
+      - name: Fail if PR is from main to main (extra safety)
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            if (pr.base.ref === "main" && pr.head.ref === "main") {
+              core.setFailed("Invalid PR: head and base are both main. Use a feature branch.");
+            }
