@@ -31,18 +31,22 @@ def test_health_check_status_ok():
 
 def test_health_check_service_name():
     """Test that health check returns service name."""
+    from packages.core.config import settings
+
     response = client.get("/healthz")
     data = response.json()
 
-    assert data["service"] == "flowbiz-template-service"
+    assert data["service"] == settings.flowbiz_service_name
 
 
 def test_health_check_version():
     """Test that health check returns version."""
+    from packages.core.config import settings
+
     response = client.get("/healthz")
     data = response.json()
 
-    assert data["version"] == "0.1.0"
+    assert data["version"] == settings.flowbiz_version
 
 
 def test_readyz_returns_200():
