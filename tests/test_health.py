@@ -43,3 +43,52 @@ def test_health_check_version():
     data = response.json()
 
     assert data["version"] == "0.1.0"
+
+
+def test_readyz_returns_200():
+    """Test that readiness check returns 200 status code."""
+    response = client.get("/readyz")
+    assert response.status_code == 200
+
+
+def test_readyz_response_structure():
+    """Test that readiness check returns correct JSON structure."""
+    response = client.get("/readyz")
+    data = response.json()
+
+    assert "status" in data
+    assert "service" in data
+    assert "version" in data
+
+
+def test_readyz_status_ready():
+    """Test that readiness check returns ready status."""
+    response = client.get("/readyz")
+    data = response.json()
+
+    assert data["status"] == "ready"
+
+
+def test_version_returns_200():
+    """Test that version endpoint returns 200 status code."""
+    response = client.get("/version")
+    assert response.status_code == 200
+
+
+def test_version_response_structure():
+    """Test that version endpoint returns correct JSON structure."""
+    response = client.get("/version")
+    data = response.json()
+
+    assert "status" in data
+    assert "service" in data
+    assert "version" in data
+
+
+def test_version_info():
+    """Test that version endpoint returns correct version info."""
+    response = client.get("/version")
+    data = response.json()
+
+    assert data["version"] == "0.1.0"
+    assert data["service"] == "flowbiz-template-service"
