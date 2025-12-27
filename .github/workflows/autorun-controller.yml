@@ -1,0 +1,70 @@
+name: AUTO_RUN Controller
+
+on:
+  workflow_run:
+    workflows: ["CI", "Guardrails", "Policy Check", "PR Labels"]
+    types: [completed]
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: read
+
+concurrency:
+  group: autorun-controller
+  cancel-in-progress: false
+
+jobs:
+  nudge-copilot:
+    # ทำงานเฉพาะเมื่อ workflow_run เป็นของ branch main และสำเร็จ
+    if: >
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.head_branch == 'main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Find open PRs by Copilot (skip if one already open)
+        id: prs
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const prs = await github.rest.pulls.list({
+              owner, repo,
+              state: "open",
+              per_page: 100
+            });
+            // ถ้ามี PR ที่มาจาก branch copilot/ อยู่แล้ว ให้หยุด เพื่อไม่สร้างซ้อน
+            const hasCopilotPR = prs.data.some(pr => (pr.head.ref || "").startsWith("copilot/"));
+            core.setOutput("hasCopilotPR", String(hasCopilotPR));
+
+      - name: Stop if Copilot PR already open
+        if: steps.prs.outputs.hasCopilotPR == 'true'
+        run: |
+          echo "Copilot PR already open. Skip nudging."
+
+      - name: Comment on AUTO_RUN CONTROL issue to continue
+        if: steps.prs.outputs.hasCopilotPR != 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+
+            // 👉 ใส่เลข issue AUTO_RUN CONTROL ตรงนี้
+            const ISSUE_NUMBER = 1;
+
+            const body = [
+              "@copilot Continue AUTO_RUN from BLUEPRINT.md next milestone.",
+              "",
+              "Rules recap:",
+              "- One phase per PR (minimal & reviewable)",
+              "- PR must include [BA][QA][SRE][DEV]",
+              "- Do NOT introduce endpoints early",
+              "- Enable auto-merge on the PR",
+              "- If any check fails -> FAIL_SAFE_HOTFIX_TRIGGERED, hotfix first",
+            ].join("\n");
+
+            await github.rest.issues.createComment({
+              owner, repo,
+              issue_number: ISSUE_NUMBER,
+              body
+            });
