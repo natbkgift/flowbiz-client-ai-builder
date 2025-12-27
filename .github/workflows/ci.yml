@@ -1,133 +1,108 @@
-name: AUTO_RUN Controller
+name: CI
 
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
 
 permissions:
   contents: read
-  issues: write
-  pull-requests: write
-  checks: read
+  security-events: write
 
 concurrency:
-  group: autorun-controller
-  cancel-in-progress: false
-
-env:
-  AUTO_RUN_ISSUE_NUMBER: 1
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  autorun-after-main-green:
+  lint:
+    name: Lint
     runs-on: ubuntu-latest
-
     steps:
-      - name: Check required workflows status on this commit
-        id: checks
-        uses: actions/github-script@v7
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          github-token: ${{ secrets.AUTORUN_GH_TOKEN != '' && secrets.AUTORUN_GH_TOKEN || github.token }}
-          script: |
-            const { owner, repo } = context.repo;
-            const sha = context.sha;
+          python-version: "3.11"
+          cache: "pip"
 
-            // workflows ที่ต้องผ่านก่อน AUTO_RUN
-            const REQUIRED_CHECKS = [
-              "CI",
-              "Guardrails",
-              "Policy Check",
-              "PR Labels"
-            ];
+      - name: Install dependencies
+        run: pip install -e ".[dev]"
 
-            const res = await github.rest.checks.listForRef({
-              owner,
-              repo,
-              ref: sha,
-              per_page: 100
-            });
+      - name: Run ruff check
+        run: ruff check .
 
-            const runs = res.data.check_runs;
+      - name: Run ruff format check
+        run: ruff format --check .
 
-            const missing = [];
-            const failed = [];
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-            for (const name of REQUIRED_CHECKS) {
-              const run = runs.find(r => r.name === name);
-              if (!run) {
-                missing.push(name);
-              } else if (run.conclusion !== "success") {
-                failed.push(`${name} (${run.conclusion})`);
-              }
-            }
-
-            core.info(`Missing checks: ${missing.join(", ")}`);
-            core.info(`Failed checks: ${failed.join(", ")}`);
-
-            if (missing.length > 0 || failed.length > 0) {
-              core.setOutput("ready", "false");
-              return;
-            }
-
-            core.setOutput("ready", "true");
-
-      - name: Stop if main is not green
-        if: steps.checks.outputs.ready != 'true'
-        run: |
-          echo "Main branch is not green yet. AUTO_RUN will wait for next push."
-          exit 0
-
-      - name: Find open Copilot PRs
-        id: prs
-        uses: actions/github-script@v7
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          github-token: ${{ secrets.AUTORUN_GH_TOKEN != '' && secrets.AUTORUN_GH_TOKEN || github.token }}
-          script: |
-            const { owner, repo } = context.repo;
+          python-version: "3.11"
+          cache: "pip"
 
-            const prs = await github.rest.pulls.list({
-              owner,
-              repo,
-              state: "open",
-              per_page: 100
-            });
+      - name: Install dependencies
+        run: pip install -e ".[dev]"
 
-            const hasCopilotPR = prs.data.some(pr =>
-              (pr.head.ref || "").startsWith("copilot/")
-            );
+      - name: Run pytest
+        run: pytest -v
 
-            core.setOutput("hasCopilotPR", String(hasCopilotPR));
-
-      - name: Stop if Copilot PR already open
-        if: steps.prs.outputs.hasCopilotPR == 'true'
-        run: |
-          echo "Copilot PR already exists. Skip AUTO_RUN."
-          exit 0
-
-      - name: Comment to continue AUTO_RUN
-        uses: actions/github-script@v7
+  security-scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
         with:
-          github-token: ${{ secrets.AUTORUN_GH_TOKEN != '' && secrets.AUTORUN_GH_TOKEN || github.token }}
-          script: |
-            const { owner, repo } = context.repo;
-            const ISSUE_NUMBER = parseInt(process.env.AUTO_RUN_ISSUE_NUMBER);
+          fetch-depth: 0
 
-            const body = [
-              "@copilot Continue AUTO_RUN from BLUEPRINT.md next milestone.",
-              "",
-              "**AUTO_RUN Mode Requirements:**",
-              "- Follow BLUEPRINT.md strictly (one milestone per PR)",
-              "- Open PR as **ready_for_review** (NOT draft)",
-              "- Enable **auto-merge** (prefer squash)",
-              "- PR must include evidence: [BA][QA][SRE][DEV]",
-              "- Do NOT introduce endpoints early",
-              "- If any check fails → FAIL_SAFE_HOTFIX_TRIGGERED",
-              "",
-              "After merge + main green, AUTO_RUN will resume automatically."
-            ].join("\n");
+      - name: Run Gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-            await github.rest.issues.createComment({
-              owner,
-              repo,
-              issue_number: ISSUE_NUMBER,
-              body
-            });
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install pip-audit
+        run: pip install pip-audit
+
+      - name: Run pip-audit
+        run: pip-audit --ignore-vuln GHSA-jjg7-2v4v-x38h
+        continue-on-error: true
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs: [lint, test]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install build dependencies
+        run: pip install build
+
+      - name: Build package
+        run: python -m build
+
+      - name: Test Docker build
+        run: docker build -t flowbiz-client-ai-builder:test .
