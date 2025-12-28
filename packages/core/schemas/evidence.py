@@ -247,7 +247,7 @@ class EvidenceChain(BaseModel):
             summary["evidence_by_type"][type_name] = (
                 summary["evidence_by_type"].get(type_name, 0) + 1
             )
-            if "failed" in type_name.lower():
+            if "failed" in type_name or "denied" in type_name:
                 summary["has_failures"] = True
 
         latest = self.get_latest_evidence()
