@@ -2,14 +2,15 @@ name: AUTO_RUN Controller
 
 on:
   workflow_run:
-    workflows: ["CI", "Guardrails", "Policy Check", "PR Labels"]
+    # Trigger when CI on main completes (after merge to main)
+    workflows: ["CI"]
     branches: [main]
     types: [completed]
 
 permissions:
   contents: read
   issues: write
-  pull-requests: write
+  pull-requests: read
 
 concurrency:
   group: autorun-controller
@@ -19,18 +20,17 @@ env:
   AUTO_RUN_ISSUE_NUMBER: 1
 
 jobs:
-  nudge-copilot-success:
-    # ทำงานเฉพาะเมื่อ workflow_run เป็นของ branch main และสำเร็จ
+  nudge-agent-on-success:
     if: >
       github.event.workflow_run.conclusion == 'success' &&
       github.event.workflow_run.head_branch == 'main'
     runs-on: ubuntu-latest
     steps:
-      - name: Find open PRs by Copilot (skip if one already open)
+      - name: Find open PRs (skip if any open PR exists)
         id: prs
         uses: actions/github-script@v7
         with:
-          github-token: ${{ secrets.AUTORUN_GH_TOKEN != '' && secrets.AUTORUN_GH_TOKEN || github.token }}
+          github-token: ${{ secrets.AUTORUN_GH_TOKEN || github.token }}
           script: |
             const { owner, repo } = context.repo;
             const prs = await github.rest.pulls.list({
@@ -38,39 +38,36 @@ jobs:
               state: "open",
               per_page: 100
             });
-            // ถ้ามี PR ที่มาจาก branch copilot/ อยู่แล้ว ให้หยุด เพื่อไม่สร้างซ้อน
-            const hasCopilotPR = prs.data.some(pr => (pr.head.ref || "").startsWith("copilot/"));
-            core.setOutput("hasCopilotPR", String(hasCopilotPR));
+            const hasOpenPR = prs.data.length > 0;
+            core.setOutput("hasOpenPR", String(hasOpenPR));
 
-      - name: Stop if Copilot PR already open
-        if: steps.prs.outputs.hasCopilotPR == 'true'
+      - name: Stop if any PR already open
+        if: steps.prs.outputs.hasOpenPR == 'true'
         run: |
-          echo "Copilot PR already open. Skip nudging."
+          echo "An open PR already exists. Skip AUTO_RUN nudge."
 
       - name: Comment on AUTO_RUN CONTROL issue to continue
-        if: steps.prs.outputs.hasCopilotPR != 'true'
+        if: steps.prs.outputs.hasOpenPR != 'true'
         uses: actions/github-script@v7
         with:
-          github-token: ${{ secrets.AUTORUN_GH_TOKEN != '' && secrets.AUTORUN_GH_TOKEN || github.token }}
+          github-token: ${{ secrets.AUTORUN_GH_TOKEN || github.token }}
           script: |
             const { owner, repo } = context.repo;
-
-            const ISSUE_NUMBER = parseInt(process.env.AUTO_RUN_ISSUE_NUMBER);
+            const ISSUE_NUMBER = Number(process.env.AUTO_RUN_ISSUE_NUMBER);
 
             const body = [
               "@copilot Continue AUTO_RUN from BLUEPRINT.md next milestone.",
               "",
-              "**AUTO_RUN Mode Requirements:**",
-              "- Follow BLUEPRINT.md strictly (one phase per PR)",
-              "- Open PR as **ready_for_review** (NOT draft)",
-              "- Resolve all PR conversations (review threads) before enabling auto-merge",
-              "- Do NOT merge while any conversation is unresolved",
-              "- Enable **auto-merge** on the PR",
-              "- PR must include evidence from all sections: [BA][QA][SRE][DEV]",
-              "- Do NOT introduce endpoints early",
-              "- If any check fails → FAIL_SAFE_HOTFIX_TRIGGERED, fix first before continuing",
+              "**Runbook (hard rules):**",
+              "- Read BLUEPRINT.md, pick NEXT uncompleted milestone only (ONE PR = ONE milestone)",
+              "- Open PR as READY_FOR_REVIEW (NOT draft)",
+              "- Keep scope minimal; no refactors unless required",
+              "- Ensure PR body includes [BA][QA][SRE][DEV] + MILESTONE_ID + BLUEPRINT_REF",
+              "- Fix failing checks until ALL required checks are green",
+              "- Enable auto-merge (squash) if allowed",
+              "- After merge + main green, this controller triggers again",
               "",
-              "After merge + main green, this workflow will trigger again for the next milestone.",
+              "**Fail-safe:** If main CI fails → create HOTFIX PR first, restore main to green, then continue.",
             ].join("\n");
 
             await github.rest.issues.createComment({
@@ -80,17 +77,16 @@ jobs:
             });
 
   fail-safe-hotfix-trigger:
-    # ทำงานเฉพาะเมื่อ workflow_run เป็นของ branch main และล้มเหลว
     if: >
       github.event.workflow_run.conclusion == 'failure' &&
       github.event.workflow_run.head_branch == 'main'
     runs-on: ubuntu-latest
     steps:
-      - name: Find open PRs by Copilot (skip if one already open)
+      - name: Find open PRs (skip if any open PR exists)
         id: prs
         uses: actions/github-script@v7
         with:
-          github-token: ${{ secrets.AUTORUN_GH_TOKEN != '' && secrets.AUTORUN_GH_TOKEN || github.token }}
+          github-token: ${{ secrets.AUTORUN_GH_TOKEN || github.token }}
           script: |
             const { owner, repo } = context.repo;
             const prs = await github.rest.pulls.list({
@@ -98,23 +94,22 @@ jobs:
               state: "open",
               per_page: 100
             });
-            const hasCopilotPR = prs.data.some(pr => (pr.head.ref || "").startsWith("copilot/"));
-            core.setOutput("hasCopilotPR", String(hasCopilotPR));
+            const hasOpenPR = prs.data.length > 0;
+            core.setOutput("hasOpenPR", String(hasOpenPR));
 
-      - name: Stop if Copilot PR already open
-        if: steps.prs.outputs.hasCopilotPR == 'true'
+      - name: Stop if any PR already open
+        if: steps.prs.outputs.hasOpenPR == 'true'
         run: |
-          echo "Copilot PR already open. Skip FAIL_SAFE trigger."
+          echo "An open PR already exists. Skip FAIL_SAFE nudge."
 
       - name: Trigger FAIL_SAFE_HOTFIX on AUTO_RUN CONTROL issue
-        if: steps.prs.outputs.hasCopilotPR != 'true'
+        if: steps.prs.outputs.hasOpenPR != 'true'
         uses: actions/github-script@v7
         with:
-          github-token: ${{ secrets.AUTORUN_GH_TOKEN != '' && secrets.AUTORUN_GH_TOKEN || github.token }}
+          github-token: ${{ secrets.AUTORUN_GH_TOKEN || github.token }}
           script: |
             const { owner, repo } = context.repo;
-
-            const ISSUE_NUMBER = parseInt(process.env.AUTO_RUN_ISSUE_NUMBER);
+            const ISSUE_NUMBER = Number(process.env.AUTO_RUN_ISSUE_NUMBER);
 
             const workflowName = context.payload.workflow_run.name;
             const workflowUrl = context.payload.workflow_run.html_url;
@@ -128,11 +123,10 @@ jobs:
               "@copilot STOP all new features. Fix the failing workflow first.",
               "",
               "**Hotfix Requirements:**",
-              "- Create hotfix PR to fix the failing check",
-              "- Open PR as **ready_for_review** (NOT draft)",
-              "- Enable **auto-merge** on the PR",
+              "- Create hotfix PR to fix ONLY the failing check (minimal change)",
               "- PR title must start with: `HOTFIX:`",
-              "- PR must fix ONLY the failing check (minimal change)",
+              "- Open PR as READY_FOR_REVIEW (NOT draft)",
+              "- Fix until checks are green, then enable auto-merge (squash) if allowed",
               "- After merge + main green, AUTO_RUN will resume automatically",
             ].join("\n");
 
