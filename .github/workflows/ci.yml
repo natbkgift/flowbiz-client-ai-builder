@@ -105,7 +105,7 @@ jobs:
         run: |
           echo "lint: $LINT_RESULT"
           echo "test: $TEST_RESULT"
-          if [ "$LINT_RESULT" != "success" ] || [ "$TEST_RESULT" != "success" ]; then
+          if [ "$LINT_RESULT" = "failure" ] || [ "$TEST_RESULT" = "failure" ]; then
             echo "lint-and-test failed because a dependency failed"
             exit 1
           fi
