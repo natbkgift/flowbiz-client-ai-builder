@@ -153,6 +153,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install ruff
       - run: ruff check .
       - run: ruff format --check .
   
@@ -160,19 +164,31 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -e ".[dev]"
       - run: pytest -v
   
   security-scan:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: gitleaks detect
+      - uses: gitleaks/gitleaks-action@v2
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install pip-audit
       - run: pip-audit
   
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install build
       - run: python -m build
       - run: docker build -t test .
 ```
@@ -202,7 +218,7 @@ jobs:
 
 **Priority:** Low (functionality exists, just documentation clarity)
 
-### 3. Health Endpoints Verification
+### 4. Health Endpoints Verification
 **Issue:** Need to verify /healthz, /readyz, /version endpoints are implemented.
 
 **Action:** 
