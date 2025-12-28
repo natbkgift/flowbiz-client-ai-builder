@@ -28,9 +28,15 @@ jobs:
 
             const isAuditBot = pr.user?.login === "github-actions[bot]";
             const hasAuditLabel = (pr.labels || []).some(label => label.name === "audit:auto");
+            const hasOverride = (pr.labels || []).some(label => label.name === "audit:override");
 
             if (!(isAuditBot && hasAuditLabel)) {
               core.info("Not an audit:auto bot PR; skipping scope enforcement.");
+              return;
+            }
+
+            if (hasOverride) {
+              core.notice("audit:override present; skipping audit bot scope enforcement for this PR.");
               return;
             }
 

@@ -15,6 +15,7 @@ jobs:
     if: >
       github.event.pull_request.user.login == 'github-actions[bot]' &&
       contains(github.event.pull_request.labels.*.name, 'audit:auto') &&
+      !contains(github.event.pull_request.labels.*.name, 'audit:override') &&
       github.event.pull_request.draft == false
 
     steps:
