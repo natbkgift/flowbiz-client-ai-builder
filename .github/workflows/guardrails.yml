@@ -26,7 +26,8 @@ jobs:
 
           for pattern in "${disallowed_patterns[@]}"; do
             # Search for the pattern in the repository. If found, record a failure.
-            if git grep -n --fixed-strings --ignore-case "$pattern" -- . > /dev/null 2>&1; then
+            # Exclude .github/workflows directory to avoid matching pattern definitions
+            if git grep -n --fixed-strings --ignore-case "$pattern" -- . ':!.github/workflows' > /dev/null 2>&1; then
               echo "::error::Found disallowed pattern '$pattern' in the repository."
               failed=1
             fi
