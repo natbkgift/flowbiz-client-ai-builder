@@ -1,6 +1,5 @@
 """Tests for agent schemas."""
 
-
 from packages.core.schemas.agents import (
     Agent,
     AgentRole,
