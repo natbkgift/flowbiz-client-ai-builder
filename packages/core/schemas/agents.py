@@ -43,9 +43,7 @@ class BusinessAnalystInput(BaseModel):
     problem_statement: str = Field(
         ..., description="Clear problem description and value proposition"
     )
-    acceptance_criteria: list[str] = Field(
-        ..., description="List of business acceptance criteria"
-    )
+    acceptance_criteria: list[str] = Field(..., description="List of business acceptance criteria")
     prd_link: Optional[str] = Field(None, description="Link to Product Requirements Document")
     dod_link: Optional[str] = Field(None, description="Link to Definition of Done")
 

@@ -49,9 +49,7 @@ class ReadinessCheckResult(BaseModel):
     has_ci_workflow: bool = Field(..., description="Has CI workflow")
     has_required_files: bool = Field(..., description="Has required files (README, etc.)")
     follows_standards: bool = Field(..., description="Follows coding standards")
-    has_health_endpoints: bool = Field(
-        False, description="Has health endpoints (if applicable)"
-    )
+    has_health_endpoints: bool = Field(False, description="Has health endpoints (if applicable)")
     issues_found: list[str] = Field(default_factory=list, description="Issues found during check")
     ready: bool = Field(..., description="Overall readiness status")
     checked_at: datetime = Field(default_factory=datetime.utcnow)

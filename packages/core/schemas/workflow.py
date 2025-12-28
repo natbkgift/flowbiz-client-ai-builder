@@ -162,9 +162,7 @@ class AutoApprovalConfig(BaseModel):
         description="Require CI to pass before auto-approval",
     )
 
-    def can_auto_approve(
-        self, approval: ApprovalRequired, ci_passed: bool = False
-    ) -> bool:
+    def can_auto_approve(self, approval: ApprovalRequired, ci_passed: bool = False) -> bool:
         """Check if an approval can be auto-approved based on the configuration.
 
         Args:

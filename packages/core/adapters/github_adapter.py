@@ -99,8 +99,7 @@ class GitHubAdapter:
             )
         elif response.status_code == 404:
             raise GitHubNotFoundError(
-                f"Not found: {message}. "
-                "Please check the repository slug and resource exist.",
+                f"Not found: {message}. Please check the repository slug and resource exist.",
                 status_code=404,
                 response=error_data,
             )
@@ -111,8 +110,7 @@ class GitHubAdapter:
             else:
                 error_details = message
             raise GitHubValidationError(
-                f"Validation failed: {error_details}. "
-                "Please check your input parameters.",
+                f"Validation failed: {error_details}. Please check your input parameters.",
                 status_code=422,
                 response=error_data,
             )
@@ -361,13 +359,15 @@ class GitHubAdapter:
         data = response.json()
         check_runs = []
         for run in data.get("check_runs", []):
-            check_runs.append({
-                "id": run["id"],
-                "name": run["name"],
-                "status": run["status"],
-                "conclusion": run.get("conclusion"),
-                "html_url": run["html_url"],
-            })
+            check_runs.append(
+                {
+                    "id": run["id"],
+                    "name": run["name"],
+                    "status": run["status"],
+                    "conclusion": run.get("conclusion"),
+                    "html_url": run["html_url"],
+                }
+            )
 
         return check_runs
 
