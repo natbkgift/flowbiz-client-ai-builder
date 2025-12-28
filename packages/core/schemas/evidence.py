@@ -1,0 +1,217 @@
+"""Evidence and artifact registry models."""
+
+from __future__ import annotations
+
+from datetime import datetime, timezone
+from enum import Enum
+from typing import Dict, List, Optional
+
+from pydantic import BaseModel, Field
+
+
+class EvidenceType(str, Enum):
+    """Supported evidence categories for a run."""
+
+    PR = "pr"
+    CI = "ci"
+    DEPLOY = "deploy"
+    VERIFY = "verify"
+
+
+class EvidenceStatus(str, Enum):
+    """Status of a captured evidence item."""
+
+    PENDING = "pending"
+    PASSED = "passed"
+    FAILED = "failed"
+    BLOCKED = "blocked"
+
+
+class ArtifactType(str, Enum):
+    """Types of artifacts that can be registered."""
+
+    FILE = "file"
+    LINK = "link"
+
+
+class ArtifactRecord(BaseModel):
+    """Record describing a file or link artifact tied to a run."""
+
+    artifact_id: str
+    run_id: str
+    name: str
+    type: ArtifactType
+    location: str
+    description: Optional[str] = None
+    checksum: Optional[str] = None
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+class EvidenceRecord(BaseModel):
+    """Evidence entry describing what happened in a run step."""
+
+    evidence_id: str
+    run_id: str
+    type: EvidenceType
+    title: str
+    description: str
+    status: EvidenceStatus = EvidenceStatus.PENDING
+    artifact_ids: List[str] = Field(default_factory=list)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+    def attach_artifact(self, artifact: ArtifactRecord) -> None:
+        """Attach an artifact to this evidence."""
+        if artifact.run_id != self.run_id:
+            raise ValueError("Artifact run_id must match evidence run_id")
+
+        if artifact.artifact_id not in self.artifact_ids:
+            self.artifact_ids.append(artifact.artifact_id)
+
+
+class EvidenceRegistry(BaseModel):
+    """In-memory registry for evidence and artifacts per run."""
+
+    evidences: List[EvidenceRecord] = Field(default_factory=list)
+    artifacts: List[ArtifactRecord] = Field(default_factory=list)
+
+    def register_file(
+        self,
+        *,
+        artifact_id: str,
+        run_id: str,
+        name: str,
+        path: str,
+        description: Optional[str] = None,
+        checksum: Optional[str] = None,
+    ) -> ArtifactRecord:
+        """Register a file artifact."""
+        record = ArtifactRecord(
+            artifact_id=artifact_id,
+            run_id=run_id,
+            name=name,
+            type=ArtifactType.FILE,
+            location=path,
+            description=description,
+            checksum=checksum,
+        )
+        self.artifacts.append(record)
+        return record
+
+    def register_link(
+        self,
+        *,
+        artifact_id: str,
+        run_id: str,
+        name: str,
+        url: str,
+        description: Optional[str] = None,
+    ) -> ArtifactRecord:
+        """Register a link-based artifact."""
+        record = ArtifactRecord(
+            artifact_id=artifact_id,
+            run_id=run_id,
+            name=name,
+            type=ArtifactType.LINK,
+            location=url,
+            description=description,
+        )
+        self.artifacts.append(record)
+        return record
+
+    def add_evidence_entry(
+        self,
+        *,
+        evidence_id: str,
+        run_id: str,
+        evidence_type: EvidenceType,
+        title: str,
+        description: str,
+        status: EvidenceStatus = EvidenceStatus.PASSED,
+        artifact_ids: Optional[List[str]] = None,
+    ) -> EvidenceRecord:
+        """Add a new evidence entry for a run."""
+        entry = EvidenceRecord(
+            evidence_id=evidence_id,
+            run_id=run_id,
+            type=evidence_type,
+            title=title,
+            description=description,
+            status=status,
+            artifact_ids=artifact_ids or [],
+        )
+        self.evidences.append(entry)
+        return entry
+
+    def attach_artifact_to_evidence(self, *, evidence_id: str, artifact_id: str) -> EvidenceRecord:
+        """Attach an artifact to a specific evidence entry."""
+        evidence = self._get_evidence_by_id(evidence_id)
+        artifact = self._get_artifact_by_id(artifact_id)
+
+        evidence.attach_artifact(artifact)
+        return evidence
+
+    def get_run_evidence(self, run_id: str) -> List[EvidenceRecord]:
+        """Return evidence entries for a run."""
+        return [entry for entry in self.evidences if entry.run_id == run_id]
+
+    def get_artifacts_for_run(self, run_id: str) -> List[ArtifactRecord]:
+        """Return artifact entries for a run."""
+        return [artifact for artifact in self.artifacts if artifact.run_id == run_id]
+
+    def is_run_fully_documented(self, run_id: str) -> bool:
+        """Check that all required evidence types are present and not failed."""
+        entries = self.get_run_evidence(run_id)
+        required_types = {
+            EvidenceType.PR,
+            EvidenceType.CI,
+            EvidenceType.DEPLOY,
+            EvidenceType.VERIFY,
+        }
+        available_types = {entry.type for entry in entries}
+
+        if not required_types.issubset(available_types):
+            return False
+
+        return all(
+            entry.status != EvidenceStatus.FAILED
+            for entry in entries
+            if entry.type in required_types
+        )
+
+    def build_run_timeline(self, run_id: str) -> List[Dict[str, str]]:
+        """Build a chronological view of evidence and artifacts for a run."""
+        events = [
+            {
+                "event": "evidence",
+                "id": entry.evidence_id,
+                "type": entry.type.value,
+                "status": entry.status.value,
+                "created_at": entry.created_at.isoformat(),
+            }
+            for entry in self.get_run_evidence(run_id)
+        ]
+
+        events.extend(
+            {
+                "event": "artifact",
+                "id": artifact.artifact_id,
+                "type": artifact.type.value,
+                "location": artifact.location,
+                "created_at": artifact.created_at.isoformat(),
+            }
+            for artifact in self.get_artifacts_for_run(run_id)
+        )
+
+        return sorted(events, key=lambda event: event["created_at"])
+
+    def _get_evidence_by_id(self, evidence_id: str) -> EvidenceRecord:
+        for entry in self.evidences:
+            if entry.evidence_id == evidence_id:
+                return entry
+        raise ValueError(f"Evidence not found: {evidence_id}")
+
+    def _get_artifact_by_id(self, artifact_id: str) -> ArtifactRecord:
+        for artifact in self.artifacts:
+            if artifact.artifact_id == artifact_id:
+                return artifact
+        raise ValueError(f"Artifact not found: {artifact_id}")

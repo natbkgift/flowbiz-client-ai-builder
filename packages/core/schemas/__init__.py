@@ -15,6 +15,14 @@ from packages.core.schemas.agents import (
 )
 from packages.core.schemas.base import BaseResponse
 from packages.core.schemas.error import ErrorResponse
+from packages.core.schemas.evidence import (
+    ArtifactRecord,
+    ArtifactType,
+    EvidenceRecord,
+    EvidenceRegistry,
+    EvidenceStatus,
+    EvidenceType,
+)
 from packages.core.schemas.gates import (
     CIGateResult,
     GatePipeline,
@@ -69,6 +77,13 @@ __all__ = [
     "ErrorResponse",
     "HealthResponse",
     "MetaResponse",
+    # Evidence schemas
+    "ArtifactRecord",
+    "ArtifactType",
+    "EvidenceRecord",
+    "EvidenceRegistry",
+    "EvidenceStatus",
+    "EvidenceType",
     # Agent schemas
     "Agent",
     "AgentRole",
