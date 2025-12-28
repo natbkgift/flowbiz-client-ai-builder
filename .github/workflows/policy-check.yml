@@ -25,7 +25,11 @@ jobs:
         with:
           script: |
             const pr = context.payload.pull_request;
-            const body = pr?.body || "";
+            if (!pr) {
+              core.setFailed("Policy Check: pull_request payload is missing. This workflow must be run on pull_request events.");
+              return;
+            }
+            const body = pr.body || "";
 
             const required = ["[BA]", "[QA]", "[SRE]", "[DEV]"];
             const missing = required.filter(tag => !body.includes(tag));

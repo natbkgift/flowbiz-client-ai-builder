@@ -1,4 +1,4 @@
-name: PR Labels
+name: PR Label Suggestions
 
 on:
   pull_request:
