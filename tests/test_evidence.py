@@ -4,9 +4,11 @@ import pytest
 
 from packages.core.schemas.evidence import (
     CIEvidence,
+    DeployEvidence,
     EvidenceChain,
     EvidenceType,
     PREvidence,
+    VerifyEvidence,
 )
 
 
@@ -88,3 +90,41 @@ class TestEvidence:
                     pr_number=3,
                 )
             )
+
+    def test_deploy_evidence(self):
+        chain = EvidenceChain(run_id="run-005")
+        deploy_ev = DeployEvidence(
+            evidence_id="e-deploy-1",
+            run_id="run-005",
+            source="ci_system",
+            summary="Deployed to staging",
+            environment="staging",
+            sha="abc123",
+            status="success",
+        )
+        chain.add(deploy_ev)
+
+        summary = chain.summary()
+        assert summary["run_id"] == "run-005"
+        assert summary["total"] == 1
+        assert summary["by_type"] == {"deploy": 1}
+        assert summary["latest_evidence_id"] == "e-deploy-1"
+
+    def test_verify_evidence(self):
+        chain = EvidenceChain(run_id="run-006")
+        verify_ev = VerifyEvidence(
+            evidence_id="e-verify-1",
+            run_id="run-006",
+            source="ci_system",
+            summary="Security scan passed",
+            check_name="security-scan",
+            passed=True,
+            notes="No vulnerabilities found",
+        )
+        chain.add(verify_ev)
+
+        summary = chain.summary()
+        assert summary["run_id"] == "run-006"
+        assert summary["total"] == 1
+        assert summary["by_type"] == {"verify": 1}
+        assert summary["latest_evidence_id"] == "e-verify-1"
