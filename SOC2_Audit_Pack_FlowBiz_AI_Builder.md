@@ -67,7 +67,7 @@ Order of precedence:
 |---|---|---|---|
 | CC3.1 | Risk identification | Planning Gate | Gate 0 artifacts |
 | CC3.2 | Fraud risk | Scope lock + approvals | PR checks |
-| CC3.3 | Change risk | One PR = one milestone | BLUEPRINT §4 (Milestone Traceability) |
+| CC3.3 | Change risk | One PR = one milestone | [BLUEPRINT §4 (Milestone Traceability)](BLUEPRINT.md#4-milestone-traceability) |
 | CC3.4 | Risk mitigation | CI + rollback | CI / deploy logs |
 
 ---
