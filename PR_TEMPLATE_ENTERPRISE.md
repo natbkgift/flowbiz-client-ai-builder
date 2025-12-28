@@ -108,5 +108,5 @@ I confirm that:
 - All claims are supported by evidence
 - This change is safe to proceed under the declared mode
 
-**Approved by (human owner):** Nat J 
+**Approved by (human owner):** ____________________
 **Date:** ____________________
