@@ -14,7 +14,7 @@ concurrency:
 
 jobs:
   enforce-pr-body:
-    name: enforce-pr-body (pull_request)
+    name: enforce-pr-body
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
