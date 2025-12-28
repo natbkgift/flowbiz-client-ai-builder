@@ -143,7 +143,7 @@ EVERY PR description MUST include these exact sections (markers):
 Missing ANY section → **NON-COMPLIANT PR**.
 
 In addition, PRs MUST include all other top-level sections from the enterprise template
-(`PR_TEMPLATE_ENTERPRISE_v1.1` / `.github/pull_request_template.md`), including:
+(`PR_TEMPLATE_ENTERPRISE_v1.1.md` / `.github/pull_request_template.md`), including:
 - Risk Assessment
 - Evidence & Artifacts
 - Knowledge & Learning Notes
