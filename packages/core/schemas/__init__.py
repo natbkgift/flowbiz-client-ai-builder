@@ -15,6 +15,13 @@ from packages.core.schemas.agents import (
 )
 from packages.core.schemas.base import BaseResponse
 from packages.core.schemas.error import ErrorResponse
+from packages.core.schemas.evidence import (
+    Artifact,
+    ArtifactKind,
+    ArtifactRegistry,
+    EvidenceRecord,
+    EvidenceType,
+)
 from packages.core.schemas.gates import (
     CIGateResult,
     GatePipeline,
@@ -108,6 +115,12 @@ __all__ = [
     "RepositoryStatus",
     "RepositoryType",
     "VersionInfo",
+    # Evidence schemas
+    "Artifact",
+    "ArtifactKind",
+    "ArtifactRegistry",
+    "EvidenceRecord",
+    "EvidenceType",
     # Workflow schemas
     "ApprovalRequired",
     "AutoApprovalConfig",
