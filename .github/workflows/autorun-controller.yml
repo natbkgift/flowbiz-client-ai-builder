@@ -18,6 +18,8 @@ concurrency:
 env:
   # Issue #1 must exist and be maintained as the AUTO_RUN CONTROL issue
   AUTO_RUN_ISSUE_NUMBER: 1
+  # AUTORUN_GH_TOKEN secret provides extended permissions for commenting and auto-merge.
+  # If not set, github.token is used as fallback with permissions from the workflow's permissions block (issues: write, pull-requests: write).
 
 jobs:
   nudge-copilot-success:
