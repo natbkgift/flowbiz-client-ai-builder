@@ -63,6 +63,8 @@ jobs:
               "**AUTO_RUN Mode Requirements:**",
               "- Follow BLUEPRINT.md strictly (one phase per PR)",
               "- Open PR as **ready_for_review** (NOT draft)",
+              "- Resolve all PR conversations (review threads) before enabling auto-merge",
+              "- Do NOT merge while any conversation is unresolved",
               "- Enable **auto-merge** on the PR",
               "- PR must include evidence from all sections: [BA][QA][SRE][DEV]",
               "- Do NOT introduce endpoints early",
