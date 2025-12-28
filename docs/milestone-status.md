@@ -10,3 +10,4 @@
   - Confirm which Blueprint milestone(s) PRs #38–#40 correspond to.
   - Rename the current PR to `PR-###: <milestone name>` and set the matching `MILESTONE_ID` / `BLUEPRINT_REF`.
   - Once confirmed, resume AUTO_RUN and rerun CI/Policy/Guardrails on the latest commit for this branch.
+  - Note: `PR-###` is the Blueprint milestone identifier (e.g., `PR-14`), not a literal placeholder.
