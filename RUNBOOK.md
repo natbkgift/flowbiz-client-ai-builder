@@ -31,6 +31,11 @@ Run CI checks locally before pushing
 | Security scan | Check gitleaks output for secrets, run `pip-audit` |
 | Build failed | Check Dockerfile and dependencies |
 
+### Evidence & Artifact Capture
+
+- Use `packages.core.schemas.evidence` models to record artifacts (file/link/log/metric) per run.
+- Keep `run_id` consistent across evidence, gate results, and artifacts.
+
 ---
 
 ## 2. CI Workflow Troubleshooting
