@@ -9,6 +9,7 @@ permissions:
 
 jobs:
   check-guardrails:
+    name: check-guardrails (pull_request)
     runs-on: ubuntu-latest
     
     steps:
