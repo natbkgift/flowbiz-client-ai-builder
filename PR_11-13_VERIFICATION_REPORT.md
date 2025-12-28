@@ -63,6 +63,8 @@
 
 **Verification:**
 - ❌ **CRITICAL ISSUE:** CI workflow file `.github/workflows/ci.yml` contains AUTO_RUN Controller content, NOT actual CI jobs
+- ⚠️ **Note:** The `autorun-controller.yml` file exists with identical AUTO_RUN Controller content (duplicate)
+- ❌ This is a file naming/organization issue: `ci.yml` should contain CI jobs, not AUTO_RUN logic
 - ❌ NO lint job (ruff check/format) found in any workflow
 - ❌ NO test job (pytest) found in any workflow  
 - ❌ NO security-scan job (gitleaks/pip-audit) found in any workflow
@@ -71,7 +73,7 @@
 - ✅ Tests can run locally: 65 tests mentioned in PR #12
 - ⚠️ Guardrails workflow exists but only does basic PR checks, not full CI
 
-**Compliance:** ❌ **NON-COMPLIANT** - PR #12 implemented auto-approval but did NOT implement the required CI baseline (lint + test + build + security-scan). The .github/workflows/ci.yml file was overwritten with AUTO_RUN Controller content, as mentioned in PR #11.
+**Compliance:** ❌ **NON-COMPLIANT** - PR #12 implemented auto-approval but did NOT implement the required CI baseline (lint + test + build + security-scan). The .github/workflows/ci.yml file was overwritten with AUTO_RUN Controller content (which duplicates autorun-controller.yml), leaving no workflow to perform actual CI checks.
 
 ---
 
@@ -139,19 +141,45 @@
 
 **Action:** Create or restore proper CI workflow with:
 ```yaml
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
 jobs:
   lint:
-    - ruff check .
-    - ruff format --check .
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: ruff check .
+      - run: ruff format --check .
+  
   test:
-    - pytest -v
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: pytest -v
+  
   security-scan:
-    - gitleaks
-    - pip-audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: gitleaks detect
+      - run: pip-audit
+  
   build:
-    - python -m build
-    - docker build test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python -m build
+      - run: docker build -t test .
 ```
+
+**Note:** The `autorun-controller.yml` file already exists with the AUTO_RUN Controller logic. The issue is that `ci.yml` was overwritten with duplicate AUTO_RUN content instead of containing actual CI jobs. Either:
+- Rename current `ci.yml` → `ci-autorun.yml` and create new proper `ci.yml`, OR
+- Delete `ci.yml` and rely on the existing `autorun-controller.yml` (they have identical content), then create new `ci.yml` with actual CI jobs
 
 **Priority:** 🔴 **CRITICAL** - Without CI, code quality cannot be automatically verified
 
