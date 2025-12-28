@@ -67,7 +67,7 @@ Order of precedence:
 |---|---|---|---|
 | CC3.1 | Risk identification | Planning Gate | Gate 0 artifacts |
 | CC3.2 | Fraud risk | Scope lock + approvals | PR checks |
-| CC3.3 | Change risk | One PR = one milestone | BLUEPRINT §5 |
+| CC3.3 | Change risk | One PR = one milestone | [BLUEPRINT §4 (Milestone Traceability)](BLUEPRINT.md#4-milestone-traceability) |
 | CC3.4 | Risk mitigation | CI + rollback | CI / deploy logs |
 
 ---
@@ -86,7 +86,7 @@ Order of precedence:
 | SOC 2 Ref | Description | Implementation | Evidence |
 |---|---|---|---|
 | CC5.1 | Change authorization | PR approval rules | Branch rules |
-| CC5.2 | Segregation of duties | Agent role separation | BLUEPRINT §8 |
+| CC5.2 | Segregation of duties | Agent role separation | [BLUEPRINT §7 (Feature Squad Accountability)](BLUEPRINT.md#7-feature-squad-accountability) |
 | CC5.3 | Change validation | CI + staging | Test results |
 | CC5.4 | Secure deployment | Controlled release | Deploy logs |
 
