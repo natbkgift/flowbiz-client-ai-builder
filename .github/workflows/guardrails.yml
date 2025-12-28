@@ -2,13 +2,14 @@ name: Guardrails
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [opened, synchronize, reopened, ready_for_review]
 
 permissions:
   contents: read
 
 jobs:
   check-guardrails:
+    name: check-guardrails (pull_request)
     runs-on: ubuntu-latest
     
     steps:
