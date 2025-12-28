@@ -100,7 +100,7 @@ A PR MUST NOT be merged if ANY are true:
 - Scope exceeds the mapped Blueprint milestone
 - Workflows are awaiting approval
 
-If workflows are **awaiting approval** → `CONTROLLED_HALT`.
+If workflows are **awaiting approval** → `CONTROLLED_HALT` with reason: "Workflow approval pending".
 
 ---
 
