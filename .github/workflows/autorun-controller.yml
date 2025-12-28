@@ -30,7 +30,7 @@ jobs:
         id: prs
         uses: actions/github-script@v7
         with:
-          github-token: ${{ secrets.AUTORUN_GH_TOKEN != '' && secrets.AUTORUN_GH_TOKEN || github.token }}
+          github-token: ${{ secrets.AUTORUN_GH_TOKEN || github.token }}
           script: |
             const { owner, repo } = context.repo;
             const prs = await github.rest.pulls.list({
@@ -51,7 +51,7 @@ jobs:
         if: steps.prs.outputs.hasCopilotPR != 'true'
         uses: actions/github-script@v7
         with:
-          github-token: ${{ secrets.AUTORUN_GH_TOKEN != '' && secrets.AUTORUN_GH_TOKEN || github.token }}
+          github-token: ${{ secrets.AUTORUN_GH_TOKEN || github.token }}
           script: |
             const { owner, repo } = context.repo;
 
@@ -90,7 +90,7 @@ jobs:
         id: prs
         uses: actions/github-script@v7
         with:
-          github-token: ${{ secrets.AUTORUN_GH_TOKEN != '' && secrets.AUTORUN_GH_TOKEN || github.token }}
+          github-token: ${{ secrets.AUTORUN_GH_TOKEN || github.token }}
           script: |
             const { owner, repo } = context.repo;
             const prs = await github.rest.pulls.list({
@@ -110,7 +110,7 @@ jobs:
         if: steps.prs.outputs.hasCopilotPR != 'true'
         uses: actions/github-script@v7
         with:
-          github-token: ${{ secrets.AUTORUN_GH_TOKEN != '' && secrets.AUTORUN_GH_TOKEN || github.token }}
+          github-token: ${{ secrets.AUTORUN_GH_TOKEN || github.token }}
           script: |
             const { owner, repo } = context.repo;
 
