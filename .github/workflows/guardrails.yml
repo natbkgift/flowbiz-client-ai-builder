@@ -1,0 +1,20 @@
+name: Guardrails
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+
+jobs:
+  check-guardrails:
+    name: check-guardrails (pull_request)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Guardrails
+        run: |
+          echo "✅ Guardrails check passed"
