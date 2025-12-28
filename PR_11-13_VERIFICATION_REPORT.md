@@ -193,6 +193,14 @@ jobs:
       - run: docker build -t test .
 ```
 
+**Production Enhancements (Optional but Recommended):**
+- Add dependency caching with `actions/cache@v4` for faster builds
+- Add `concurrency` settings to cancel in-progress runs for same PR
+- Configure gitleaks with `fetch-depth: 0` for full history scanning  
+- Add test coverage reporting with `pytest-cov`
+- Use BuildKit for Docker builds
+- Cache pip dependencies: `cache: 'pip'` in setup-python
+
 **Note:** The `autorun-controller.yml` file already exists with the AUTO_RUN Controller logic. The issue is that `ci.yml` was overwritten with duplicate AUTO_RUN content instead of containing actual CI jobs. Either:
 - Rename current `ci.yml` → `ci-autorun.yml` and create new proper `ci.yml`, OR
 - Delete `ci.yml` and rely on the existing `autorun-controller.yml` (they have identical content), then create new `ci.yml` with actual CI jobs
