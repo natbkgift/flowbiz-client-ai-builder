@@ -4,8 +4,6 @@ Tests for PR #15 — Evidence Model + Artifact Registry v1.
 BLUEPRINT_REF: PR #15 — Evidence Model + Artifact Registry v1
 """
 
-import pytest
-
 from packages.core.schemas.artifact_registry import (
     ArtifactMetadata,
     ArtifactReference,
