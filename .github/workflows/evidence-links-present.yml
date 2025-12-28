@@ -1,0 +1,47 @@
+name: evidence-links-present
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened, ready_for_review]
+
+permissions:
+  pull-requests: read
+
+jobs:
+  validate-evidence-links:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check PR body contains minimum evidence links
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const body = pr.body || "";
+
+            // Minimum requirement:
+            // - At least 1 URL anywhere in PR body (CI run, scan, staging, etc.)
+            // Recommended: Put links under "Evidence & Artifacts" section.
+            const urlRegex = /(https?:\/\/[^\s)\]>]+)/g;
+            const urls = body.match(urlRegex) || [];
+
+            // De-dupe
+            const uniq = [...new Set(urls)];
+
+            if (uniq.length < 1) {
+              core.summary
+                .addHeading("Evidence Links — FAILED", 2)
+                .addRaw("PR body must include at least **1 evidence URL** (CI run / scan / staging verify / etc.).\n\n")
+                .addRaw("Add a section like:\n\n")
+                .addCode(
+                  "## Evidence & Artifacts\n- <CI run URL>\n- <Security scan URL>\n- <Staging verify URL> (if applicable)",
+                  "md"
+                );
+              await core.summary.write();
+              core.setFailed("Missing evidence links: add at least 1 URL in PR body.");
+            } else {
+              core.summary
+                .addHeading("Evidence Links — PASSED", 2)
+                .addRaw(`Found ${uniq.length} evidence link(s).\n\n`)
+                .addList(uniq.slice(0, 10));
+              await core.summary.write();
+            }
