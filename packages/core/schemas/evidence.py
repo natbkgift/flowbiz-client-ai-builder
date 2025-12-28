@@ -1,16 +1,22 @@
-"""Evidence and artifact registry models."""
+"""Evidence models linked to a run.
+
+Blueprint PR #15: Evidence Model + Artifact Registry v1
+
+Evidence items record what happened during a run (PR, CI, deploy, verify) and can
+optionally reference artifacts stored in an ArtifactRegistry by ID.
+"""
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from pydantic import BaseModel, Field
 
 
 class EvidenceType(str, Enum):
-    """Supported evidence categories for a run."""
+    """Core evidence categories required by the Blueprint."""
 
     PR = "pr"
     CI = "ci"
@@ -18,208 +24,95 @@ class EvidenceType(str, Enum):
     VERIFY = "verify"
 
 
-class EvidenceStatus(str, Enum):
-    """Status of a captured evidence item."""
+class EvidenceSource(str, Enum):
+    """Where the evidence originated from."""
 
-    PENDING = "pending"
-    PASSED = "passed"
-    FAILED = "failed"
-    BLOCKED = "blocked"
-
-
-class ArtifactType(str, Enum):
-    """Types of artifacts that can be registered."""
-
-    FILE = "file"
-    LINK = "link"
+    GITHUB = "github"
+    CI_SYSTEM = "ci_system"
+    MANUAL = "manual"
 
 
-class ArtifactRecord(BaseModel):
-    """Record describing a file or link artifact tied to a run."""
-
-    artifact_id: str
-    run_id: str
-    name: str
-    type: ArtifactType
-    location: str
-    description: Optional[str] = None
-    checksum: Optional[str] = None
-    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
-
-
-class EvidenceRecord(BaseModel):
-    """Evidence entry describing what happened in a run step."""
+class Evidence(BaseModel):
+    """Base evidence record."""
 
     evidence_id: str
     run_id: str
-    type: EvidenceType
-    title: str
-    description: str
-    status: EvidenceStatus = EvidenceStatus.PENDING
-    artifact_ids: List[str] = Field(default_factory=list)
-    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    evidence_type: EvidenceType
+    source: EvidenceSource = EvidenceSource.MANUAL
+    summary: str
+    created_at: datetime = Field(default_factory=datetime.utcnow)
 
-    def attach_artifact(self, artifact: ArtifactRecord) -> None:
-        """Attach an artifact to this evidence."""
-        if artifact.run_id != self.run_id:
-            raise ValueError("Artifact run_id must match evidence run_id")
+    artifact_ids: list[str] = Field(default_factory=list)
+    metadata: dict[str, Any] = Field(default_factory=dict)
 
-        if artifact.artifact_id not in self.artifact_ids:
-            self.artifact_ids.append(artifact.artifact_id)
+    def attach_artifact(self, artifact_id: str) -> None:
+        if artifact_id not in self.artifact_ids:
+            self.artifact_ids.append(artifact_id)
 
 
-class EvidenceRegistry(BaseModel):
-    """In-memory registry for evidence and artifacts per run."""
+class PREvidence(Evidence):
+    evidence_type: EvidenceType = EvidenceType.PR
 
-    evidences: List[EvidenceRecord] = Field(default_factory=list)
-    artifacts: List[ArtifactRecord] = Field(default_factory=list)
-    evidence_index: Dict[str, EvidenceRecord] = Field(default_factory=dict)
-    artifact_index: Dict[str, ArtifactRecord] = Field(default_factory=dict)
+    pr_number: int
+    pr_url: Optional[str] = None
+    title: Optional[str] = None
 
-    def register_file(
-        self,
-        *,
-        artifact_id: str,
-        run_id: str,
-        name: str,
-        path: str,
-        description: Optional[str] = None,
-        checksum: Optional[str] = None,
-    ) -> ArtifactRecord:
-        """Register a file artifact."""
-        if artifact_id in self.artifact_index:
-            raise ValueError(f"Artifact already exists: {artifact_id}")
 
-        record = ArtifactRecord(
-            artifact_id=artifact_id,
-            run_id=run_id,
-            name=name,
-            type=ArtifactType.FILE,
-            location=path,
-            description=description,
-            checksum=checksum,
-        )
-        self.artifacts.append(record)
-        self.artifact_index[record.artifact_id] = record
-        return record
+class CIEvidence(Evidence):
+    evidence_type: EvidenceType = EvidenceType.CI
 
-    def register_link(
-        self,
-        *,
-        artifact_id: str,
-        run_id: str,
-        name: str,
-        url: str,
-        description: Optional[str] = None,
-    ) -> ArtifactRecord:
-        """Register a link-based artifact."""
-        if artifact_id in self.artifact_index:
-            raise ValueError(f"Artifact already exists: {artifact_id}")
+    workflow_name: str
+    conclusion: Optional[str] = None
+    run_url: Optional[str] = None
 
-        record = ArtifactRecord(
-            artifact_id=artifact_id,
-            run_id=run_id,
-            name=name,
-            type=ArtifactType.LINK,
-            location=url,
-            description=description,
-        )
-        self.artifacts.append(record)
-        self.artifact_index[record.artifact_id] = record
-        return record
 
-    def add_evidence_entry(
-        self,
-        *,
-        evidence_id: str,
-        run_id: str,
-        evidence_type: EvidenceType,
-        title: str,
-        description: str,
-        status: EvidenceStatus = EvidenceStatus.PENDING,
-        artifact_ids: Optional[List[str]] = None,
-    ) -> EvidenceRecord:
-        """Add a new evidence entry for a run."""
-        if evidence_id in self.evidence_index:
-            raise ValueError(f"Evidence already exists: {evidence_id}")
+class DeployEvidence(Evidence):
+    evidence_type: EvidenceType = EvidenceType.DEPLOY
 
-        entry = EvidenceRecord(
-            evidence_id=evidence_id,
-            run_id=run_id,
-            type=evidence_type,
-            title=title,
-            description=description,
-            status=status,
-            artifact_ids=artifact_ids or [],
-        )
-        self.evidences.append(entry)
-        self.evidence_index[entry.evidence_id] = entry
-        return entry
+    environment: str = Field(..., description="e.g. staging | production")
+    sha: Optional[str] = None
+    status: Optional[str] = None
 
-    def attach_artifact_to_evidence(self, *, evidence_id: str, artifact_id: str) -> EvidenceRecord:
-        """Attach an artifact to a specific evidence entry."""
-        evidence = self._get_evidence_by_id(evidence_id)
-        artifact = self._get_artifact_by_id(artifact_id)
 
-        evidence.attach_artifact(artifact)
-        return evidence
+class VerifyEvidence(Evidence):
+    evidence_type: EvidenceType = EvidenceType.VERIFY
 
-    def get_run_evidence(self, run_id: str) -> List[EvidenceRecord]:
-        """Return evidence entries for a run."""
-        return [entry for entry in self.evidence_index.values() if entry.run_id == run_id]
+    check_name: str
+    passed: bool
+    notes: Optional[str] = None
 
-    def get_artifacts_for_run(self, run_id: str) -> List[ArtifactRecord]:
-        """Return artifact entries for a run."""
-        return [artifact for artifact in self.artifact_index.values() if artifact.run_id == run_id]
 
-    def is_run_fully_documented(self, run_id: str) -> bool:
-        """Check that all required evidence types are present and not failed."""
-        entries = self.get_run_evidence(run_id)
-        for evidence_type in EvidenceType:
-            type_entries = [entry for entry in entries if entry.type == evidence_type]
-            if not type_entries:
-                return False
+class EvidenceChain(BaseModel):
+    """A run-scoped collection of evidence items."""
 
-            latest_entry = max(type_entries, key=lambda entry: entry.created_at)
-            if latest_entry.status == EvidenceStatus.FAILED:
-                return False
+    run_id: str
+    items: list[Evidence] = Field(default_factory=list)
 
-        return True
+    def add(self, evidence: Evidence) -> None:
+        if evidence.run_id != self.run_id:
+            raise ValueError(
+                f"evidence.run_id ({evidence.run_id}) does not match chain.run_id ({self.run_id})"
+            )
+        self.items.append(evidence)
 
-    def build_run_timeline(self, run_id: str) -> List[Dict[str, Any]]:
-        """Build a chronological view of evidence and artifacts for a run."""
-        events = [
-            {
-                "event": "evidence",
-                "id": entry.evidence_id,
-                "type": entry.type.value,
-                "status": entry.status.value,
-                "created_at": entry.created_at.isoformat(),
-            }
-            for entry in self.get_run_evidence(run_id)
-        ]
+    def list_by_type(self, evidence_type: EvidenceType) -> list[Evidence]:
+        return [e for e in self.items if e.evidence_type == evidence_type]
 
-        events.extend(
-            {
-                "event": "artifact",
-                "id": artifact.artifact_id,
-                "type": artifact.type.value,
-                "location": artifact.location,
-                "created_at": artifact.created_at.isoformat(),
-            }
-            for artifact in self.get_artifacts_for_run(run_id)
-        )
+    def latest(self) -> Optional[Evidence]:
+        if not self.items:
+            return None
+        return max(self.items, key=lambda e: e.created_at)
 
-        return sorted(events, key=lambda event: event["created_at"])
+    def summary(self) -> dict[str, Any]:
+        counts: dict[str, int] = {}
+        for item in self.items:
+            key = item.evidence_type.value
+            counts[key] = counts.get(key, 0) + 1
 
-    def _get_evidence_by_id(self, evidence_id: str) -> EvidenceRecord:
-        try:
-            return self.evidence_index[evidence_id]
-        except KeyError as exc:
-            raise ValueError(f"Evidence not found: {evidence_id}") from exc
-
-    def _get_artifact_by_id(self, artifact_id: str) -> ArtifactRecord:
-        try:
-            return self.artifact_index[artifact_id]
-        except KeyError as exc:
-            raise ValueError(f"Artifact not found: {artifact_id}") from exc
+        latest = self.latest()
+        return {
+            "run_id": self.run_id,
+            "total": len(self.items),
+            "by_type": counts,
+            "latest_evidence_id": latest.evidence_id if latest else None,
+        }

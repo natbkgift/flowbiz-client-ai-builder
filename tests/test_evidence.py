@@ -1,10 +1,99 @@
-"""Tests for evidence and artifact registry."""
-
-from datetime import datetime, timedelta, timezone
+"""Tests for Evidence Model v1."""
 
 import pytest
 
 from packages.core.schemas.evidence import (
+    CIEvidence,
+    EvidenceChain,
+    EvidenceType,
+    PREvidence,
+)
+
+
+class TestEvidence:
+    def test_chain_add_and_summary(self):
+        chain = EvidenceChain(run_id="run-001")
+
+        pr_ev = PREvidence(
+            evidence_id="e-pr-1",
+            run_id="run-001",
+            source="github",
+            summary="PR opened",
+            pr_number=123,
+            pr_url="https://github.com/org/repo/pull/123",
+        )
+        ci_ev = CIEvidence(
+            evidence_id="e-ci-1",
+            run_id="run-001",
+            source="ci_system",
+            summary="CI passed",
+            workflow_name="CI",
+            conclusion="success",
+        )
+
+        chain.add(pr_ev)
+        chain.add(ci_ev)
+
+        summary = chain.summary()
+        assert summary["run_id"] == "run-001"
+        assert summary["total"] == 2
+        assert summary["by_type"] == {"pr": 1, "ci": 1}
+        assert summary["latest_evidence_id"] in {"e-pr-1", "e-ci-1"}
+
+    def test_chain_list_by_type(self):
+        chain = EvidenceChain(run_id="run-002")
+        chain.add(
+            PREvidence(
+                evidence_id="e1",
+                run_id="run-002",
+                source="github",
+                summary="PR",
+                pr_number=1,
+            )
+        )
+        chain.add(
+            PREvidence(
+                evidence_id="e2",
+                run_id="run-002",
+                source="github",
+                summary="PR update",
+                pr_number=1,
+            )
+        )
+
+        prs = chain.list_by_type(EvidenceType.PR)
+        assert [e.evidence_id for e in prs] == ["e1", "e2"]
+
+    def test_attach_artifact_dedupes(self):
+        ev = PREvidence(
+            evidence_id="e-pr-2",
+            run_id="run-003",
+            source="github",
+            summary="PR",
+            pr_number=2,
+        )
+        ev.attach_artifact("a-1")
+        ev.attach_artifact("a-1")
+        assert ev.artifact_ids == ["a-1"]
+
+    def test_chain_rejects_wrong_run_id(self):
+        chain = EvidenceChain(run_id="run-004")
+        with pytest.raises(ValueError):
+            chain.add(
+                PREvidence(
+                    evidence_id="e",
+                    run_id="run-other",
+                    source="github",
+                    summary="bad",
+                    pr_number=3,
+                )
+            )
+"""Tests for Evidence Model v1."""
+
+import pytest
+
+from packages.core.schemas.evidence import (
+<<<<<<< HEAD
     ArtifactType,
     EvidenceRegistry,
     EvidenceStatus,
@@ -45,149 +134,54 @@ class TestArtifactRegistration:
             artifact_id="dup-art",
             run_id="run-123",
             name="log",
-            path="/tmp/log.txt",
-        )
-
-        with pytest.raises(ValueError, match="already exists"):
-            registry.register_link(
-                artifact_id="dup-art",
-                run_id="run-123",
-                name="report",
-                url="https://example.com/report",
+            from packages.core.schemas.evidence import (
+                CIEvidence,
+                EvidenceChain,
+                EvidenceType,
+                PREvidence,
             )
 
 
-class TestEvidenceRegistration:
-    """Tests for evidence registration and attachment."""
-
-    def test_add_evidence_and_attach_artifact(self):
-        registry = EvidenceRegistry()
-        artifact = registry.register_file(
-            artifact_id="artifact-1",
-            run_id="run-123",
-            name="deploy-log",
-            path="/tmp/deploy.log",
-        )
-
-        evidence = registry.add_evidence_entry(
-            evidence_id="evidence-1",
-            run_id="run-123",
-            evidence_type=EvidenceType.DEPLOY,
-            title="Deployment",
-            description="Deployment to staging passed",
-            status=EvidenceStatus.PASSED,
-        )
-
-        updated = registry.attach_artifact_to_evidence(
-            evidence_id=evidence.evidence_id,
-            artifact_id=artifact.artifact_id,
-        )
-
-        assert updated.artifact_ids == [artifact.artifact_id]
-
-    def test_attach_artifact_requires_matching_run(self):
-        registry = EvidenceRegistry()
-        artifact = registry.register_file(
-            artifact_id="artifact-2",
-            run_id="run-A",
-            name="log",
-            path="/tmp/log.txt",
-        )
-
-        evidence = registry.add_evidence_entry(
-            evidence_id="evidence-2",
-            run_id="run-B",
-            evidence_type=EvidenceType.CI,
-            title="CI",
-            description="CI run for different run id",
-        )
-
-        with pytest.raises(ValueError, match="run_id"):
-            registry.attach_artifact_to_evidence(
-                evidence_id=evidence.evidence_id,
-                artifact_id=artifact.artifact_id,
+                run_id="run-002",
+                source="github",
+                summary="PR",
+                pr_number=1,
             )
-
-    def test_duplicate_evidence_id_rejected(self):
-        registry = EvidenceRegistry()
-        registry.add_evidence_entry(
-            evidence_id="dup-evidence",
-            run_id="run-999",
-            evidence_type=EvidenceType.PR,
-            title="Initial",
-            description="first",
         )
-
-        with pytest.raises(ValueError, match="already exists"):
-            registry.add_evidence_entry(
-                evidence_id="dup-evidence",
-                run_id="run-999",
-                evidence_type=EvidenceType.PR,
-                title="Second",
-                description="second",
+        chain.add(
+            PREvidence(
+                evidence_id="e2",
+                run_id="run-002",
+                source="github",
+                summary="PR update",
+                pr_number=1,
             )
+        )
 
+        prs = chain.list_by_type(EvidenceType.PR)
+        assert [e.evidence_id for e in prs] == ["e1", "e2"]
 
-class TestRunDocumentation:
-    """Tests for run documentation completeness and timeline."""
+    def test_attach_artifact_dedupes(self):
+        ev = PREvidence(
+            evidence_id="e-pr-2",
+            run_id="run-003",
+            source="github",
+            summary="PR",
+            pr_number=2,
+        )
+        ev.attach_artifact("a-1")
+        ev.attach_artifact("a-1")
+        assert ev.artifact_ids == ["a-1"]
 
-    def test_is_run_fully_documented(self):
-        registry = EvidenceRegistry()
-        for evidence_type in EvidenceType:
-            registry.add_evidence_entry(
-                evidence_id=f"ev-{evidence_type.value}",
-                run_id="run-123",
-                evidence_type=evidence_type,
-                title=evidence_type.value,
-                description=f"{evidence_type.value} evidence",
-                status=EvidenceStatus.PASSED,
+    def test_chain_rejects_wrong_run_id(self):
+        chain = EvidenceChain(run_id="run-004")
+        with pytest.raises(ValueError):
+            chain.add(
+                PREvidence(
+                    evidence_id="e",
+                    run_id="run-other",
+                    source="github",
+                    summary="bad",
+                    pr_number=3,
+                )
             )
-
-        assert registry.is_run_fully_documented("run-123") is True
-
-        registry.add_evidence_entry(
-            evidence_id="ev-pr-failed",
-            run_id="run-123",
-            evidence_type=EvidenceType.PR,
-            title="PR failed",
-            description="Rejected by policy",
-            status=EvidenceStatus.FAILED,
-        )
-
-        assert registry.is_run_fully_documented("run-123") is False
-
-    def test_build_run_timeline(self):
-        registry = EvidenceRegistry()
-        base_time = datetime.now(timezone.utc)
-
-        ev_pr = registry.add_evidence_entry(
-            evidence_id="ev-pr",
-            run_id="run-321",
-            evidence_type=EvidenceType.PR,
-            title="PR opened",
-            description="PR created",
-        )
-        ev_pr.created_at = base_time
-
-        artifact = registry.register_link(
-            artifact_id="art-1",
-            run_id="run-321",
-            name="check-run",
-            url="https://example.com/checks",
-        )
-        artifact.created_at = base_time + timedelta(minutes=1)
-
-        ev_ci = registry.add_evidence_entry(
-            evidence_id="ev-ci",
-            run_id="run-321",
-            evidence_type=EvidenceType.CI,
-            title="CI green",
-            description="All checks passed",
-        )
-        ev_ci.created_at = base_time + timedelta(minutes=2)
-
-        timeline = registry.build_run_timeline("run-321")
-
-        assert [event["id"] for event in timeline] == ["ev-pr", "art-1", "ev-ci"]
-        assert timeline[0]["event"] == "evidence"
-        assert timeline[1]["event"] == "artifact"
