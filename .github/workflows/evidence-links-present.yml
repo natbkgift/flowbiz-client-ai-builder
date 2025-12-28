@@ -32,7 +32,7 @@ jobs:
                 .addHeading("Evidence Links — FAILED", 2)
                 .addRaw("PR body must include at least **1 evidence URL** (CI run / scan / staging verify / etc.).\n\n")
                 .addRaw("Add a section like:\n\n")
-                .addCode(
+                .addCodeBlock(
                   "## Evidence & Artifacts\n- <CI run URL>\n- <Security scan URL>\n- <Staging verify URL> (if applicable)",
                   "md"
                 );

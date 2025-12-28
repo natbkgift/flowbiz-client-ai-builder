@@ -104,6 +104,14 @@ EVERY PR description MUST include these exact sections:
 
 Missing ANY section → **NON-COMPLIANT PR**.
 
+In addition, PRs MUST include all other top-level sections from
+`PR_TEMPLATE_ENTERPRISE.md`, including:
+- Risk Assessment
+- Evidence & Artifacts
+- Knowledge & Learning Notes
+- Compliance Checklist (MANDATORY)
+- Final Declaration
+
 ---
 
 ## MANDATORY PR METADATA (ISO / AUDIT)

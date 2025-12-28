@@ -45,9 +45,9 @@ Order of precedence:
 | SOC 2 Ref | Control Description | Implementation | Evidence |
 |---|---|---|---|
 | CC1.1 | Integrity & ethical values | Mandatory PR governance | POLICY.md §3 |
-| CC1.2 | Accountability | Feature Squad model | BLUEPRINT §4 (Feature Squad Model) |
+| CC1.2 | Accountability | Feature Squad model | BLUEPRINT §7 (Feature Squad Accountability) |
 | CC1.3 | Oversight | Human approval gates | CONTROLS Gate 0 |
-| CC1.4 | Competence | Role-based agents | BLUEPRINT §4 (Feature Squad Model) |
+| CC1.4 | Competence | Role-based agents | BLUEPRINT §7 (Feature Squad Accountability) |
 | CC1.5 | Responsibility | Named authorization | PR metadata |
 
 ---
