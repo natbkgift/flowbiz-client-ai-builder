@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 from enum import Enum
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, Field
 
@@ -73,6 +73,8 @@ class EvidenceRegistry(BaseModel):
 
     evidences: List[EvidenceRecord] = Field(default_factory=list)
     artifacts: List[ArtifactRecord] = Field(default_factory=list)
+    evidence_index: Dict[str, EvidenceRecord] = Field(default_factory=dict)
+    artifact_index: Dict[str, ArtifactRecord] = Field(default_factory=dict)
 
     def register_file(
         self,
@@ -95,6 +97,7 @@ class EvidenceRegistry(BaseModel):
             checksum=checksum,
         )
         self.artifacts.append(record)
+        self.artifact_index[record.artifact_id] = record
         return record
 
     def register_link(
@@ -116,6 +119,7 @@ class EvidenceRegistry(BaseModel):
             description=description,
         )
         self.artifacts.append(record)
+        self.artifact_index[record.artifact_id] = record
         return record
 
     def add_evidence_entry(
@@ -126,7 +130,7 @@ class EvidenceRegistry(BaseModel):
         evidence_type: EvidenceType,
         title: str,
         description: str,
-        status: EvidenceStatus = EvidenceStatus.PASSED,
+        status: EvidenceStatus = EvidenceStatus.PENDING,
         artifact_ids: Optional[List[str]] = None,
     ) -> EvidenceRecord:
         """Add a new evidence entry for a run."""
@@ -140,6 +144,7 @@ class EvidenceRegistry(BaseModel):
             artifact_ids=artifact_ids or [],
         )
         self.evidences.append(entry)
+        self.evidence_index[entry.evidence_id] = entry
         return entry
 
     def attach_artifact_to_evidence(self, *, evidence_id: str, artifact_id: str) -> EvidenceRecord:
@@ -152,21 +157,16 @@ class EvidenceRegistry(BaseModel):
 
     def get_run_evidence(self, run_id: str) -> List[EvidenceRecord]:
         """Return evidence entries for a run."""
-        return [entry for entry in self.evidences if entry.run_id == run_id]
+        return [entry for entry in self.evidence_index.values() if entry.run_id == run_id]
 
     def get_artifacts_for_run(self, run_id: str) -> List[ArtifactRecord]:
         """Return artifact entries for a run."""
-        return [artifact for artifact in self.artifacts if artifact.run_id == run_id]
+        return [artifact for artifact in self.artifact_index.values() if artifact.run_id == run_id]
 
     def is_run_fully_documented(self, run_id: str) -> bool:
         """Check that all required evidence types are present and not failed."""
         entries = self.get_run_evidence(run_id)
-        required_types = {
-            EvidenceType.PR,
-            EvidenceType.CI,
-            EvidenceType.DEPLOY,
-            EvidenceType.VERIFY,
-        }
+        required_types = set(EvidenceType)
         available_types = {entry.type for entry in entries}
 
         if not required_types.issubset(available_types):
@@ -178,7 +178,7 @@ class EvidenceRegistry(BaseModel):
             if entry.type in required_types
         )
 
-    def build_run_timeline(self, run_id: str) -> List[Dict[str, str]]:
+    def build_run_timeline(self, run_id: str) -> List[Dict[str, Any]]:
         """Build a chronological view of evidence and artifacts for a run."""
         events = [
             {
@@ -205,13 +205,13 @@ class EvidenceRegistry(BaseModel):
         return sorted(events, key=lambda event: event["created_at"])
 
     def _get_evidence_by_id(self, evidence_id: str) -> EvidenceRecord:
-        for entry in self.evidences:
-            if entry.evidence_id == evidence_id:
-                return entry
-        raise ValueError(f"Evidence not found: {evidence_id}")
+        try:
+            return self.evidence_index[evidence_id]
+        except KeyError as exc:
+            raise ValueError(f"Evidence not found: {evidence_id}") from exc
 
     def _get_artifact_by_id(self, artifact_id: str) -> ArtifactRecord:
-        for artifact in self.artifacts:
-            if artifact.artifact_id == artifact_id:
-                return artifact
-        raise ValueError(f"Artifact not found: {artifact_id}")
+        try:
+            return self.artifact_index[artifact_id]
+        except KeyError as exc:
+            raise ValueError(f"Artifact not found: {artifact_id}") from exc
