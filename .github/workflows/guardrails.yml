@@ -6,39 +6,46 @@ on:
 
 permissions:
   contents: read
+  pull-requests: read
 
 jobs:
   check-guardrails:
-    name: check-guardrails (pull_request)
+    # IMPORTANT: Do NOT include "(pull_request)" in the job name.
+    # GitHub UI appends "(pull_request)" automatically on PR runs,
+    # producing: "Guardrails / check-guardrails (pull_request)" which matches Ruleset.
+    name: check-guardrails
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Check PR description
+      - name: Check PR description (warn-only)
         env:
           PR_BODY: ${{ github.event.pull_request.body }}
         run: |
           if [[ -z "$PR_BODY" ]]; then
-            echo "⚠️ Warning: PR description is empty"
-            echo "Please include:"
-            echo "- Summary section"
-            echo "- Testing section"
+            echo "⚠️ PR description is empty (warn-only)"
+            echo "Tip: Include [BA][QA][SRE][DEV] markers to satisfy Policy Check."
             exit 0
           fi
           echo "✅ PR description present"
 
-      - name: Check for scope creep
+      - name: Check for scope creep (warn-only)
+        continue-on-error: true
         run: |
           echo "🔍 Checking for out-of-scope patterns..."
-          
-          # Check for common scope violations
-          SCOPE_VIOLATIONS=$(git diff origin/main... | grep -iE "(auth|billing|database|queue|cron)" || true)
+          git fetch origin main --depth=1 || true
+
+          DIFF=$(git diff --unified=0 origin/main...HEAD || true)
+          SCOPE_VIOLATIONS=$(echo "$DIFF" | grep -iE "(auth|billing|database|queue|cron)" || true)
+
           if [ -n "$SCOPE_VIOLATIONS" ]; then
-            echo "⚠️ Warning: Potential scope creep detected"
-            echo "Please review changes for out-of-scope features"
+            echo "⚠️ Potential scope creep detected (warn-only):"
+            echo "$SCOPE_VIOLATIONS"
+            echo "Please review changes for out-of-scope features."
           else
             echo "✅ No obvious scope violations detected"
           fi
-        continue-on-error: true
