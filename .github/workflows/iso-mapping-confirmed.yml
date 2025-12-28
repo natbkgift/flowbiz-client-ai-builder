@@ -32,7 +32,7 @@ jobs:
                 .addRaw("PR body must include these impact mapping lines:\n\n")
                 .addList(missing)
                 .addRaw("\nAdd something like:\n\n")
-                .addCode(
+                .addCodeBlock(
                   "ISO9001_IMPACT: 8.3, 8.6\nISO27001_IMPACT: A.12, A.14\nSOC2_IMPACT: CC5, CC8\n\n(If not applicable, use: N/A)",
                   "md"
                 );
