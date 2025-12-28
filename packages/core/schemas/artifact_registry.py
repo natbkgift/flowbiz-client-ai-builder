@@ -138,9 +138,9 @@ class ArtifactRegistry(BaseModel):
         default_factory=list, description="All artifact entries in this registry"
     )
     # Indexes for efficient lookup
-    _by_run_id: dict[str, list[str]] = {}
-    _by_pr_number: dict[int, list[str]] = {}
-    _by_type: dict[str, list[str]] = {}
+    _by_run_id: dict[str, list[str]] = Field(default_factory=dict)
+    _by_pr_number: dict[int, list[str]] = Field(default_factory=dict)
+    _by_type: dict[str, list[str]] = Field(default_factory=dict)
 
     class Config:
         """Pydantic config."""
