@@ -9,6 +9,7 @@ permissions:
 
 jobs:
   validate-iso-mapping:
+    name: iso-mapping-confirmed
     runs-on: ubuntu-latest
     steps:
       - name: Require ISO/SOC2 impact mapping lines in PR body
