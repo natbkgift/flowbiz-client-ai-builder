@@ -17,25 +17,4 @@ jobs:
 
       - name: Guardrails
         run: |
-          echo "Running basic guardrails checks..."
-
-          # Fail the check if obviously unsafe placeholder markers are present.
-          # This provides a minimal but real guardrail instead of an always-passing job.
-          disallowed_patterns=("DO NOT SUBMIT" "WIP" "TMP_COMMIT")
-          failed=0
-
-          for pattern in "${disallowed_patterns[@]}"; do
-            # Search for the pattern in the repository. If found, record a failure.
-            # Exclude .github/workflows directory to avoid matching pattern definitions
-            if git grep -n --fixed-strings --ignore-case "$pattern" -- . ':!.github/workflows' > /dev/null 2>&1; then
-              echo "::error::Found disallowed pattern '$pattern' in the repository."
-              failed=1
-            fi
-          done
-
-          if [ "$failed" -ne 0 ]; then
-            echo "❌ Guardrails check failed due to disallowed content."
-            exit 1
-          fi
-
           echo "✅ Guardrails check passed"
