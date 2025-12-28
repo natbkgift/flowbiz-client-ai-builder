@@ -17,6 +17,7 @@ Production-ready client service template for FlowBiz AI Core integration. This i
 
 > ✅ **Template customization reminder**
 > Update the service name and repository references before shipping a real client project:
+> - Project name in `pyproject.toml`
 > - `FLOWBIZ_SERVICE_NAME` in `docker-compose.yml`
 > - Default `flowbiz_service_name` in `packages/core/config.py`
 > - Test expectations in `tests/test_health.py` and `tests/test_meta.py`
