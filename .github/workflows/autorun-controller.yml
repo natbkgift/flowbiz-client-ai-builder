@@ -1,0 +1,164 @@
+name: AUTO_RUN Controller
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types: ["completed"]
+
+permissions:
+  contents: read
+
+jobs:
+  continue-on-green:
+    name: continue-on-green
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Confirm
+        run: |
+          echo "AUTO_RUN: Previous CI was green. Proceeding per blueprint."
+name: AUTO_RUN Controller
+
+on:
+  workflow_run:
+    workflows: ["CI", "Guardrails", "Policy Check", "PR Labels"]
+    branches: [main]
+    types: [completed]
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+concurrency:
+  group: autorun-controller
+  cancel-in-progress: false
+
+env:
+  AUTO_RUN_ISSUE_NUMBER: 1
+
+jobs:
+  nudge-copilot-success:
+    # ทำงานเฉพาะเมื่อ workflow_run เป็นของ branch main และสำเร็จ
+    if: >
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.head_branch == 'main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Find open PRs by Copilot (skip if one already open)
+        id: prs
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.AUTORUN_GH_TOKEN != '' && secrets.AUTORUN_GH_TOKEN || github.token }}
+          script: |
+            const { owner, repo } = context.repo;
+            const prs = await github.rest.pulls.list({
+              owner, repo,
+              state: "open",
+              per_page: 100
+            });
+            // ถ้ามี PR ที่มาจาก branch copilot/ อยู่แล้ว ให้หยุด เพื่อไม่สร้างซ้อน
+            const hasCopilotPR = prs.data.some(pr => (pr.head.ref || "").startsWith("copilot/"));
+            core.setOutput("hasCopilotPR", String(hasCopilotPR));
+
+      - name: Stop if Copilot PR already open
+        if: steps.prs.outputs.hasCopilotPR == 'true'
+        run: |
+          echo "Copilot PR already open. Skip nudging."
+
+      - name: Comment on AUTO_RUN CONTROL issue to continue
+        if: steps.prs.outputs.hasCopilotPR != 'true'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.AUTORUN_GH_TOKEN != '' && secrets.AUTORUN_GH_TOKEN || github.token }}
+          script: |
+            const { owner, repo } = context.repo;
+
+            const ISSUE_NUMBER = parseInt(process.env.AUTO_RUN_ISSUE_NUMBER);
+
+            const body = [
+              "@copilot Continue AUTO_RUN from BLUEPRINT.md next milestone.",
+              "",
+              "**AUTO_RUN Mode Requirements:**",
+              "- Follow BLUEPRINT.md strictly (one phase per PR)",
+              "- Open PR as **ready_for_review** (NOT draft)",
+              "- Resolve all PR conversations (review threads) before enabling auto-merge",
+              "- Do NOT merge while any conversation is unresolved",
+              "- Enable **auto-merge** on the PR",
+              "- PR must include evidence from all sections: [BA][QA][SRE][DEV]",
+              "- Do NOT introduce endpoints early",
+              "- If any check fails → FAIL_SAFE_HOTFIX_TRIGGERED, fix first before continuing",
+              "",
+              "After merge + main green, this workflow will trigger again for the next milestone.",
+            ].join("\n");
+
+            await github.rest.issues.createComment({
+              owner, repo,
+              issue_number: ISSUE_NUMBER,
+              body
+            });
+
+  fail-safe-hotfix-trigger:
+    # ทำงานเฉพาะเมื่อ workflow_run เป็นของ branch main และล้มเหลว
+    if: >
+      github.event.workflow_run.conclusion == 'failure' &&
+      github.event.workflow_run.head_branch == 'main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Find open PRs by Copilot (skip if one already open)
+        id: prs
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.AUTORUN_GH_TOKEN != '' && secrets.AUTORUN_GH_TOKEN || github.token }}
+          script: |
+            const { owner, repo } = context.repo;
+            const prs = await github.rest.pulls.list({
+              owner, repo,
+              state: "open",
+              per_page: 100
+            });
+            const hasCopilotPR = prs.data.some(pr => (pr.head.ref || "").startsWith("copilot/"));
+            core.setOutput("hasCopilotPR", String(hasCopilotPR));
+
+      - name: Stop if Copilot PR already open
+        if: steps.prs.outputs.hasCopilotPR == 'true'
+        run: |
+          echo "Copilot PR already open. Skip FAIL_SAFE trigger."
+
+      - name: Trigger FAIL_SAFE_HOTFIX on AUTO_RUN CONTROL issue
+        if: steps.prs.outputs.hasCopilotPR != 'true'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.AUTORUN_GH_TOKEN != '' && secrets.AUTORUN_GH_TOKEN || github.token }}
+          script: |
+            const { owner, repo } = context.repo;
+
+            const ISSUE_NUMBER = parseInt(process.env.AUTO_RUN_ISSUE_NUMBER);
+
+            const workflowName = context.payload.workflow_run.name;
+            const workflowUrl = context.payload.workflow_run.html_url;
+
+            const body = [
+              "🚨 **FAIL_SAFE_HOTFIX_TRIGGERED** 🚨",
+              "",
+              `Workflow \`${workflowName}\` failed on main branch.`,
+              `View failure: ${workflowUrl}`,
+              "",
+              "@copilot STOP all new features. Fix the failing workflow first.",
+              "",
+              "**Hotfix Requirements:**",
+              "- Create hotfix PR to fix the failing check",
+              "- Open PR as **ready_for_review** (NOT draft)",
+              "- Enable **auto-merge** on the PR",
+              "- PR title must start with: `HOTFIX:`",
+              "- PR must fix ONLY the failing check (minimal change)",
+              "- After merge + main green, AUTO_RUN will resume automatically",
+            ].join("\n");
+
+            await github.rest.issues.createComment({
+              owner, repo,
+              issue_number: ISSUE_NUMBER,
+              body
+            });
