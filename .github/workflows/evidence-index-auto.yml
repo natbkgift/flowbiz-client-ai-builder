@@ -129,7 +129,7 @@ jobs:
             PR_TYPE: MILESTONE
             AUTO_RUN_MODE: STRICT
             MILESTONE_ID: PR-35
-            BLUEPRINT_REF: Section 11 / PR-35
+            BLUEPRINT_REF: BLUEPRINT - Milestone Index / PR-35
 
             ### Pre-Merge Audit Checklist (MANDATORY)
             - [x] Reviewed and completed: PRE_MERGE_AUDIT_CHECKLIST.md

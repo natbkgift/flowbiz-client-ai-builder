@@ -81,7 +81,7 @@ Required metadata:
 ```md
 PR_TYPE: MILESTONE | WIP | HOTFIX
 MILESTONE_ID: PR-###
-BLUEPRINT_REF: Section 11 / PR-###
+BLUEPRINT_REF: BLUEPRINT - Milestone Index / PR-###
 ```
 
 ---
