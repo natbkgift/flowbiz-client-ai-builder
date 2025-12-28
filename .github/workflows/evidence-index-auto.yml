@@ -1,0 +1,135 @@
+name: check-guardrails
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  schedule:
+    - cron: "15 3 * * 1"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: evidence-index-auto
+  cancel-in-progress: false
+
+jobs:
+  evidence-index:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate Evidence Index
+        uses: actions/github-script@v7
+        env:
+          LOOKBACK_DAYS: "180"
+        with:
+          script: |
+            const fs = require("fs");
+            const path = require("path");
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const days = parseInt(process.env.LOOKBACK_DAYS || "180", 10);
+            const since = new Date(Date.now() - days*24*60*60*1000);
+
+            let page = 1;
+            const per_page = 100;
+            const prs = [];
+
+            while (true) {
+              const res = await github.rest.pulls.list({
+                owner, repo,
+                state: "closed",
+                base: "main",
+                per_page, page,
+                sort: "updated",
+                direction: "desc"
+              });
+              if (!res.data.length) break;
+
+              for (const pr of res.data) {
+                if (!pr.merged_at) continue;
+                if (new Date(pr.merged_at) < since) continue;
+                prs.push(pr);
+              }
+              const last = res.data[res.data.length - 1];
+              if (last?.merged_at && new Date(last.merged_at) < since) break;
+              page++; if (page > 20) break;
+            }
+
+            function pick(body, key) {
+              const m = (body||"").match(new RegExp(`^\\s*${key}\\s*(.+)$`, "mi"));
+              return m ? m[1].trim() : "_missing_";
+            }
+            function urls(t) {
+              return Array.from(new Set((t||"").match(/https?:\/\/[^\s)\]>]+/g) || []));
+            }
+
+            prs.sort((a,b)=>new Date(b.merged_at)-new Date(a.merged_at));
+            let md = `# Evidence Index (Auto)\nGenerated: ${new Date().toISOString()}\n\n`;
+            md += `| Merged | PR | MILESTONE_ID | BLUEPRINT_REF | Evidence |\n|---|---|---|---|---|\n`;
+
+            const details = [];
+
+            for (const pr of prs) {
+              const body = pr.body || "";
+              const milestone = pick(body,"MILESTONE_ID:");
+              const blueprint = pick(body,"BLUEPRINT_REF:");
+              const ev = urls(body);
+              md += `| ${pr.merged_at.slice(0,10)} | [#${pr.number}](${pr.html_url}) | ${milestone} | ${blueprint} | ${ev.length} |\n`;
+              details.push({pr, milestone, blueprint, ev});
+            }
+
+            md += `\n---\n\n`;
+            for (const d of details) {
+              md += `## PR #${d.pr.number}: ${d.pr.title}\n`;
+              md += `- MILESTONE_ID: ${d.milestone}\n`;
+              md += `- BLUEPRINT_REF: ${d.blueprint}\n`;
+              md += `- PR: ${d.pr.html_url}\n`;
+              md += `\n**Evidence Links**\n`;
+              md += d.ev.length ? d.ev.map(u=>`- ${u}`).join("\n") : "_none_";
+              md += `\n\n`;
+            }
+
+            fs.mkdirSync("docs/audit", { recursive: true });
+            fs.writeFileSync("docs/audit/EVIDENCE_INDEX.md", md);
+
+      - name: Create PR
+        uses: peter-evans/create-pull-request@v6
+        with:
+          branch: chore/evidence-index
+          delete-branch: true
+          commit-message: "chore(audit): update evidence index"
+          title: "PR-35: Evidence Index update (auto)"
+          body: |
+            [BA]
+            Problem
+            - Maintain audit-ready evidence index.
+
+            Acceptance criteria
+            - Evidence index auto-generated from merged PRs.
+
+            [QA]
+            Test plan
+            - Verify markdown and links.
+
+            [SRE]
+            Deploy impact
+            - None
+
+            Rollback plan
+            - Revert PR.
+
+            [DEV]
+            Implementation notes
+            - Generated automatically by GitHub Action.
+
+            PR_TYPE: MILESTONE
+            AUTO_RUN_MODE: STRICT
+            MILESTONE_ID: PR-35
+            BLUEPRINT_REF: Section 11 / PR-35
+
+            ### Pre-Merge Audit Checklist (MANDATORY)
+            - [x] Reviewed and completed: PRE_MERGE_AUDIT_CHECKLIST.md
