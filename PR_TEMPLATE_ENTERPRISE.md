@@ -24,20 +24,26 @@ AUTHORIZED_BY: <human owner>
 
 ---
 
-## 1. Feature / Problem Statement (BA)
-- Business context and objective
-- User / system impact
-- Reference to PRD / DoD (link)
+## [BA]
+**Problem / Business Context**
+- Business context and objective:
+- User / system impact:
+- Reference to PRD / DoD (link):
 
----
-
-## 2. Acceptance Criteria (BA)
+**Acceptance Criteria**
 - [ ] Clear, testable condition #1
 - [ ] Clear, testable condition #2
 
+**Scope (Scope Lock)**
+- **In Scope:**
+  - 
+- **Out of Scope:**
+  - 
+
 ---
 
-## 3. Test Impact & Coverage (QA)
+## [QA]
+**Test Plan**
 - Tests added/updated:
 - Smoke tests:
 - Regression coverage:
@@ -45,37 +51,31 @@ AUTHORIZED_BY: <human owner>
 
 ---
 
-## 4. Deployment & Verification Plan (SRE)
+## [SRE]
+**Deployment & Verification Plan**
 - Deployment impact:
 - Verification checklist:
 - Rollback procedure:
 
 ---
 
-## 5. Automation & Quality Assurance
-- [ ] Tests updated or added
-- [ ] No new manual operational steps
-- [ ] Idempotent behavior verified
+## [DEV]
+**Implementation Notes**
+- Summary of changes:
+- Key design decisions:
+- Tests updated: [Y/N]
+- Docs updated (if behavior changes): [Y/N]
 
 ---
 
-## 6. Scope Control (Scope Lock)
-**In Scope**
-- 
-
-**Out of Scope**
-- 
-
----
-
-## 7. Risk Assessment
+## Risk Assessment
 - Risk level: Low / Medium / High
 - Failure scenarios:
 - Mitigation plan:
 
 ---
 
-## 8. Evidence & Artifacts
+## Evidence & Artifacts
 Link all relevant evidence:
 - CI logs:
 - Security scan results:
@@ -84,20 +84,21 @@ Link all relevant evidence:
 
 ---
 
-## 9. Knowledge & Learning Notes
+## Knowledge & Learning Notes
 - Lessons learned:
 - Follow-up actions:
 - Improvement suggestions:
 
 ---
 
-## 10. Compliance Checklist (MANDATORY)
+## Compliance Checklist (MANDATORY)
 - [ ] PR title follows `PR-###: <milestone name>`
 - [ ] Exactly one milestone mapped
-- [ ] Blueprint section referenced
+- [ ] Blueprint section referenced (BLUEPRINT_REF)
 - [ ] POLICY.md reviewed
 - [ ] CONTROLS.md satisfied
 - [ ] EVIDENCE.md artifacts attached
+
 
 ---
 
@@ -108,5 +109,5 @@ I confirm that:
 - All claims are supported by evidence
 - This change is safe to proceed under the declared mode
 
-**Approved by (human owner):** ____________________
+**Approved by (human owner):** ____________________  
 **Date:** ____________________
