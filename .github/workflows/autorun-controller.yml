@@ -3,6 +3,7 @@ name: AUTO_RUN Controller
 on:
   workflow_run:
     workflows: ["CI", "Guardrails", "Policy Check", "PR Labels"]
+    branches: [main]
     types: [completed]
 
 permissions:
