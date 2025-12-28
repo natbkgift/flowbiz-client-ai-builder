@@ -63,6 +63,33 @@ from packages.core.schemas.workflow import (
     WorkflowStatus,
 )
 
+# Evidence schemas (PR #15)
+from packages.core.schemas.evidence import (
+    CIEvidence,
+    DeployEvidence,
+    Evidence,
+    EvidenceChain,
+    EvidenceSource,
+    EvidenceType,
+    GateEvidence,
+    PREvidence,
+    VerifyEvidence,
+)
+
+# Artifact Registry schemas (PR #15)
+from packages.core.schemas.artifact_registry import (
+    ArtifactMetadata,
+    ArtifactReference,
+    ArtifactRegistry,
+    ArtifactRegistryEntry,
+    ArtifactStorageType,
+    ArtifactType,
+    create_evidence_artifact,
+    create_file_artifact,
+    create_knowledge_artifact,
+    create_link_artifact,
+)
+
 __all__ = [
     # Base schemas
     "BaseResponse",
@@ -121,4 +148,25 @@ __all__ = [
     "WorkflowExecution",
     "WorkflowPhase",
     "WorkflowStatus",
+    # Evidence schemas (PR #15)
+    "CIEvidence",
+    "DeployEvidence",
+    "Evidence",
+    "EvidenceChain",
+    "EvidenceSource",
+    "EvidenceType",
+    "GateEvidence",
+    "PREvidence",
+    "VerifyEvidence",
+    # Artifact Registry schemas (PR #15)
+    "ArtifactMetadata",
+    "ArtifactReference",
+    "ArtifactRegistry",
+    "ArtifactRegistryEntry",
+    "ArtifactStorageType",
+    "ArtifactType",
+    "create_evidence_artifact",
+    "create_file_artifact",
+    "create_knowledge_artifact",
+    "create_link_artifact",
 ]
