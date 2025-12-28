@@ -87,6 +87,9 @@ class EvidenceRegistry(BaseModel):
         checksum: Optional[str] = None,
     ) -> ArtifactRecord:
         """Register a file artifact."""
+        if artifact_id in self.artifact_index:
+            raise ValueError(f"Artifact already exists: {artifact_id}")
+
         record = ArtifactRecord(
             artifact_id=artifact_id,
             run_id=run_id,
@@ -110,6 +113,9 @@ class EvidenceRegistry(BaseModel):
         description: Optional[str] = None,
     ) -> ArtifactRecord:
         """Register a link-based artifact."""
+        if artifact_id in self.artifact_index:
+            raise ValueError(f"Artifact already exists: {artifact_id}")
+
         record = ArtifactRecord(
             artifact_id=artifact_id,
             run_id=run_id,
@@ -134,6 +140,9 @@ class EvidenceRegistry(BaseModel):
         artifact_ids: Optional[List[str]] = None,
     ) -> EvidenceRecord:
         """Add a new evidence entry for a run."""
+        if evidence_id in self.evidence_index:
+            raise ValueError(f"Evidence already exists: {evidence_id}")
+
         entry = EvidenceRecord(
             evidence_id=evidence_id,
             run_id=run_id,

@@ -39,6 +39,23 @@ class TestArtifactRegistration:
         assert len(artifacts) == 2
         assert artifacts[0].checksum == "abc123"
 
+    def test_duplicate_artifact_id_rejected(self):
+        registry = EvidenceRegistry()
+        registry.register_file(
+            artifact_id="dup-art",
+            run_id="run-123",
+            name="log",
+            path="/tmp/log.txt",
+        )
+
+        with pytest.raises(ValueError, match="already exists"):
+            registry.register_link(
+                artifact_id="dup-art",
+                run_id="run-123",
+                name="report",
+                url="https://example.com/report",
+            )
+
 
 class TestEvidenceRegistration:
     """Tests for evidence registration and attachment."""
@@ -89,6 +106,25 @@ class TestEvidenceRegistration:
             registry.attach_artifact_to_evidence(
                 evidence_id=evidence.evidence_id,
                 artifact_id=artifact.artifact_id,
+            )
+
+    def test_duplicate_evidence_id_rejected(self):
+        registry = EvidenceRegistry()
+        registry.add_evidence_entry(
+            evidence_id="dup-evidence",
+            run_id="run-999",
+            evidence_type=EvidenceType.PR,
+            title="Initial",
+            description="first",
+        )
+
+        with pytest.raises(ValueError, match="already exists"):
+            registry.add_evidence_entry(
+                evidence_id="dup-evidence",
+                run_id="run-999",
+                evidence_type=EvidenceType.PR,
+                title="Second",
+                description="second",
             )
 
 
