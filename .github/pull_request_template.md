@@ -1,37 +1,113 @@
-## Feature / Problem [BA]
-<!-- Problem statement and value (link PRD/DoD) -->
+# Pull Request Template — FlowBiz AI Builder
+## Enterprise / Audit / ISO-Ready
 
-## Acceptance Criteria [BA]
-<!-- Business acceptance criteria -->
-- [ ] ...
+> **Compliance Notice**  
+> This PR will be automatically blocked if mandatory sections or metadata are missing.
+> All statements must be verifiable and auditable.
 
-## Test Impact [QA]
-<!-- Tests added/updated and coverage -->
-- [ ] Tests added/updated
-- [ ] Smoke/Regression coverage
-- [ ] All tests pass (`pytest -q`)
-- [ ] Linting passes (`ruff check .`)
+---
 
-## Deploy / Verify Notes [SRE]
-<!-- Deployment impact and verification steps -->
-- [ ] Deployment impact assessed
-- [ ] Verify and rollback steps documented
+## PR Metadata (MANDATORY)
 
-## Automation & Quality [DEV]
-<!-- Developer notes on implementation -->
-- [ ] Tests updated
-- [ ] No new manual steps
-- [ ] No security vulnerabilities introduced
-- [ ] Tested locally with `docker compose up` (if applicable)
+```md
+PR_TYPE: MILESTONE | WIP | HOTFIX
+AUTO_RUN_MODE: STRICT | GUIDED
+MILESTONE_ID: PR-###            # Required for MILESTONE
+BLUEPRINT_REF: Section 11 / PR-###
+```
 
-## Scope Lock
-<!-- In-scope / Out-of-scope boundaries -->
-**In-scope:**
-- [Add specific items included in this PR]
+For `AUTO_RUN_MODE: GUIDED`, the following are REQUIRED:
+```md
+AUTHORIZATION_REASON: <why exception is required>
+AUTHORIZED_BY: <human owner>
+```
 
-**Out-of-scope:**
-- [Add items explicitly excluded from this PR]
+---
 
-## Knowledge Notes
-<!-- Lessons learned / risks / future notes -->
-- [Add lessons learned, risks, or future considerations here]
+## [BA]
+**Problem / Business Context**
+- Business context and objective:
+- User / system impact:
+- Reference to PRD / DoD (link):
+
+**Acceptance Criteria**
+- [ ] Clear, testable condition #1
+- [ ] Clear, testable condition #2
+
+**Scope (Scope Lock)**
+- **In Scope:**
+  - 
+- **Out of Scope:**
+  - 
+
+---
+
+## [QA]
+**Test Plan**
+- Tests added/updated:
+- Smoke tests:
+- Regression coverage:
+- Known gaps (if any):
+
+---
+
+## [SRE]
+**Deployment & Verification Plan**
+- Deployment impact:
+- Verification checklist:
+- Rollback procedure:
+
+---
+
+## [DEV]
+**Implementation Notes**
+- Summary of changes:
+- Key design decisions:
+- Tests updated: [Y/N]
+- Docs updated (if behavior changes): [Y/N]
+
+---
+
+## Risk Assessment
+- Risk level: Low / Medium / High
+- Failure scenarios:
+- Mitigation plan:
+
+---
+
+## Evidence & Artifacts
+Link all relevant evidence:
+- CI logs:
+- Security scan results:
+- Deployment logs:
+- Screenshots / artifacts:
+
+---
+
+## Knowledge & Learning Notes
+- Lessons learned:
+- Follow-up actions:
+- Improvement suggestions:
+
+---
+
+## Compliance Checklist (MANDATORY)
+- [ ] PR title follows `PR-###: <milestone name>`
+- [ ] Exactly one milestone mapped
+- [ ] Blueprint section referenced (BLUEPRINT_REF)
+- [ ] POLICY.md reviewed
+- [ ] CONTROLS.md satisfied
+- [ ] EVIDENCE.md artifacts attached
+
+
+---
+
+## Final Declaration
+
+I confirm that:
+- This PR complies with FlowBiz governance policies
+- All claims are supported by evidence
+- This change is safe to proceed under the declared mode
+
+**Approved by (human owner):** ____________________  
+**Date:** ____________________
