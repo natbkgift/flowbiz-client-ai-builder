@@ -76,6 +76,9 @@ These exact status checks MUST be configured as **required** in the branch rules
 
 If any required check is missing/expected → PR is **blocked** until corrected.
 
+Definition:
+- **Expected check** = a required status check that is not yet reported for the latest commit (e.g., not started, queued, or in_progress in GitHub Actions, or absent from the current check list).
+
 ### 3.3 Reference style (Audit Docs)
 Do NOT use numeric section references like `§4`.  
 Use **semantic references** only, e.g.:
@@ -199,6 +202,10 @@ If ANY required check fails or is expected:
 3. Apply **minimum-scope fixes** on the SAME PR branch.
 4. Re-run equivalent local commands where applicable.
 5. Push fixes and re-check status.
+
+Attempt limit:
+- After **3 failed fix attempts** on the same PR, stop and `CONTROLLED_HALT` with reason:
+  `CI fix attempts exceeded — escalate for human review`.
 
 Do NOT open a new PR to fix CI.
 

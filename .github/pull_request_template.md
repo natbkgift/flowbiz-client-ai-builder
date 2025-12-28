@@ -77,10 +77,15 @@ AUTHORIZED_BY: <human owner>
 
 ## Evidence & Artifacts
 Link all relevant evidence:
-- CI logs:
-- Security scan results:
-- Deployment logs:
-- Screenshots / artifacts:
+- CI logs: https://example.com/ci-run
+- Security scan results: https://example.com/security-scan
+- Deployment logs: https://example.com/deploy-logs
+- Screenshots / artifacts: https://example.com/artifacts
+
+## ISO/SOC2 Impact Mapping (MANDATORY)
+ISO9001_IMPACT: N/A
+ISO27001_IMPACT: N/A
+SOC2_IMPACT: N/A
 
 ---
 
