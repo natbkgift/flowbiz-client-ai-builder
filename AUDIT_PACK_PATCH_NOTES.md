@@ -7,8 +7,8 @@
 
 ## 2) SOC2 Audit Pack reference corrections (targeted)
 - Corrected incorrect BLUEPRINT section references flagged by review:
-  - Feature Squad model → BLUEPRINT §4 (Feature Squad Model)
-  - Role-based agents → BLUEPRINT §4 (Feature Squad Model)
+  - Feature Squad model → BLUEPRINT §7 (Feature Squad Accountability)
+  - Role-based agents → BLUEPRINT §7 (Feature Squad Accountability)
   - Change risk → BLUEPRINT §11 (PR Index / Milestone Traceability)
 
 Note: These are **targeted fixes** for the specific mismatches reported. If you want, I can run a full sweep to re-map every BLUEPRINT cross-reference against the latest BLUEPRINT.md headings and regenerate the whole table automatically.
