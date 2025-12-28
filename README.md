@@ -15,6 +15,14 @@
 
 Production-ready client service template for FlowBiz AI Core integration. This is a **template repository** designed for reuse across customer projects.
 
+> ✅ **Template customization reminder**
+> Update the service name and repository references before shipping a real client project:
+> - Project name in `pyproject.toml`
+> - `FLOWBIZ_SERVICE_NAME` in `docker-compose.yml`
+> - Default `flowbiz_service_name` in `packages/core/config.py`
+> - Test expectations in `tests/test_health.py` and `tests/test_meta.py`
+> - README examples (health/meta payloads, repo links, and clone commands)
+
 ## 🎯 Purpose
 
 This template provides:
@@ -33,7 +41,7 @@ This template provides:
 ### Development
 
 ```bash
-# Clone repository
+# Clone repository (replace with your actual repo)
 git clone https://github.com/natbkgift/flowbiz-template-service.git
 cd flowbiz-template-service
 
