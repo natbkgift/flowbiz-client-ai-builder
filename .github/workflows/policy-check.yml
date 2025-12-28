@@ -2,7 +2,7 @@ name: Policy Check
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened, ready_for_review, edited]
+    types: [opened, synchronize, reopened, ready_for_review]
 
 permissions:
   contents: read
@@ -14,7 +14,7 @@ concurrency:
 
 jobs:
   enforce-pr-body:
-    name: enforce-pr-body (pull_request)
+    name: enforce-pr-body
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
