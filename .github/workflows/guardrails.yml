@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   check-guardrails:
-    name: check-guardrails (pull_request)
+    name: check-guardrails
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
