@@ -57,10 +57,7 @@ class ArtifactRegistry(BaseModel):
 
     def get_run_summary(self, run_id: str) -> dict[str, Any]:
         artifacts = self.list_by_run(run_id)
-        counts: dict[str, int] = {}
-        for artifact in artifacts:
-            key = artifact.artifact_type.value
-            counts[key] = counts.get(key, 0) + 1
+        counts = Counter(a.artifact_type.value for a in artifacts)
 
         return {
             "run_id": run_id,
