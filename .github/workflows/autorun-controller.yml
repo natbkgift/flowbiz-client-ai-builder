@@ -2,27 +2,6 @@ name: AUTO_RUN Controller
 
 on:
   workflow_run:
-    workflows: ["CI"]
-    types: ["completed"]
-
-permissions:
-  contents: read
-
-jobs:
-  continue-on-green:
-    name: continue-on-green
-    runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Confirm
-        run: |
-          echo "AUTO_RUN: Previous CI was green. Proceeding per blueprint."
-name: AUTO_RUN Controller
-
-on:
-  workflow_run:
     workflows: ["CI", "Guardrails", "Policy Check", "PR Labels"]
     branches: [main]
     types: [completed]
