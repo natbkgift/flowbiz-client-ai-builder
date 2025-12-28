@@ -1,4 +1,4 @@
-name: PR Labels
+name: Policy Check
 
 on:
   pull_request:
@@ -6,36 +6,32 @@ on:
 
 permissions:
   contents: read
+  pull-requests: read
+
+concurrency:
+  group: policy-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  suggest-labels:
-    name: suggest-labels (pull_request)
+  enforce-pr-body:
+    name: enforce-pr-body
     runs-on: ubuntu-latest
-    
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
-      - name: Suggest persona labels
-        run: |
-          echo "🏷️ Suggested labels based on changed files:"
-          
-          CORE_CHANGES=$(git diff --name-only origin/main... | grep -E "(^apps/|^packages/)" || true)
-          if [ -n "$CORE_CHANGES" ]; then
-            echo "- persona:core (application code changes)"
-          fi
-          
-          INFRA_CHANGES=$(git diff --name-only origin/main... | grep -E "(Dockerfile|docker-compose|nginx/)" || true)
-          if [ -n "$INFRA_CHANGES" ]; then
-            echo "- persona:infra (infrastructure changes)"
-          fi
-          
-          DOCS_CHANGES=$(git diff --name-only origin/main... | grep -E "(^docs/|README.md)" || true)
-          if [ -n "$DOCS_CHANGES" ]; then
-            echo "- persona:docs (documentation changes)"
-          fi
-          
-          echo ""
-          echo "Please add appropriate persona labels to the PR"
+      - name: Validate PR body sections
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const body = pr?.body || "";
+
+            const required = ["[BA]", "[QA]", "[SRE]", "[DEV]"];
+            const missing = required.filter(tag => !body.includes(tag));
+
+            if (missing.length > 0) {
+              core.setFailed(`Missing required PR sections: ${missing.join(", ")}`);
+            } else {
+              console.log("All required PR sections are present.");
+            }

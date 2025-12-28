@@ -1,6 +1,9 @@
 """Core schema exports for AI Builder."""
 
 # Base schemas
+from packages.core.schemas.base import BaseResponse
+from packages.core.schemas.error import ErrorResponse
+
 # AI Builder contracts
 from packages.core.schemas.agents import (
     Agent,
@@ -13,8 +16,8 @@ from packages.core.schemas.agents import (
     SquadOutput,
     SREInput,
 )
-from packages.core.schemas.base import BaseResponse
-from packages.core.schemas.error import ErrorResponse
+
+# Evidence schemas
 from packages.core.schemas.evidence import (
     CIEvidence,
     DeployEvidence,
@@ -25,6 +28,8 @@ from packages.core.schemas.evidence import (
     PREvidence,
     VerifyEvidence,
 )
+
+# Gates
 from packages.core.schemas.gates import (
     CIGateResult,
     GatePipeline,
@@ -36,7 +41,11 @@ from packages.core.schemas.gates import (
     SafetyGateResult,
     StagingGateResult,
 )
+
+# Health
 from packages.core.schemas.health import HealthResponse, MetaResponse
+
+# Knowledge
 from packages.core.schemas.knowledge import (
     AutomationSuggestion,
     DeployNotes,
@@ -45,6 +54,8 @@ from packages.core.schemas.knowledge import (
     LessonsLearned,
     TestGaps,
 )
+
+# Artifact registry
 from packages.core.schemas.artifact_registry import (
     ArtifactReference,
     ArtifactRegistry,
@@ -52,6 +63,8 @@ from packages.core.schemas.artifact_registry import (
     create_file_artifact,
     create_link_artifact,
 )
+
+# Repository
 from packages.core.schemas.repository import (
     Deployment,
     DeploymentLock,
@@ -65,6 +78,8 @@ from packages.core.schemas.repository import (
     RepositoryType,
     VersionInfo,
 )
+
+# Workflow
 from packages.core.schemas.workflow import (
     ApprovalRequired,
     AutoApprovalConfig,
