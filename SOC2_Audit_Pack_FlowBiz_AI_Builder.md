@@ -86,7 +86,7 @@ Order of precedence:
 | SOC 2 Ref | Description | Implementation | Evidence |
 |---|---|---|---|
 | CC5.1 | Change authorization | PR approval rules | Branch rules |
-| CC5.2 | Segregation of duties | Agent role separation | BLUEPRINT §7 (Feature Squad Accountability) |
+| CC5.2 | Segregation of duties | Agent role separation | [BLUEPRINT §7 (Feature Squad Accountability)](BLUEPRINT.md#7-feature-squad-accountability) |
 | CC5.3 | Change validation | CI + staging | Test results |
 | CC5.4 | Secure deployment | Controlled release | Deploy logs |
 
