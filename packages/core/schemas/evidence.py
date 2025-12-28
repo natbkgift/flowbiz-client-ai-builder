@@ -8,7 +8,7 @@ optionally reference artifacts stored in an ArtifactRegistry by ID.
 
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import Enum
 from typing import Any, Optional
 
@@ -40,7 +40,7 @@ class Evidence(BaseModel):
     evidence_type: EvidenceType
     source: EvidenceSource = EvidenceSource.MANUAL
     summary: str
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
     artifact_ids: list[str] = Field(default_factory=list)
     metadata: dict[str, Any] = Field(default_factory=dict)

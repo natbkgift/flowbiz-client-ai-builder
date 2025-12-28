@@ -63,3 +63,9 @@ class TestArtifactRegistry:
         assert summary["total"] == 3
         assert summary["by_type"] == {"file": 2, "link": 1}
         assert set(summary["artifact_ids"]) == {"f1", "f2", "l1"}
+
+    def test_get_nonexistent_artifact_raises_keyerror(self):
+        """Test get() raises KeyError for non-existent artifact_id."""
+        registry = ArtifactRegistry()
+        with pytest.raises(KeyError, match="artifact_id not found: nonexistent"):
+            registry.get("nonexistent")
