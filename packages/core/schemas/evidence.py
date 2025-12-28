@@ -166,17 +166,16 @@ class EvidenceRegistry(BaseModel):
     def is_run_fully_documented(self, run_id: str) -> bool:
         """Check that all required evidence types are present and not failed."""
         entries = self.get_run_evidence(run_id)
-        required_types = set(EvidenceType)
-        available_types = {entry.type for entry in entries}
+        for evidence_type in EvidenceType:
+            type_entries = [entry for entry in entries if entry.type == evidence_type]
+            if not type_entries:
+                return False
 
-        if not required_types.issubset(available_types):
-            return False
+            latest_entry = max(type_entries, key=lambda entry: entry.created_at)
+            if latest_entry.status == EvidenceStatus.FAILED:
+                return False
 
-        return all(
-            entry.status != EvidenceStatus.FAILED
-            for entry in entries
-            if entry.type in required_types
-        )
+        return True
 
     def build_run_timeline(self, run_id: str) -> List[Dict[str, Any]]:
         """Build a chronological view of evidence and artifacts for a run."""

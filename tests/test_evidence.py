@@ -86,7 +86,10 @@ class TestEvidenceRegistration:
         )
 
         with pytest.raises(ValueError, match="run_id"):
-            evidence.attach_artifact(artifact)
+            registry.attach_artifact_to_evidence(
+                evidence_id=evidence.evidence_id,
+                artifact_id=artifact.artifact_id,
+            )
 
 
 class TestRunDocumentation:
