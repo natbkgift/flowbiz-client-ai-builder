@@ -6,6 +6,7 @@ on:
 
 permissions:
   contents: read
+  pull-requests: read
 
 jobs:
   check-guardrails:
@@ -14,6 +15,50 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Enforce audit bot scope (allowlist)
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            if (!pr) {
+              core.setFailed("Guardrails: missing pull_request payload");
+              return;
+            }
+
+            const isAuditBot = pr.user?.login === "github-actions[bot]";
+            const hasAuditLabel = (pr.labels || []).some(label => label.name === "audit:auto");
+
+            if (!(isAuditBot && hasAuditLabel)) {
+              core.info("Not an audit:auto bot PR; skipping scope enforcement.");
+              return;
+            }
+
+            const { owner, repo } = context.repo;
+            const files = await github.paginate(github.rest.pulls.listFiles, {
+              owner,
+              repo,
+              pull_number: pr.number,
+              per_page: 100,
+            });
+
+            const allowlist = [
+              "EVIDENCE_INDEX.md",
+              "EVIDENCE.md",
+              "docs/audit/",
+              "artifacts/",
+              "reports/",
+            ];
+
+            const invalid = files
+              .map(f => f.filename)
+              .filter(path => !allowlist.some(prefix => path === prefix || path.startsWith(prefix)));
+
+            if (invalid.length > 0) {
+              core.setFailed(`Audit bot PR modifies files outside allowlist: ${invalid.join(", ")}`);
+            } else {
+              core.info("Audit bot PR limited to allowlist. Guardrails passed.");
+            }
 
       - name: Guardrails
         run: |
