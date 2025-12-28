@@ -15,6 +15,16 @@ from packages.core.schemas.agents import (
 )
 from packages.core.schemas.base import BaseResponse
 from packages.core.schemas.error import ErrorResponse
+from packages.core.schemas.evidence import (
+    CIEvidence,
+    DeployEvidence,
+    Evidence,
+    EvidenceChain,
+    EvidenceSource,
+    EvidenceType,
+    PREvidence,
+    VerifyEvidence,
+)
 from packages.core.schemas.gates import (
     CIGateResult,
     GatePipeline,
@@ -34,6 +44,13 @@ from packages.core.schemas.knowledge import (
     KnowledgeBundle,
     LessonsLearned,
     TestGaps,
+)
+from packages.core.schemas.artifact_registry import (
+    ArtifactReference,
+    ArtifactRegistry,
+    ArtifactType,
+    create_file_artifact,
+    create_link_artifact,
 )
 from packages.core.schemas.repository import (
     Deployment,
@@ -96,6 +113,21 @@ __all__ = [
     "KnowledgeBundle",
     "LessonsLearned",
     "TestGaps",
+    # Evidence schemas
+    "EvidenceType",
+    "EvidenceSource",
+    "Evidence",
+    "PREvidence",
+    "CIEvidence",
+    "DeployEvidence",
+    "VerifyEvidence",
+    "EvidenceChain",
+    # Artifact registry schemas
+    "ArtifactType",
+    "ArtifactReference",
+    "ArtifactRegistry",
+    "create_file_artifact",
+    "create_link_artifact",
     # Repository schemas
     "Deployment",
     "DeploymentLock",
