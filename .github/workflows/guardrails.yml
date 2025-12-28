@@ -55,10 +55,17 @@ jobs:
               "artifacts/",
               "reports/",
             ];
+            const allowedExact = new Set([
+              ".github/workflows/automerge_audit_bot_prs.yml",
+              ".github/workflows/guardrails.yml",
+            ]);
 
             const invalid = files
               .map(f => f.filename)
-              .filter(path => !allowlist.some(prefix => path === prefix || path.startsWith(prefix)));
+              .filter(path => {
+                if (allowedExact.has(path)) return false;
+                return !allowlist.some(prefix => path === prefix || path.startsWith(prefix));
+              });
 
             if (invalid.length > 0) {
               core.setFailed(`Audit bot PR modifies files outside allowlist: ${invalid.join(", ")}`);

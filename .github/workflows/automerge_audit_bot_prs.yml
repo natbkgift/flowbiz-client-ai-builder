@@ -27,7 +27,6 @@ jobs:
             const pr = context.payload.pull_request;
             const ref = pr.head.sha;
 
-            const checks = await github.rest.checks.listForRef({ owner, repo, ref, per_page: 100 });
             const required = new Set([
               "lint-and-test",
               "check-guardrails",
@@ -36,26 +35,54 @@ jobs:
               "iso-mapping-confirmed",
             ]);
 
-            const latestByName = new Map();
-            for (const c of checks.data.check_runs) {
-              latestByName.set(c.name, c);
+            const maxAttempts = 6;
+            const delayMs = 10000;
+
+            function sleep(ms) {
+              return new Promise(res => setTimeout(res, ms));
             }
 
-            const missing = [];
-            const failing = [];
-            for (const name of required) {
-              const run = latestByName.get(name);
-              if (!run) {
-                missing.push(name);
-              } else if (run.status !== "completed" || run.conclusion !== "success") {
-                failing.push(`${name}:${run.conclusion || run.status}`);
+            for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+              const checks = await github.rest.checks.listForRef({ owner, repo, ref, per_page: 100 });
+
+              const latestByName = new Map();
+              for (const c of checks.data.check_runs) {
+                latestByName.set(c.name, c);
               }
-            }
 
-            if (missing.length || failing.length) {
-              core.setFailed(
-                `Not ready for auto-merge. Missing: ${missing.join(", ") || "none"}; Failing: ${failing.join(", ") || "none"}`
+              const missing = [];
+              const blocking = [];
+              for (const name of required) {
+                const run = latestByName.get(name);
+                if (!run) {
+                  missing.push(name);
+                  continue;
+                }
+                if (run.status !== "completed") {
+                  blocking.push(`${name}:${run.status}`);
+                  continue;
+                }
+                if (run.conclusion !== "success") {
+                  blocking.push(`${name}:${run.conclusion}`);
+                }
+              }
+
+              if (!missing.length && !blocking.length) {
+                core.info(`All required checks are green (attempt ${attempt}).`);
+                return;
+              }
+
+              if (attempt === maxAttempts) {
+                core.setFailed(
+                  `Not ready for auto-merge. Missing: ${missing.join(", ") || "none"}; Blocking: ${blocking.join(", ") || "none"}`
+                );
+                return;
+              }
+
+              core.info(
+                `Required checks pending (attempt ${attempt}/${maxAttempts}). Missing: ${missing.join(", ") || "none"}; Blocking: ${blocking.join(", ") || "none"}. Retrying in ${delayMs}ms.`
               );
+              await sleep(delayMs);
             }
 
       - name: Wait for stable mergeable state
