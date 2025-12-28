@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   suggest-labels:
-    name: suggest-labels (pull_request)
+    name: suggest-labels
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
