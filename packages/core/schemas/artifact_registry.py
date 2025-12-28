@@ -33,7 +33,7 @@ class ArtifactReference(BaseModel):
         ..., description="Path or URL to the artifact (storage-agnostic reference)"
     )
     label: Optional[str] = Field(default=None, description="Short human label")
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     metadata: dict[str, Any] = Field(default_factory=dict)
 
 
