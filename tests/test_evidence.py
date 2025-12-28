@@ -1,5 +1,7 @@
 """Tests for Evidence Model v1."""
 
+import time
+
 import pytest
 
 from packages.core.schemas.evidence import (
@@ -132,7 +134,6 @@ class TestEvidence:
 
     def test_chain_latest_returns_most_recent(self):
         """Test latest() method returns the most recent evidence."""
-        import time
         chain = EvidenceChain(run_id="run-007")
         
         ev1 = PREvidence(

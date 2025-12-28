@@ -8,6 +8,7 @@ optionally reference artifacts stored in an ArtifactRegistry by ID.
 
 from __future__ import annotations
 
+from collections import Counter
 from datetime import datetime, timezone
 from enum import Enum
 from typing import Any, Optional
@@ -104,10 +105,7 @@ class EvidenceChain(BaseModel):
         return max(self.items, key=lambda e: e.created_at)
 
     def summary(self) -> dict[str, Any]:
-        counts: dict[str, int] = {}
-        for item in self.items:
-            key = item.evidence_type.value
-            counts[key] = counts.get(key, 0) + 1
+        counts = dict(Counter(item.evidence_type.value for item in self.items))
 
         latest = self.latest()
         return {
