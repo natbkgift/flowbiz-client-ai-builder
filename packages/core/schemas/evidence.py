@@ -3,6 +3,7 @@
 from datetime import datetime, timezone
 from enum import Enum
 from typing import Dict, List, Optional
+from urllib.parse import urlparse
 
 from pydantic import BaseModel, Field
 
@@ -33,7 +34,8 @@ class Artifact(BaseModel):
     @property
     def is_remote(self) -> bool:
         """Return True when the artifact location is a remote URL."""
-        return self.location.startswith("http")
+        scheme = urlparse(self.location).scheme
+        return scheme in {"http", "https", "ftp"}
 
 
 class EvidenceType(str, Enum):
@@ -84,12 +86,14 @@ class ArtifactRegistry(BaseModel):
     registry_id: str
     run_id: str
     artifacts: List[Artifact] = Field(default_factory=list)
+    artifacts_index: Dict[str, Artifact] = Field(default_factory=dict, exclude=True)
 
     def register(self, artifact: Artifact) -> Artifact:
         """Register an artifact, enforcing run alignment."""
         if artifact.run_id != self.run_id:
             raise ValueError("Artifact run_id must match registry run_id")
         self.artifacts.append(artifact)
+        self.artifacts_index[artifact.artifact_id] = artifact
         return artifact
 
     def find_by_kind(self, kind: ArtifactKind) -> List[Artifact]:
@@ -98,7 +102,4 @@ class ArtifactRegistry(BaseModel):
 
     def get(self, artifact_id: str) -> Optional[Artifact]:
         """Retrieve an artifact by id."""
-        for artifact in self.artifacts:
-            if artifact.artifact_id == artifact_id:
-                return artifact
-        return None
+        return self.artifacts_index.get(artifact_id)
