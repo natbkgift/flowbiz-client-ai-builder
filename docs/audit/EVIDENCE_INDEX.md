@@ -1,8 +1,9 @@
 # Evidence Index (Auto)
-Generated: 2025-12-28T21:42:04.941Z
+Generated: 2025-12-28T22:05:23.798Z
 
 | Merged | PR | MILESTONE_ID | BLUEPRINT_REF | Evidence |
 |---|---|---|---|---|
+| 2025-12-28 | [#48](https://github.com/natbkgift/flowbiz-client-ai-builder/pull/48) | PR-35 | Section 11 / PR-35 | 1 |
 | 2025-12-28 | [#49](https://github.com/natbkgift/flowbiz-client-ai-builder/pull/49) | PR-###            # Required for MILESTONE | Section 11 / PR-### | 1 |
 | 2025-12-28 | [#47](https://github.com/natbkgift/flowbiz-client-ai-builder/pull/47) | PR-35 | Section 11 / PR-35 | 0 |
 | 2025-12-28 | [#46](https://github.com/natbkgift/flowbiz-client-ai-builder/pull/46) | PR-35 | Section 11 / PR-35 | 0 |
@@ -22,6 +23,14 @@ Generated: 2025-12-28T21:42:04.941Z
 | 2025-12-27 | [#4](https://github.com/natbkgift/flowbiz-client-ai-builder/pull/4) | _missing_ | _missing_ | 0 |
 
 ---
+
+## PR #48: PR-35: Evidence Index update (auto)
+- MILESTONE_ID: PR-35
+- BLUEPRINT_REF: Section 11 / PR-35
+- PR: https://github.com/natbkgift/flowbiz-client-ai-builder/pull/48
+
+**Evidence Links**
+- https://github.com/natbkgift/flowbiz-client-ai-builder/pull/48
 
 ## PR #49: Add files via upload
 - MILESTONE_ID: PR-###            # Required for MILESTONE
