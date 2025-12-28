@@ -21,7 +21,7 @@ env:
 
 jobs:
   nudge-copilot-success:
-    # ทำงานเฉพาะเมื่อ workflow_run เป็นของ branch main และสำเร็จ
+    # Run only when workflow_run is from main branch and succeeds
     if: >
       github.event.workflow_run.conclusion == 'success' &&
       github.event.workflow_run.head_branch == 'main'
@@ -39,7 +39,7 @@ jobs:
               state: "open",
               per_page: 100
             });
-            // ถ้ามี PR ที่มาจาก branch copilot/ อยู่แล้ว ให้หยุด เพื่อไม่สร้างซ้อน
+            // If a PR from a copilot/ branch already exists, stop to avoid duplication
             const hasCopilotPR = prs.data.some(pr => (pr.head.ref || "").startsWith("copilot/"));
             core.setOutput("hasCopilotPR", String(hasCopilotPR));
 
@@ -57,6 +57,18 @@ jobs:
             const { owner, repo } = context.repo;
 
             const ISSUE_NUMBER = parseInt(process.env.AUTO_RUN_ISSUE_NUMBER);
+
+            // Verify the issue exists before attempting to comment
+            try {
+              await github.rest.issues.get({
+                owner,
+                repo,
+                issue_number: ISSUE_NUMBER
+              });
+            } catch (error) {
+              core.setFailed(`AUTO_RUN CONTROL issue #${ISSUE_NUMBER} does not exist. Please create it first.`);
+              return;
+            }
 
             const body = [
               "@copilot Continue AUTO_RUN from BLUEPRINT.md next milestone.",
@@ -81,7 +93,7 @@ jobs:
             });
 
   fail-safe-hotfix-trigger:
-    # ทำงานเฉพาะเมื่อ workflow_run เป็นของ branch main และล้มเหลว
+    # Run only when workflow_run is from main branch and fails
     if: >
       github.event.workflow_run.conclusion == 'failure' &&
       github.event.workflow_run.head_branch == 'main'
@@ -116,6 +128,18 @@ jobs:
             const { owner, repo } = context.repo;
 
             const ISSUE_NUMBER = parseInt(process.env.AUTO_RUN_ISSUE_NUMBER);
+
+            // Verify the issue exists before attempting to comment
+            try {
+              await github.rest.issues.get({
+                owner,
+                repo,
+                issue_number: ISSUE_NUMBER
+              });
+            } catch (error) {
+              core.setFailed(`AUTO_RUN CONTROL issue #${ISSUE_NUMBER} does not exist. Please create it first.`);
+              return;
+            }
 
             const workflowName = context.payload.workflow_run.name;
             const workflowUrl = context.payload.workflow_run.html_url;

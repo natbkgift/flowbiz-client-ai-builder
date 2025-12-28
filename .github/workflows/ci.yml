@@ -64,7 +64,7 @@ jobs:
     name: lint-and-test (pull_request)
     runs-on: ubuntu-latest
     needs: [lint, test]
-    if: ${{ !cancelled() }}
+    if: success() || failure()
     env:
       LINT_RESULT: ${{ needs.lint.result }}
       TEST_RESULT: ${{ needs.test.result }}
@@ -73,7 +73,7 @@ jobs:
         run: |
           echo "lint: $LINT_RESULT"
           echo "test: $TEST_RESULT"
-          if [ "$LINT_RESULT" = "failure" ] || [ "$TEST_RESULT" = "failure" ]; then
+          if [ "$LINT_RESULT" = "failure" ] || [ "$TEST_RESULT" = "failure" ] || [ "$LINT_RESULT" = "skipped" ] || [ "$TEST_RESULT" = "skipped" ] || [ "$LINT_RESULT" = "cancelled" ] || [ "$TEST_RESULT" = "cancelled" ]; then
             echo "lint-and-test failed because a dependency failed"
             exit 1
           fi
@@ -89,7 +89,7 @@ jobs:
           fetch-depth: 0
 
       - name: Run gitleaks
-        uses: gitleaks/gitleaks-action@v2.3.6
+        uses: gitleaks/gitleaks-action@v2.12.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -131,9 +131,18 @@ jobs:
 
       - name: Verify build artifacts
         run: |
+          set -e
           ls -lh dist/
-          test -f dist/*.whl || (echo "Wheel file not found" && exit 1)
-          test -f dist/*.tar.gz || (echo "Source dist not found" && exit 1)
+          wheel_count=$(ls dist/*.whl 2>/dev/null | wc -l)
+          if [ "$wheel_count" -lt 1 ]; then
+            echo "Wheel file not found"
+            exit 1
+          fi
+          sdist_count=$(ls dist/*.tar.gz 2>/dev/null | wc -l)
+          if [ "$sdist_count" -lt 1 ]; then
+            echo "Source dist not found"
+            exit 1
+          fi
 
       - name: Build Docker image
         run: docker build -t flowbiz-test:${{ github.sha }} .
