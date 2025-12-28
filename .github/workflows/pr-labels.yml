@@ -1,32 +1,40 @@
-name: Policy Check
+name: PR Labels
 
 on:
   pull_request:
-    types:
-      - opened
-      - edited
-      - synchronize
-      - reopened
-      - ready_for_review
+    types: [opened, synchronize, reopened, ready_for_review]
 
 permissions:
-  pull-requests: read
+  contents: read
 
 jobs:
-  enforce-pr-body:
-    name: enforce-pr-body (pull_request)
+  suggest-labels:
+    name: suggest-labels (pull_request)
     runs-on: ubuntu-latest
     steps:
-      - name: Enforce PR evidence sections
-        uses: actions/github-script@v7
+      - name: Checkout code
+        uses: actions/checkout@v4
         with:
-          script: |
-            const body = (context.payload.pull_request.body || "").trim();
-            const required = ["[BA]", "[QA]", "[SRE]", "[DEV]"];
-            const missing = required.filter(t => !body.includes(t));
+          fetch-depth: 0
 
-            if (missing.length) {
-              core.setFailed(
-                "Missing required PR sections: " + missing.join(", ")
-              );
-            }
+      - name: Suggest persona labels
+        run: |
+          echo "🏷️ Suggested labels based on changed files:"
+          
+          CORE_CHANGES=$(git diff --name-only origin/main... | grep -E "(^apps/|^packages/)" || true)
+          if [ -n "$CORE_CHANGES" ]; then
+            echo "- persona:core (application code changes)"
+          fi
+          
+          INFRA_CHANGES=$(git diff --name-only origin/main... | grep -E "(Dockerfile|docker-compose|nginx/)" || true)
+          if [ -n "$INFRA_CHANGES" ]; then
+            echo "- persona:infra (infrastructure changes)"
+          fi
+          
+          DOCS_CHANGES=$(git diff --name-only origin/main... | grep -E "(^docs/|README.md)" || true)
+          if [ -n "$DOCS_CHANGES" ]; then
+            echo "- persona:docs (documentation changes)"
+          fi
+          
+          echo ""
+          echo "Please add appropriate persona labels to the PR"

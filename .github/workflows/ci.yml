@@ -61,7 +61,7 @@ jobs:
         run: pytest -v --tb=short
 
   lint-and-test:
-    name: lint-and-test
+    name: lint-and-test (pull_request)
     runs-on: ubuntu-latest
     needs: [lint, test]
     if: ${{ always() }}
