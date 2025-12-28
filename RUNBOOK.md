@@ -262,8 +262,8 @@ curl http://localhost:8000/healthz
 ### Initial Setup
 
 ```bash
-# Clone repository
-git clone <your-repository-url>
+# Clone repository (replace with your repository URL)
+git clone https://github.com/your-org/flowbiz-client-ai-builder.git
 cd flowbiz-client-ai-builder
 
 # Create virtual environment

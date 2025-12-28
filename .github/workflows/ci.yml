@@ -86,7 +86,8 @@ jobs:
       - name: Run pip-audit
         run: |
           pip install --upgrade pip
-          pip install .
+          # Install with dev dependencies to scan all packages
+          pip install -e ".[dev]"
           pip-audit
 
   build:
