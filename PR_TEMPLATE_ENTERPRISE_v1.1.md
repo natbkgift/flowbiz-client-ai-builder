@@ -83,9 +83,9 @@ Link all relevant evidence:
 - Screenshots / artifacts: https://example.com/artifacts
 
 ## ISO/SOC2 Impact Mapping (MANDATORY)
-ISO9001_IMPACT: N/A
-ISO27001_IMPACT: N/A
-SOC2_IMPACT: N/A
+ISO9001_IMPACT: <Describe impact or "N/A">
+ISO27001_IMPACT: <Describe impact or "N/A">
+SOC2_IMPACT: <Describe impact or "N/A">
 
 ---
 
