@@ -108,6 +108,24 @@ class GateFramework:
 
     This framework orchestrates running through all gates in sequence,
     tracking state transitions and collecting results.
+
+    Attributes:
+        config: Configuration for the gate run.
+        run: The current gate run being executed.
+
+    Example:
+        >>> config = GateRunConfig(pr_number=123, run_id="run-001", mock_mode=True)
+        >>> framework = GateFramework(config)
+        >>> framework.start_run()
+        >>> framework.execute_safety_gate()
+        >>> framework.execute_planning_gate()
+        >>> # ... execute other gates
+        >>> print(framework.run.state)  # RunState.COMPLETED
+
+    Note:
+        Gates must be executed in sequence: Safety → Planning → CI → Staging →
+        Production → Learning. The framework enforces sequential execution by
+        tracking the current state and advancing only when a gate passes.
     """
 
     def __init__(self, config: GateRunConfig) -> None:
@@ -132,6 +150,33 @@ class GateFramework:
         self.run.state = RunState.RUNNING_SAFETY
         self.run.current_gate = GateType.SAFETY
         return self.run
+
+    def _advance_to_next_gate(self, current_gate: GateType) -> None:
+        """Advance the run state to the next gate in sequence.
+
+        Args:
+            current_gate: The gate that just completed successfully.
+        """
+        gate_transitions = {
+            GateType.SAFETY: (RunState.RUNNING_PLANNING, GateType.PLANNING),
+            GateType.PLANNING: (RunState.RUNNING_CI, GateType.CI),
+            GateType.CI: (
+                (RunState.RUNNING_PRODUCTION, GateType.PRODUCTION)
+                if self.config.skip_staging
+                else (RunState.RUNNING_STAGING, GateType.STAGING)
+            ),
+            GateType.STAGING: (
+                (RunState.RUNNING_LEARNING, GateType.LEARNING)
+                if self.config.skip_production
+                else (RunState.RUNNING_PRODUCTION, GateType.PRODUCTION)
+            ),
+            GateType.PRODUCTION: (RunState.RUNNING_LEARNING, GateType.LEARNING),
+            GateType.LEARNING: (RunState.COMPLETED, None),
+        }
+
+        next_state, next_gate = gate_transitions[current_gate]
+        self.run.state = next_state
+        self.run.current_gate = next_gate
 
     def execute_safety_gate(
         self,
@@ -160,8 +205,7 @@ class GateFramework:
         )
 
         if status == GateStatus.PASSED:
-            self.run.state = RunState.RUNNING_PLANNING
-            self.run.current_gate = GateType.PLANNING
+            self._advance_to_next_gate(GateType.SAFETY)
         else:
             self._fail_run("Safety gate failed")
 
@@ -194,8 +238,7 @@ class GateFramework:
         )
 
         if status == GateStatus.PASSED:
-            self.run.state = RunState.RUNNING_CI
-            self.run.current_gate = GateType.CI
+            self._advance_to_next_gate(GateType.PLANNING)
         else:
             self._fail_run("Planning gate failed")
 
@@ -233,12 +276,7 @@ class GateFramework:
         )
 
         if status == GateStatus.PASSED:
-            if self.config.skip_staging:
-                self.run.state = RunState.RUNNING_PRODUCTION
-                self.run.current_gate = GateType.PRODUCTION
-            else:
-                self.run.state = RunState.RUNNING_STAGING
-                self.run.current_gate = GateType.STAGING
+            self._advance_to_next_gate(GateType.CI)
         else:
             self._fail_run("CI gate failed")
 
@@ -261,15 +299,11 @@ class GateFramework:
             StagingGateResult with the gate outcome.
         """
         if self.config.skip_staging:
-            # State was already advanced by CI gate when skip_staging=True
-            # But ensure state is correct if called out of order
+            # CI gate already advanced state when skip_staging=True, but handle
+            # the case where staging gate is called anyway for completeness.
+            # This ensures the state machine advances correctly.
             if self.run.state == RunState.RUNNING_STAGING:
-                if self.config.skip_production:
-                    self.run.state = RunState.RUNNING_LEARNING
-                    self.run.current_gate = GateType.LEARNING
-                else:
-                    self.run.state = RunState.RUNNING_PRODUCTION
-                    self.run.current_gate = GateType.PRODUCTION
+                self._advance_to_next_gate(GateType.STAGING)
             return StagingGateResult(
                 deployed_to_staging=False,
                 smoke_tests_passed=False,
@@ -288,12 +322,7 @@ class GateFramework:
         )
 
         if status == GateStatus.PASSED:
-            if self.config.skip_production:
-                self.run.state = RunState.RUNNING_LEARNING
-                self.run.current_gate = GateType.LEARNING
-            else:
-                self.run.state = RunState.RUNNING_PRODUCTION
-                self.run.current_gate = GateType.PRODUCTION
+            self._advance_to_next_gate(GateType.STAGING)
         else:
             self._fail_run("Staging gate failed")
 
@@ -317,8 +346,7 @@ class GateFramework:
         """
         if self.config.skip_production:
             # Advance state machine even when skipping
-            self.run.state = RunState.RUNNING_LEARNING
-            self.run.current_gate = GateType.LEARNING
+            self._advance_to_next_gate(GateType.PRODUCTION)
             return ProductionGateResult(
                 deployed_to_production=False,
                 verification_passed=False,
@@ -337,8 +365,7 @@ class GateFramework:
         )
 
         if status == GateStatus.PASSED:
-            self.run.state = RunState.RUNNING_LEARNING
-            self.run.current_gate = GateType.LEARNING
+            self._advance_to_next_gate(GateType.PRODUCTION)
         else:
             self._fail_run("Production gate failed")
 
