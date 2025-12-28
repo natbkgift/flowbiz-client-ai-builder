@@ -139,21 +139,23 @@ brew install gitleaks  # macOS
 gitleaks detect --verbose
 ```
 
-**Fix:**
+### Issue: Gitleaks Detected Secrets in History
+
+**⚠️ CRITICAL:** If secrets were committed historically, you must:
+1. Rotate/revoke the compromised secret immediately
+2. Remove from code and use environment variables
+3. Use `git filter-repo` (modern tool) or regenerate repository
+
+**Note:** `git filter-branch` is deprecated. Use `git filter-repo` instead:
 ```bash
-# If false positive, add to .gitleaksignore
-echo "path/to/file:line" >> .gitleaksignore
+# Install git-filter-repo
+pip install git-filter-repo
 
-# If real secret was committed:
-# 1. Remove the secret from code
-# 2. Rotate the compromised secret immediately
-# 3. Add secret to secret manager (GitHub Secrets)
-# 4. Use environment variables instead
+# Remove file from history
+git filter-repo --path path/to/secret-file --invert-paths
 
-# For historical commits with secrets:
-git filter-branch --force --index-filter \
-  "git rm --cached --ignore-unmatch path/to/file" \
-  --prune-empty --tag-name-filter cat -- --all
+# Force push (coordinate with team first!)
+git push --force
 ```
 
 **pip-audit Failure:**
@@ -261,7 +263,7 @@ curl http://localhost:8000/healthz
 
 ```bash
 # Clone repository
-git clone https://github.com/natbkgift/flowbiz-client-ai-builder.git
+git clone <your-repository-url>
 cd flowbiz-client-ai-builder
 
 # Create virtual environment

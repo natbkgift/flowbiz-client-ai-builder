@@ -86,8 +86,8 @@ jobs:
       - name: Run pip-audit
         run: |
           pip install --upgrade pip
-          pip install -e .
-          pip-audit --skip-editable
+          pip install .
+          pip-audit
 
   build:
     name: Build
