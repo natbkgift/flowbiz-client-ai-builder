@@ -58,8 +58,8 @@ Rules:
 
 ### 3.1 Canonical PR Template (MUST MATCH)
 The repo MUST contain **both**:
-- `PR_TEMPLATE_ENTERPRISE_v1.1.md`
-- `.github/pull_request_template.md`
+- `PR_TEMPLATE_ENTERPRISE_v1.1.md` (enterprise source of truth)
+- `.github/pull_request_template.md` (GitHub runtime template)
 
 Hard rule:
 - `.github/pull_request_template.md` MUST be synchronized to match `PR_TEMPLATE_ENTERPRISE_v1.1.md`.
