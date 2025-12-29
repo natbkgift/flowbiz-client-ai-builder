@@ -20,6 +20,7 @@ class Settings(BaseSettings):
     # GitHub API Configuration (GITHUB_*)
     github_token: str | None = None
     github_base_url: str = "https://api.github.com"
+    github_webhook_secret: str | None = None
 
 
 settings = Settings()

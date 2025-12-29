@@ -35,6 +35,7 @@ from packages.core.schemas.knowledge import (
     LessonsLearned,
     TestGaps,
 )
+from packages.core.schemas.notifications import NotificationChannel, NotificationMessage
 from packages.core.schemas.repository import (
     Deployment,
     DeploymentLock,
@@ -62,6 +63,7 @@ from packages.core.schemas.workflow import (
     WorkflowPhase,
     WorkflowStatus,
 )
+from packages.core.schemas.webhooks import WebhookEvent, WebhookReceipt, WebhookSource
 
 __all__ = [
     # Base schemas
@@ -96,6 +98,9 @@ __all__ = [
     "KnowledgeBundle",
     "LessonsLearned",
     "TestGaps",
+    # Notification schemas
+    "NotificationChannel",
+    "NotificationMessage",
     # Repository schemas
     "Deployment",
     "DeploymentLock",
@@ -121,4 +126,8 @@ __all__ = [
     "WorkflowExecution",
     "WorkflowPhase",
     "WorkflowStatus",
+    # Webhook schemas
+    "WebhookEvent",
+    "WebhookReceipt",
+    "WebhookSource",
 ]

@@ -100,6 +100,20 @@ Service metadata endpoint.
 }
 ```
 
+### `POST /v1/webhooks/github`
+GitHub webhook receiver for event notifications.
+
+**Response:**
+```json
+{
+  "accepted": true,
+  "event_id": "delivery-or-uuid",
+  "source": "github",
+  "event_type": "pull_request",
+  "delivery_id": "delivery-id"
+}
+```
+
 ## 🔧 Configuration
 
 ### Environment Variables
@@ -116,6 +130,11 @@ Copy `.env.example` to `.env` and configure:
 - `FLOWBIZ_SERVICE_NAME`: Service identifier
 - `FLOWBIZ_VERSION`: Semantic version
 - `FLOWBIZ_BUILD_SHA`: Git commit SHA
+
+**GitHub (GITHUB_*)**
+- `GITHUB_TOKEN`: Token for GitHub API access
+- `GITHUB_BASE_URL`: API base URL
+- `GITHUB_WEBHOOK_SECRET`: Optional secret for webhook signature verification
 
 ## 🐳 Docker
 
