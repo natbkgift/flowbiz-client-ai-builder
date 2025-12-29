@@ -3,6 +3,7 @@ Generated: 2025-12-29T05:37:40.795Z
 
 | Merged | PR | MILESTONE_ID | BLUEPRINT_REF | Evidence |
 |---|---|---|---|---|
+| 2025-12-29 | [#65](https://github.com/natbkgift/flowbiz-client-ai-builder/pull/65) | PR-XXX | BLUEPRINT — External Memory baseline | 0 |
 | 2025-12-29 | [#64](https://github.com/natbkgift/flowbiz-client-ai-builder/pull/64) | PR-016 | BLUEPRINT — Milestone Index / PR-016 — Policy Enforcer (Revert) | 1 |
 | 2025-12-29 | [#62](https://github.com/natbkgift/flowbiz-client-ai-builder/pull/62) | PR-15 | BLUEPRINT — PR-15: Evidence Model + Artifact Registry | 1 |
 | 2025-12-29 | [#59](https://github.com/natbkgift/flowbiz-client-ai-builder/pull/59) | PR-059 | BLUEPRINT — Governance Controls / Reference Style Remediation | 3 |
@@ -34,6 +35,18 @@ Generated: 2025-12-29T05:37:40.795Z
 
 **Evidence Links**
 - https://github.com/natbkgift/flowbiz-client-ai-builder/pull/64
+
+---
+
+## PR #65: PR-XXX — External Memory baseline (PROJECT_STATE/DEFERRED/AUTORUN)
+- MILESTONE_ID: PR-XXX
+- BLUEPRINT_REF: BLUEPRINT — External Memory baseline
+- PR: https://github.com/natbkgift/flowbiz-client-ai-builder/pull/65
+
+**Evidence Links**
+- https://github.com/natbkgift/flowbiz-client-ai-builder/blob/feature/pr-external-memory-baseline/PROJECT_STATE.md
+- https://github.com/natbkgift/flowbiz-client-ai-builder/blob/feature/pr-external-memory-baseline/DEFERRED_PRs.md
+- https://github.com/natbkgift/flowbiz-client-ai-builder/blob/feature/pr-external-memory-baseline/AUTORUN_DECISIONS.md
 
 ---
 
