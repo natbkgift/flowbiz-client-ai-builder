@@ -46,3 +46,4 @@ Ensure:
 
 ### 5. Control Effectiveness
 Each control must be testable, observable, and auditable.
+The `agent-next-pr-ready` workflow enforces the canonical compliance checklist (COMPLIANCE_CHECKLIST.md) before AUTO_RUN_NEXT can be set to READY.

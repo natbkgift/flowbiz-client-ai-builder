@@ -1,0 +1,142 @@
+name: agent-next-pr-ready
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  agent-next-pr-ready:
+    name: agent-next-pr-ready
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate AUTO_RUN_NEXT readiness gate
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            if (!pr) {
+              core.setFailed("agent-next-pr-ready: pull_request payload is missing.");
+              return;
+            }
+
+            const normalize = (text) => (text || "").replace(/\r\n/g, "\n");
+            const normalizeLabel = (text) => (text || "").replace(/\s+/g, " ").trim();
+            const body = normalize(pr.body || "");
+            const { owner, repo } = context.repo;
+
+            const fail = (message) => {
+              core.setFailed(message);
+            };
+            const issues = [];
+
+            const autoRunReady = /AUTO_RUN_NEXT:\s*READY/i.test(body);
+            if (!autoRunReady) {
+              issues.push("AUTO_RUN_NEXT is NOT_READY; set to READY after all compliance checklist items are satisfied.");
+            }
+
+            const requiredRoles = ["[BA]", "[QA]", "[SRE]", "[DEV]"];
+            const missingRoles = requiredRoles.filter((tag) => !body.toUpperCase().includes(tag));
+            if (missingRoles.length > 0) {
+              issues.push(`Missing required PR sections: ${missingRoles.join(", ")}`);
+            }
+
+            const urlRegex = /(https?:\/\/[^\s)\]>]+)/i;
+            if (!urlRegex.test(body)) {
+              issues.push("At least one evidence link (http/https URL) is required in the PR body.");
+            }
+
+            let checklistContent;
+            try {
+              const contentRes = await github.rest.repos.getContent({
+                owner,
+                repo,
+                path: "COMPLIANCE_CHECKLIST.md",
+                ref: pr.head.sha,
+              });
+
+              if (Array.isArray(contentRes.data) || !contentRes.data.content) {
+                fail("agent-next-pr-ready: COMPLIANCE_CHECKLIST.md not found or unreadable.");
+                return;
+              }
+
+              checklistContent = Buffer.from(contentRes.data.content, contentRes.data.encoding || "base64").toString("utf8");
+            } catch (error) {
+              fail(`agent-next-pr-ready: Unable to load COMPLIANCE_CHECKLIST.md – ${error.message}`);
+              return;
+            }
+
+            const checklistLines = normalize(checklistContent);
+            const expectedMatches = [...checklistLines.matchAll(/-\s*\[\s*([x ])\s*\]\s*(.+)/g)];
+            const hasPreChecked = expectedMatches.some((match) => match[1].toLowerCase() === "x");
+            if (hasPreChecked) {
+              fail("agent-next-pr-ready: COMPLIANCE_CHECKLIST.md must keep all canonical items unchecked.");
+              return;
+            }
+
+            const expectedItems = expectedMatches.map((match) => normalizeLabel(match[2]));
+            if (expectedItems.length === 0) {
+              fail("agent-next-pr-ready: No checklist items found in COMPLIANCE_CHECKLIST.md.");
+              return;
+            }
+
+            const lines = body.split("\n");
+            const headingIndex = lines.findIndex((line) => /^\s*##\s*Compliance Checklist/i.test(line));
+            let prItems = [];
+            if (headingIndex === -1) {
+              issues.push("Compliance Checklist section is missing from the PR body.");
+            } else {
+              const blockLines = [];
+              for (let i = headingIndex + 1; i < lines.length; i++) {
+                if (/^\s*##\s+/.test(lines[i])) break;
+                blockLines.push(lines[i]);
+              }
+
+              const checklistBlock = blockLines.join("\n").trim();
+              if (!checklistBlock) {
+                issues.push("Compliance Checklist section is empty.");
+              } else {
+                const prChecklistMatches = [...checklistBlock.matchAll(/-\s*\[\s*([x ])\s*\]\s*(.+)/g)];
+                if (prChecklistMatches.length === 0) {
+                  issues.push("No checklist items found within the Compliance Checklist section.");
+                } else {
+                  prItems = prChecklistMatches.map((match) => ({
+                    label: normalizeLabel(match[2]),
+                    checked: match[1].toLowerCase() === "x",
+                  }));
+                }
+              }
+            }
+
+            if (prItems.length > 0) {
+              const prMap = new Map(prItems.map((item) => [item.label, item.checked]));
+              const missingExpected = expectedItems.filter((label) => !prMap.has(label));
+
+              if (missingExpected.length > 0) {
+                issues.push(`Missing required compliance checklist items: ${missingExpected.join("; ")}`);
+              }
+
+              const unchecked = prItems.filter((item) => !item.checked).map((item) => item.label);
+              if (unchecked.length > 0) {
+                issues.push(`All compliance checklist items must be checked. Unchecked: ${unchecked.join("; ")}`);
+              }
+            }
+
+            if (issues.length > 0) {
+              fail(`agent-next-pr-ready: ${issues.join(" | ")}`);
+              return;
+            }
+
+            await core.summary
+              .addHeading("agent-next-pr-ready", 2)
+              .addRaw("AUTO_RUN_NEXT is READY and all compliance gates are satisfied.\n\n")
+              .addList([
+                "Role sections present",
+                "Evidence link detected",
+                "Compliance Checklist matches COMPLIANCE_CHECKLIST.md",
+                "All checklist items are checked",
+              ])
+              .write();

@@ -12,6 +12,7 @@
 ```md
 PR_TYPE: MILESTONE | WIP | HOTFIX
 AUTO_RUN_MODE: STRICT | GUIDED
+AUTO_RUN_NEXT: NOT_READY         # Set to READY only when compliance checklist is fully met
 MILESTONE_ID: PR-###            # Required for MILESTONE
 BLUEPRINT_REF: Section 11 / PR-###
 ```
@@ -97,12 +98,16 @@ SOC2_IMPACT: <Describe impact or "N/A">
 ---
 
 ## Compliance Checklist (MANDATORY)
-- [ ] PR title follows `PR-###: <milestone name>`
-- [ ] Exactly one milestone mapped
-- [ ] Blueprint section referenced (BLUEPRINT_REF)
-- [ ] POLICY.md reviewed
-- [ ] CONTROLS.md satisfied
-- [ ] EVIDENCE.md artifacts attached
+- [ ] PR title follows milestone naming (Control: Pull Request Policy; Evidence: Planning Evidence)
+- [ ] Exactly one milestone mapped (Control: Planning Controls; Evidence: Planning Evidence)
+- [ ] Blueprint section referenced (Control: Planning Controls; Evidence: Planning Evidence)
+- [ ] [BA][QA][SRE][DEV] sections present (Control: Planning Controls; Evidence: Planning Evidence)
+- [ ] CI required checks passed (lint/test/security) (Control: CI Controls; Evidence: CI Evidence)
+- [ ] Guardrails/policy checks passed (Control: Governance Policy; Evidence: CI Evidence)
+- [ ] Evidence links attached (CI logs / scan / artifacts) (Control: Evidence Requirements; Evidence: CI Evidence)
+- [ ] POLICY.md reviewed (Control: Governance Policy; Evidence: Learning Evidence)
+- [ ] CONTROLS.md satisfied (Control: Control Framework; Evidence: Control Effectiveness)
+- [ ] EVIDENCE.md artifacts attached (Control: Evidence Requirements; Evidence: Deployment Evidence)
 
 
 ---
