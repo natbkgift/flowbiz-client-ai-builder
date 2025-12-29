@@ -164,7 +164,7 @@ Every PR MUST include the following metadata in the PR body (verbatim keys):
 PR_TYPE: MILESTONE | WIP | HOTFIX
 AUTO_RUN_MODE: STRICT | GUIDED
 MILESTONE_ID: PR-###
-BLUEPRINT_REF: <reference to blueprint, e.g., "BLUEPRINT — PR-11: Gate Framework v1">
+BLUEPRINT_REF: <reference to blueprint, e.g., "BLUEPRINT — PR-14: Gate Framework v1">
 ```
 
 Rules:
