@@ -36,6 +36,30 @@ Service metadata endpoint.
 **Status Codes:**
 - `200 OK`: Metadata retrieved successfully
 
+### POST /v1/webhooks/github
+GitHub webhook receiver for event notifications.
+
+**Headers:**
+- `X-GitHub-Event`: Event type (required)
+- `X-GitHub-Delivery`: Delivery ID (optional)
+- `X-Hub-Signature-256`: HMAC signature (required when `GITHUB_WEBHOOK_SECRET` is set)
+
+**Response:**
+```json
+{
+  "accepted": true,
+  "event_id": "delivery-or-uuid",
+  "source": "github",
+  "event_type": "pull_request",
+  "delivery_id": "delivery-id"
+}
+```
+
+**Status Codes:**
+- `202 Accepted`: Webhook received
+- `400 Bad Request`: Missing headers or invalid JSON
+- `401 Unauthorized`: Signature verification failed
+
 ## Environment Variables
 
 ### Runtime Configuration (APP_*)

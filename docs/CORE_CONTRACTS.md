@@ -121,6 +121,29 @@ Defines multi-repository operations and management.
 **Purpose:**  
 Enables multi-repo platform with automated onboarding and safe deployments.
 
+### 6. Webhook Schemas (`packages/core/schemas/webhooks.py`)
+
+Defines normalized webhook event contracts for inbound signals.
+
+**Key Types:**
+- `WebhookSource`: Enum for webhook source systems
+- `WebhookEvent`: Normalized event payload with metadata and raw payload
+- `WebhookReceipt`: Acknowledgement response for webhook ingestion
+
+**Purpose:**  
+Establishes a contract-first model for receiving external events.
+
+### 7. Notification Schemas (`packages/core/schemas/notifications.py`)
+
+Defines notification contracts produced from inbound events.
+
+**Key Types:**
+- `NotificationChannel`: Enum for supported delivery channels
+- `NotificationMessage`: Notification payload for delivery sinks
+
+**Purpose:**  
+Provides a consistent notification payload for alerting and audit trails.
+
 ## Integration Strategy
 
 Per BLUEPRINT.md Section 9, these contracts enable:
