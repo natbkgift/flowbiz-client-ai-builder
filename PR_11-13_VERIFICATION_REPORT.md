@@ -90,7 +90,7 @@
 - **Title:** "GitHub Adapter v1 — PR Creation & Status Reading"
 - **Status:** Merged (closed)
 - **Merged At:** 2025-12-27T23:55:54Z
-- **Description:** Enable programmatic PR creation, branch management, and CI status monitoring via GitHub API adapter following Blueprint v10 §9 contract-first pattern.
+- **Description:** Enable programmatic PR creation, branch management, and CI status monitoring via GitHub API adapter following Blueprint v10 contract-first pattern.
 
 **Verification:**
 - ✅ GitHub adapter exists: `packages/core/adapters/github_adapter.py` (verified)
@@ -263,4 +263,4 @@ jobs:
 3. Verify all health endpoints (/healthz, /readyz, /version)
 4. Consider renaming autorun-controller.yml and restoring ci.yml to its intended purpose
 
-**Risk Assessment:** HIGH - Without automated CI, code quality and security cannot be automatically verified on PRs, violating BLUEPRINT.md §2 Gate Rules requirements.
+**Risk Assessment:** HIGH - Without automated CI, code quality and security cannot be automatically verified on PRs, violating BLUEPRINT — Gate Framework requirements.

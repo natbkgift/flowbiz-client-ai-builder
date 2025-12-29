@@ -73,6 +73,7 @@ These exact status checks MUST be configured as **required** in the branch rules
 - `enforce-pr-body`
 - `evidence-links-present`
 - `iso-mapping-confirmed`
+- `agent-next-pr-ready`
 
 If any required check is missing/expected → PR is **blocked** until corrected.
 
@@ -163,7 +164,7 @@ Every PR MUST include the following metadata in the PR body (verbatim keys):
 PR_TYPE: MILESTONE | WIP | HOTFIX
 AUTO_RUN_MODE: STRICT | GUIDED
 MILESTONE_ID: PR-###
-BLUEPRINT_REF: <reference to blueprint, e.g., "Section 11 / PR-11">
+BLUEPRINT_REF: <reference to blueprint, e.g., "BLUEPRINT — PR-14: Gate Framework v1">
 ```
 
 Rules:

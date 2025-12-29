@@ -73,6 +73,7 @@ These exact status checks MUST be configured as **required** in the branch rules
 - `enforce-pr-body`
 - `evidence-links-present`
 - `iso-mapping-confirmed`
+- `agent-next-pr-ready`
 
 If any required check is missing/expected → PR is **blocked** until corrected.
 
