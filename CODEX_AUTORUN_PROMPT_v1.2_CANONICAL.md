@@ -193,6 +193,14 @@ AUTO_RUN_CONTINUE requires:
 - Required checks passed (all required checks above)
 - No unresolved approvals / workflow approvals pending
 
+## 8.1) AUTO-RUN CONTINUITY (MULTI-PR CHAIN)
+
+- Stay in AUTO_RUN until all Blueprint milestones are delivered or a halt/Fail Safe condition is explicitly triggered.
+- After each merge, immediately open the next PR on the next uncompleted milestone (one milestone per PR) with full metadata and evidence sections.
+- Carry forward context: restate the active milestone, dependencies, and evidence mapping in each new PR body to keep the chain audit-ready.
+- If AUTO_RUN must pause, emit `CONTROLLED_HALT` with the exact reason (e.g., workflow approval pending, CI attempts exceeded) and resume automatically once the block clears.
+- Never await manual confirmation to continue when all AUTO_RUN_CONTINUE criteria are satisfied.
+
 ---
 
 ## 9) CI FIX LOOP (MANDATORY)
