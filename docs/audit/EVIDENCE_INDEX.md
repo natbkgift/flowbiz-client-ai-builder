@@ -3,7 +3,7 @@ Generated: 2025-12-29T05:37:40.795Z
 
 | Merged | PR | MILESTONE_ID | BLUEPRINT_REF | Evidence |
 |---|---|---|---|---|
-| 2025-12-29 | [#59](https://github.com/natbkgift/flowbiz-client-ai-builder/pull/59) | Governance | CODEX_AUTORUN_PROMPT_v1.2.1_CANONICAL — Reference Style | 1 |
+| 2025-12-29 | [#59](https://github.com/natbkgift/flowbiz-client-ai-builder/pull/59) | PR-059 | BLUEPRINT — Governance Controls / Reference Style Remediation | 3 |
 | 2025-12-29 | [#55](https://github.com/natbkgift/flowbiz-client-ai-builder/pull/55) | _pending_ | _pending_ | 1 |
 | 2025-12-28 | [#48](https://github.com/natbkgift/flowbiz-client-ai-builder/pull/48) | PR-35 | Section 11 / PR-35 | 1 |
 | 2025-12-28 | [#49](https://github.com/natbkgift/flowbiz-client-ai-builder/pull/49) | PR-###            # Required for MILESTONE | Section 11 / PR-### | 1 |
@@ -194,12 +194,18 @@ _none_
 - https://github.com/natbkgift/flowbiz-client-ai-builder/pull/55
 
 ## PR #59: Enforce semantic references in audit documentation per governance framework
-- MILESTONE_ID: Governance
-- BLUEPRINT_REF: CODEX_AUTORUN_PROMPT_v1.2.1_CANONICAL — Reference Style
+- MILESTONE_ID: PR-059
+- BLUEPRINT_REF: BLUEPRINT — Governance Controls / Reference Style Remediation
 - PR: https://github.com/natbkgift/flowbiz-client-ai-builder/pull/59
 
 **Evidence Links**
-- https://github.com/natbkgift/flowbiz-client-ai-builder/pull/59
+- https://github.com/natbkgift/flowbiz-client-ai-builder/pull/59/checks
+- https://github.com/natbkgift/flowbiz-client-ai-builder/pull/59/files
+- docs/audit/EVIDENCE_INDEX.md
+
+**Changes:**
+- Added `agent-next-pr-ready` to required status checks in CODEX_AUTORUN_PROMPT_v1.2_CANONICAL.md.
+- Hardened PR #59 body metadata and audit wording to match canonical prompt requirements.
 
 ## PR #TBD: Implement governance controls - semantic reference updates
 - MILESTONE_ID: Governance
@@ -216,4 +222,3 @@ _none_
 - All numeric section references (§N) converted to semantic references per CODEX_AUTORUN_PROMPT_v1.2.1_CANONICAL.md § 3.3
 - Tests pass: 104 passed
 - Linting passes: All checks passed
-
