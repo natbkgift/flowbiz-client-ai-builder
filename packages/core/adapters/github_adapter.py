@@ -1,4 +1,4 @@
-"""GitHub API Adapter following BLUEPRINT — Contract-first adapter pattern."""
+"""GitHub API Adapter following BLUEPRINT — PR-13: GitHub Adapter v1."""
 
 import base64
 import os
@@ -45,7 +45,7 @@ class GitHubAdapter:
     """
     GitHub API adapter for creating branches, commits, and PRs.
 
-    Implements contract-first design following BLUEPRINT — Contract-first adapter pattern.
+    Implements contract-first design following BLUEPRINT — PR-13: GitHub Adapter v1.
     """
 
     def __init__(self, token: str | None = None, base_url: str = "https://api.github.com"):

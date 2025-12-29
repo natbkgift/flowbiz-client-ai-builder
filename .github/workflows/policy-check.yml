@@ -29,61 +29,60 @@ jobs:
               core.setFailed("Policy Check: pull_request payload is missing. This workflow must be run on pull_request events.");
               return;
             }
-            const normalize = (text) => (text || "").replace(/\r\n/g, "\n");
+            const normalize = (text) => (text || "").replace(/\r\n|\r|\n/g, "\n").trim();
             const body = normalize(pr.body || "");
 
             const required = ["[BA]", "[QA]", "[SRE]", "[DEV]"];
+            const placeholderPattern = /(PR-###|<.*>|TODO|PLACEHOLDER)/i;
             const issues = [];
-            const missingRoles = required.filter(tag => !body.toUpperCase().includes(tag));
+            const missingRoles = required.filter(tag => !body.includes(tag));
 
             if (missingRoles.length > 0) {
               issues.push(`Missing required PR sections: ${missingRoles.join(", ")}`);
             }
 
             const metadataKeys = ["PR_TYPE:", "AUTO_RUN_MODE:", "MILESTONE_ID:", "BLUEPRINT_REF:"];
-            const missingMetadata = metadataKeys.filter((key) => !body.toUpperCase().includes(key));
+            const missingMetadata = metadataKeys.filter((key) => !body.includes(key));
             if (missingMetadata.length > 0) {
               issues.push(`Missing mandatory PR metadata: ${missingMetadata.join(", ")}`);
             }
 
-            const prTypeMatch = body.match(/PR_TYPE:\s*([^\n]+)/i);
+            const prTypeMatch = body.match(/PR_TYPE:\s*([^\n]+)/);
             if (prTypeMatch) {
               const prType = prTypeMatch[1].trim().toUpperCase();
               if (prType === "WIP") {
                 issues.push("PR_TYPE=WIP triggers CONTROLLED_HALT. Set PR_TYPE to MILESTONE or HOTFIX to proceed.");
               }
-            } else {
-              issues.push("PR_TYPE metadata is missing.");
             }
 
-            const autoRunModeMatch = body.match(/AUTO_RUN_MODE:\s*([^\n]+)/i);
-            const autoRunMode = (autoRunModeMatch && autoRunModeMatch[1].trim().toUpperCase()) || "STRICT";
+            const autoRunModeMatch = body.match(/AUTO_RUN_MODE:\s*([^\n]+)/);
+            const autoRunMode = autoRunModeMatch ? autoRunModeMatch[1].trim().toUpperCase() : "STRICT";
             if (autoRunMode === "GUIDED") {
               const guidedFields = ["AUTHORIZATION_REASON:", "AUTHORIZED_BY:"];
-              const missingGuided = guidedFields.filter((key) => !body.toUpperCase().includes(key));
+              const missingGuided = guidedFields.filter((key) => !body.includes(key));
               if (missingGuided.length > 0) {
                 issues.push(`AUTO_RUN_MODE=GUIDED requires: ${missingGuided.join(", ")}`);
               }
             }
 
-            const milestoneMatch = body.match(/MILESTONE_ID:\s*([^\n]+)/i);
+            const milestoneMatch = body.match(/MILESTONE_ID:\s*([^\n]+)/);
             if (milestoneMatch) {
               const milestone = milestoneMatch[1].trim();
-              if (/PR-###/i.test(milestone) || milestone.length === 0) {
+              if (placeholderPattern.test(milestone) || milestone.length === 0) {
                 issues.push("MILESTONE_ID must be set to a concrete Blueprint milestone (e.g., PR-15).");
               }
             }
 
-            const blueprintRefMatch = body.match(/BLUEPRINT_REF:\s*([^\n]+)/i);
+            const blueprintRefMatch = body.match(/BLUEPRINT_REF:\s*([^\n]+)/);
             if (blueprintRefMatch) {
               const blueprintRef = blueprintRefMatch[1].trim();
-              if (/PR-###/i.test(blueprintRef) || /<.*>/i.test(blueprintRef)) {
+              if (placeholderPattern.test(blueprintRef)) {
                 issues.push("BLUEPRINT_REF must reference a specific Blueprint item (e.g., \"BLUEPRINT — PR-15: Evidence Model + Artifact Registry\").");
               }
             }
 
             if (issues.length > 0) {
-              core.setFailed(issues.join(" | "));
+              core.setFailed(issues.join("; "));
             } else {
               console.log("All required PR sections and metadata are present.");
             }
