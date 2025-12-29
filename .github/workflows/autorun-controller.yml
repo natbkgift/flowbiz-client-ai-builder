@@ -73,7 +73,7 @@ jobs:
             }
 
             const body = [
-              "@copilot Continue AUTO_RUN from BLUEPRINT.md next milestone.",
+              "@copilot Continue AUTO_RUN from BLUEPRINT.md next milestone (per AUTO-RUN CONTINUITY §8.1).",
               "",
               "**AUTO_RUN Mode Requirements:**",
               "- Follow BLUEPRINT.md strictly (one phase per PR)",
@@ -82,10 +82,13 @@ jobs:
               "- Do NOT merge while any conversation is unresolved",
               "- Enable **auto-merge** on the PR",
               "- PR must include evidence from all sections: [BA][QA][SRE][DEV]",
+              "- Restate the active milestone, dependencies, and evidence mapping in each PR body to keep the chain audit-ready",
+              "- After merge, immediately open the next PR for the next uncompleted milestone (one milestone per PR)",
+              "- If paused, emit CONTROLLED_HALT with reason; resume automatically once unblocked",
               "- Do NOT introduce endpoints early",
               "- If any check fails → FAIL_SAFE_HOTFIX_TRIGGERED, fix first before continuing",
               "",
-              "After merge + main green, this workflow will trigger again for the next milestone.",
+              "After merge + main green, remain in AUTO_RUN and proceed to the next milestone without manual confirmation.",
             ].join("\n");
 
             await github.rest.issues.createComment({
