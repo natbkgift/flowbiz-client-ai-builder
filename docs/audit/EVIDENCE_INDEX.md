@@ -3,6 +3,7 @@ Generated: 2025-12-29T05:37:40.795Z
 
 | Merged | PR | MILESTONE_ID | BLUEPRINT_REF | Evidence |
 |---|---|---|---|---|
+| 2025-12-29 | [#62](https://github.com/natbkgift/flowbiz-client-ai-builder/pull/62) | PR-15 | BLUEPRINT — PR-15: Evidence Model + Artifact Registry | 1 |
 | 2025-12-29 | [#59](https://github.com/natbkgift/flowbiz-client-ai-builder/pull/59) | PR-059 | BLUEPRINT — Governance Controls / Reference Style Remediation | 3 |
 | 2025-12-29 | [#55](https://github.com/natbkgift/flowbiz-client-ai-builder/pull/55) | _pending_ | _pending_ | 1 |
 | 2025-12-28 | [#48](https://github.com/natbkgift/flowbiz-client-ai-builder/pull/48) | PR-35 | Section 11 / PR-35 | 1 |
@@ -219,6 +220,14 @@ _none_
 - Updated SOC2_Audit_Pack_FlowBiz_AI_Builder.md to use semantic references
 - Updated AUDIT_PACK_PATCH_NOTES.md to use semantic references
 - Updated PR_11-13_VERIFICATION_REPORT.md to use semantic references
-- All numeric section references (§N) converted to semantic references per CODEX_AUTORUN_PROMPT_v1.2.1_CANONICAL.md § 3.3
+- All numeric section references converted to semantic references per CODEX_AUTORUN_PROMPT_v1.2.1_CANONICAL.md — Reference Style guidance
 - Tests pass: 104 passed
 - Linting passes: All checks passed
+
+## PR #62: PR-15: Evidence Model + Artifact Registry
+- MILESTONE_ID: PR-15
+- BLUEPRINT_REF: BLUEPRINT — PR-15: Evidence Model + Artifact Registry
+- PR: https://github.com/natbkgift/flowbiz-client-ai-builder/pull/62
+
+**Evidence Links**
+- https://github.com/natbkgift/flowbiz-client-ai-builder/pull/62
