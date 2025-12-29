@@ -162,7 +162,7 @@ Every PR MUST include the following metadata in the PR body (verbatim keys):
 PR_TYPE: MILESTONE | WIP | HOTFIX
 AUTO_RUN_MODE: STRICT | GUIDED
 MILESTONE_ID: PR-###
-BLUEPRINT_REF: <semantic reference, e.g., "BLUEPRINT - Milestone Index / PR-11">
+BLUEPRINT_REF: <reference to blueprint, e.g., "Section 11 / PR-11">
 ```
 
 Rules:
