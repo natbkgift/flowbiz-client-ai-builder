@@ -49,6 +49,7 @@ from packages.core.schemas.repository import (
     RepositoryType,
     VersionInfo,
 )
+from packages.core.schemas.webhooks import WebhookEvent, WebhookReceipt, WebhookSource
 from packages.core.schemas.workflow import (
     ApprovalRequired,
     AutoApprovalConfig,
@@ -63,7 +64,6 @@ from packages.core.schemas.workflow import (
     WorkflowPhase,
     WorkflowStatus,
 )
-from packages.core.schemas.webhooks import WebhookEvent, WebhookReceipt, WebhookSource
 
 __all__ = [
     # Base schemas
