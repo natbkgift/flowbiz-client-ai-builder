@@ -3,7 +3,7 @@ Generated: 2025-12-29T05:37:40.795Z
 
 | Merged | PR | MILESTONE_ID | BLUEPRINT_REF | Evidence |
 |---|---|---|---|---|
-| 2025-12-29 | [#TBD](https://github.com/natbkgift/flowbiz-client-ai-builder/pull/TBD) | Governance | CODEX_AUTORUN_PROMPT_v1.2.1_CANONICAL — Reference Style | 1 |
+| 2025-12-29 | [#59](https://github.com/natbkgift/flowbiz-client-ai-builder/pull/59) | Governance | CODEX_AUTORUN_PROMPT_v1.2.1_CANONICAL — Reference Style | 1 |
 | 2025-12-29 | [#55](https://github.com/natbkgift/flowbiz-client-ai-builder/pull/55) | _pending_ | _pending_ | 1 |
 | 2025-12-28 | [#48](https://github.com/natbkgift/flowbiz-client-ai-builder/pull/48) | PR-35 | Section 11 / PR-35 | 1 |
 | 2025-12-28 | [#49](https://github.com/natbkgift/flowbiz-client-ai-builder/pull/49) | PR-###            # Required for MILESTONE | Section 11 / PR-### | 1 |
@@ -192,6 +192,14 @@ _none_
 
 **Evidence Links**
 - https://github.com/natbkgift/flowbiz-client-ai-builder/pull/55
+
+## PR #59: Enforce semantic references in audit documentation per governance framework
+- MILESTONE_ID: Governance
+- BLUEPRINT_REF: CODEX_AUTORUN_PROMPT_v1.2.1_CANONICAL — Reference Style
+- PR: https://github.com/natbkgift/flowbiz-client-ai-builder/pull/59
+
+**Evidence Links**
+- https://github.com/natbkgift/flowbiz-client-ai-builder/pull/59
 
 ## PR #TBD: Implement governance controls - semantic reference updates
 - MILESTONE_ID: Governance
