@@ -1,13 +1,43 @@
-# Milestone continuity status — HUMAN_APPROVAL_REQUIRED
+# Milestone continuity status — READY
 
-- Latest merged PRs (chronological newest → oldest):
-  - #40 `chore: align workflow/job names to required checks` (2025-12-28)
-  - #39 `Update PR description to align with Blueprint metadata requirements` (2025-12-28)
-  - #38 `Address review feedback: fix workflow naming, remove incomplete job, add documentation` (2025-12-28)
-- None of the merged PRs include the mandatory Blueprint metadata (`MILESTONE_ID`, `BLUEPRINT_REF`, or title format `PR-###: <milestone>`), so the latest completed milestone **cannot be determined with high confidence** against `BLUEPRINT.md` Section 11.
-- Status: **HUMAN_APPROVAL_REQUIRED** to confirm the last completed milestone and provide the correct `MILESTONE_ID` and `BLUEPRINT_REF` before progressing to the next milestone.
-- Next steps for a maintainer:
-  - Confirm which Blueprint milestone(s) PRs #38–#40 correspond to.
-  - Rename the current PR to `PR-###: <milestone name>` and set the matching `MILESTONE_ID` / `BLUEPRINT_REF`.
-  - Once confirmed, resume AUTO_RUN and rerun CI/Policy/Guardrails on the latest commit for this branch.
-  - Note: `PR-###` is the Blueprint milestone identifier (e.g., `PR-14`), not a literal placeholder.
+**Status:** READY  
+**Last Updated:** 2025-12-29  
+**Latest Completed Functional Milestone:** PR-15 (Evidence Model + Artifact Registry) via PR #62 (2025-12-29)
+
+---
+
+## Milestone Continuity — RESOLVED
+
+**Previous Issue (RESOLVED 2025-12-29):**  
+PRs #38, #39, #40 (merged 2025-12-28) lacked mandatory Blueprint metadata, causing milestone continuity uncertainty.
+
+**Human Review Findings:**
+- **PR #38**: `Address review feedback: fix workflow naming, remove incomplete job, add documentation`
+  - **Nature:** Infrastructure/CI configuration fixes, documentation additions
+  - **Classification:** Non-milestone operational change (HOTFIX)
+  - **No Blueprint milestone implemented**
+  
+- **PR #39**: `Update PR description to align with Blueprint metadata requirements`
+  - **Nature:** Meta/governance documentation clarification
+  - **Classification:** Non-milestone operational change (WIP/governance)
+  - **No Blueprint milestone implemented**
+  
+- **PR #40**: `chore: align workflow/job names to required checks`
+  - **Nature:** Workflow YAML trigger fixes
+  - **Classification:** Non-milestone operational change (HOTFIX)
+  - **No Blueprint milestone implemented**
+
+**Resolution:**  
+All three PRs are infrastructure/governance maintenance work, **not Blueprint functional milestones**. Milestone continuity preserved at **PR-15** (last completed functional milestone).
+
+**Milestone Timeline:**
+- ✅ PR-14: Gate Framework v1 (PR #15, merged 2025-12-28)
+- ✅ PR-15: Evidence Model + Artifact Registry (PR #62, merged 2025-12-29)
+- ❌ PR-16: Policy Enforcer (PR #63 implemented, PR #64 immediately reverted — **incomplete/reverted**)
+- ⏭️  **Next:** PR-17 onwards per BLUEPRINT.md Section 11
+
+**Note:** PR #64 (revert of Policy Enforcer) is marked as `MILESTONE_ID: PR-016` for audit trail, but functional completion status = **reverted/incomplete**. PR-016 must be re-implemented in a future PR.
+
+---
+
+**AUTO_RUN Status:** READY to proceed with next incomplete Blueprint milestone (PR-17 onwards)
