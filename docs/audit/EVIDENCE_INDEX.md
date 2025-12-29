@@ -1,8 +1,9 @@
 # Evidence Index (Auto)
-Generated: 2025-12-29T05:37:40.795Z
+Generated: 2025-12-29T23:36:58.774Z
 
 | Merged | PR | MILESTONE_ID | BLUEPRINT_REF | Evidence |
 |---|---|---|---|---|
+| 2025-12-30 | [#66](https://github.com/natbkgift/flowbiz-client-ai-builder/pull/66) | PR-017 | BLUEPRINT — PR-17: Webhook Watcher & Notifications | 2 |
 | 2025-12-29 | [#65](https://github.com/natbkgift/flowbiz-client-ai-builder/pull/65) | PR-XXX | BLUEPRINT — External Memory baseline | 0 |
 | 2025-12-29 | [#64](https://github.com/natbkgift/flowbiz-client-ai-builder/pull/64) | PR-016 | BLUEPRINT — Milestone Index / PR-016 — Policy Enforcer (Revert) | 1 |
 | 2025-12-29 | [#62](https://github.com/natbkgift/flowbiz-client-ai-builder/pull/62) | PR-15 | BLUEPRINT — PR-15: Evidence Model + Artifact Registry | 1 |
@@ -27,6 +28,17 @@ Generated: 2025-12-29T05:37:40.795Z
 | 2025-12-27 | [#5](https://github.com/natbkgift/flowbiz-client-ai-builder/pull/5) | _missing_ | _missing_ | 1 |
 | 2025-12-27 | [#4](https://github.com/natbkgift/flowbiz-client-ai-builder/pull/4) | _missing_ | _missing_ | 0 |
 
+
+## PR #66: PR-17: Webhook Watcher & Notifications
+- MILESTONE_ID: PR-017
+- BLUEPRINT_REF: BLUEPRINT — PR-17: Webhook Watcher & Notifications
+- PR: https://github.com/natbkgift/flowbiz-client-ai-builder/pull/66
+
+**Evidence Links**
+- https://github.com/natbkgift/flowbiz-client-ai-builder/pull/66
+- https://github.com/natbkgift/flowbiz-client-ai-builder/actions/runs/20585098235
+
+---
 
 ## PR #64: BLUEPRINT — Milestone Index / PR-016 — Policy Enforcer (Revert)
 - MILESTONE_ID: PR-016
