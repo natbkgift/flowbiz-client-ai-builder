@@ -149,6 +149,7 @@ In addition, PRs MUST include all other top-level sections from the enterprise t
 (`PR_TEMPLATE_ENTERPRISE_v1.1.md` / `.github/pull_request_template.md`), including:
 - Risk Assessment
 - Evidence & Artifacts
+- ISO/SOC2 Impact Mapping (MANDATORY)
 - Knowledge & Learning Notes
 - Compliance Checklist (MANDATORY)
 
