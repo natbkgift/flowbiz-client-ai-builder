@@ -33,11 +33,38 @@ All three PRs are infrastructure/governance maintenance work, **not Blueprint fu
 **Milestone Timeline:**
 - ✅ PR-14: Gate Framework v1 (PR #15, merged 2025-12-28)
 - ✅ PR-15: Evidence Model + Artifact Registry (PR #62, merged 2025-12-29)
-- ❌ PR-16: Policy Enforcer (PR #63 implemented, PR #64 immediately reverted — **incomplete/reverted**)
+- ⏭️ PR-16: Policy Enforcer — **DEFERRED** (see below)
 - ⏭️  **Next:** PR-17 onwards per BLUEPRINT.md Section 11
-
-**Note:** PR #64 (revert of Policy Enforcer) is marked as `MILESTONE_ID: PR-016` for audit trail, but functional completion status = **reverted/incomplete**. PR-016 must be re-implemented in a future PR.
 
 ---
 
-**AUTO_RUN Status:** READY to proceed with next incomplete Blueprint milestone (PR-17 onwards)
+## PR-16 Policy Enforcer — DEFERRED STATUS
+
+**Status:** DEFERRED (Human-Authorized Exception)
+
+**History:**
+- PR #63: Implemented PR-016 (Policy Enforcer)
+- PR #64: Immediately reverted (merged 2025-12-29)
+- Reason for revert: Governance alignment reassessment required
+
+**Deferral Authorization:**
+```md
+AUTO_RUN_MODE: GUIDED
+AUTHORIZATION_REASON: PR-16 requires architectural review before re-implementation; deferring to allow progress on subsequent milestones while design is refined
+AUTHORIZED_BY: Human Owner (natbkgift)
+AUTHORIZED_DATE: 2025-12-29
+DEFERRAL_TYPE: Temporary - will be re-implemented after PR-17+ completion
+```
+
+**Impact:**
+- Milestone continuity: **PRESERVED** - PR-16 marked as deferred, not failed
+- AUTO_RUN can proceed to PR-17 under GUIDED mode exception
+- PR-16 will be re-implemented in future PR after architectural review
+- Evidence trail: PR #64 revert properly documented in EVIDENCE_INDEX.md
+
+**Compliance Note:**
+Per BLUEPRINT.md § 1 (Operating Modes), AUTO_RUN_GUIDED mode allows temporary deferral of milestones with explicit human authorization and documented rationale.
+
+---
+
+**AUTO_RUN Status:** READY to proceed with PR-17 (Policy Enforcer deferred with human authorization)
