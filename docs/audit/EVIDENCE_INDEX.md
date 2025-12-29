@@ -203,7 +203,7 @@ _none_
 - https://github.com/natbkgift/flowbiz-client-ai-builder/pull/59/files
 - docs/audit/EVIDENCE_INDEX.md
 
-**Changes**
+**Changes:**
 - Added `agent-next-pr-ready` to required status checks in CODEX_AUTORUN_PROMPT_v1.2_CANONICAL.md.
 - Hardened PR #59 body metadata and audit wording to match canonical prompt requirements.
 
