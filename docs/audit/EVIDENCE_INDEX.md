@@ -175,3 +175,11 @@ _none_
 **Evidence Links**
 _none_
 
+## PR #52: Update governance documents for project compliance
+- MILESTONE_ID: _pending_
+- BLUEPRINT_REF: _pending_
+- PR: https://github.com/natbkgift/flowbiz-client-ai-builder/pull/52
+
+**Evidence Links**
+- https://github.com/natbkgift/flowbiz-client-ai-builder/pull/52
+

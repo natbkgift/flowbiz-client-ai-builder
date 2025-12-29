@@ -56,7 +56,6 @@ jobs:
               "reports/",
             ];
             const allowedExact = new Set([
-              ".github/workflows/automerge_audit_bot_prs.yml",
               ".github/workflows/guardrails.yml",
             ]);
 
@@ -71,6 +70,32 @@ jobs:
               core.setFailed(`Audit bot PR modifies files outside allowlist: ${invalid.join(", ")}`);
             } else {
               core.info("Audit bot PR limited to allowlist. Guardrails passed.");
+            }
+
+      - name: Require EVIDENCE_INDEX update in PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            if (!pr) {
+              core.setFailed("Guardrails: missing pull_request payload");
+              return;
+            }
+
+            const { owner, repo } = context.repo;
+            const files = await github.paginate(github.rest.pulls.listFiles, {
+              owner,
+              repo,
+              pull_number: pr.number,
+              per_page: 100,
+            });
+
+            const touched = files.some(f => f.filename === "docs/audit/EVIDENCE_INDEX.md");
+
+            if (!touched) {
+              core.setFailed("docs/audit/EVIDENCE_INDEX.md must be updated in every PR (append latest evidence entry).");
+            } else {
+              core.info("EVIDENCE_INDEX.md touched in this PR.");
             }
 
       - name: Guardrails
