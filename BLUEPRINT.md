@@ -124,7 +124,7 @@ All actions are attributable to a named role.
 ## 8) Automation & Quality Rule
 
 Any task repeated more than **3 times** must be automated.  
-Violation is recorded as a quality non-conformance (ISO 9001 §10).
+Violation is recorded as a quality non-conformance (ISO 9001 — Improvement).
 
 ---
 
