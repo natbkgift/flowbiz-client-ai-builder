@@ -13,7 +13,7 @@
 PR_TYPE: MILESTONE | WIP | HOTFIX
 AUTO_RUN_MODE: STRICT | GUIDED
 MILESTONE_ID: PR-###            # Required for MILESTONE
-BLUEPRINT_REF: BLUEPRINT - Milestone Index / PR-###
+BLUEPRINT_REF: Section 11 / PR-###
 ```
 
 For `AUTO_RUN_MODE: GUIDED`, the following are REQUIRED:
