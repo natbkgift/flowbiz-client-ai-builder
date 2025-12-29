@@ -1,8 +1,9 @@
 # Evidence Index (Auto)
-Generated: 2025-12-28T22:05:23.798Z
+Generated: 2025-12-29T05:37:40.795Z
 
 | Merged | PR | MILESTONE_ID | BLUEPRINT_REF | Evidence |
 |---|---|---|---|---|
+| 2025-12-29 | [#TBD](https://github.com/natbkgift/flowbiz-client-ai-builder/pull/TBD) | Governance | CODEX_AUTORUN_PROMPT_v1.2.1_CANONICAL — Reference Style | 1 |
 | 2025-12-29 | [#55](https://github.com/natbkgift/flowbiz-client-ai-builder/pull/55) | _pending_ | _pending_ | 1 |
 | 2025-12-28 | [#48](https://github.com/natbkgift/flowbiz-client-ai-builder/pull/48) | PR-35 | Section 11 / PR-35 | 1 |
 | 2025-12-28 | [#49](https://github.com/natbkgift/flowbiz-client-ai-builder/pull/49) | PR-###            # Required for MILESTONE | Section 11 / PR-### | 1 |
@@ -191,4 +192,20 @@ _none_
 
 **Evidence Links**
 - https://github.com/natbkgift/flowbiz-client-ai-builder/pull/55
+
+## PR #TBD: Implement governance controls - semantic reference updates
+- MILESTONE_ID: Governance
+- BLUEPRINT_REF: CODEX_AUTORUN_PROMPT_v1.2.1_CANONICAL — Reference Style
+- PR: https://github.com/natbkgift/flowbiz-client-ai-builder/pull/TBD
+
+**Evidence Links**
+- https://github.com/natbkgift/flowbiz-client-ai-builder/pull/TBD
+
+**Changes:**
+- Updated SOC2_Audit_Pack_FlowBiz_AI_Builder.md to use semantic references
+- Updated AUDIT_PACK_PATCH_NOTES.md to use semantic references
+- Updated PR_11-13_VERIFICATION_REPORT.md to use semantic references
+- All numeric section references (§N) converted to semantic references per CODEX_AUTORUN_PROMPT_v1.2.1_CANONICAL.md § 3.3
+- Tests pass: 104 passed
+- Linting passes: All checks passed
 

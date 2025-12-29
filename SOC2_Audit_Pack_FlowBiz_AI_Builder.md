@@ -44,10 +44,10 @@ Order of precedence:
 ### CC1 — Control Environment
 | SOC 2 Ref | Control Description | Implementation | Evidence |
 |---|---|---|---|
-| CC1.1 | Integrity & ethical values | Mandatory PR governance | POLICY.md §3 |
-| CC1.2 | Accountability | Feature Squad model | BLUEPRINT §7 (Feature Squad Accountability) |
-| CC1.3 | Oversight | Human approval gates | CONTROLS Gate 0 |
-| CC1.4 | Competence | Role-based agents | BLUEPRINT §7 (Feature Squad Accountability) |
+| CC1.1 | Integrity & ethical values | Mandatory PR governance | POLICY — Core Policy Principles |
+| CC1.2 | Accountability | Feature Squad model | BLUEPRINT — Feature Squad Accountability |
+| CC1.3 | Oversight | Human approval gates | CONTROLS — Planning Controls (Gate 0) |
+| CC1.4 | Competence | Role-based agents | BLUEPRINT — Feature Squad Accountability |
 | CC1.5 | Responsibility | Named authorization | PR metadata |
 
 ---
@@ -58,7 +58,7 @@ Order of precedence:
 | CC2.1 | Internal communication | PR templates & comments | PR history |
 | CC2.2 | Policy dissemination | Repo governance docs | POLICY.md |
 | CC2.3 | Change communication | CI status & notifications | CI logs |
-| CC2.4 | External comms | Webhook notifications | CONTROLS §2.2 |
+| CC2.4 | External comms | Webhook notifications | CONTROLS — CI Controls |
 
 ---
 
@@ -67,7 +67,7 @@ Order of precedence:
 |---|---|---|---|
 | CC3.1 | Risk identification | Planning Gate | Gate 0 artifacts |
 | CC3.2 | Fraud risk | Scope lock + approvals | PR checks |
-| CC3.3 | Change risk | One PR = one milestone | [BLUEPRINT §4 (Milestone Traceability)](BLUEPRINT.md#4-milestone-traceability) |
+| CC3.3 | Change risk | One PR = one milestone | [BLUEPRINT — Milestone Traceability](BLUEPRINT.md#4-milestone-traceability) |
 | CC3.4 | Risk mitigation | CI + rollback | CI / deploy logs |
 
 ---
@@ -86,7 +86,7 @@ Order of precedence:
 | SOC 2 Ref | Description | Implementation | Evidence |
 |---|---|---|---|
 | CC5.1 | Change authorization | PR approval rules | Branch rules |
-| CC5.2 | Segregation of duties | Agent role separation | [BLUEPRINT §7 (Feature Squad Accountability)](BLUEPRINT.md#7-feature-squad-accountability) |
+| CC5.2 | Segregation of duties | Agent role separation | [BLUEPRINT — Feature Squad Accountability](BLUEPRINT.md#7-feature-squad-accountability) |
 | CC5.3 | Change validation | CI + staging | Test results |
 | CC5.4 | Secure deployment | Controlled release | Deploy logs |
 
@@ -98,7 +98,7 @@ Order of precedence:
 | SOC 2 Ref | Description | Implementation | Evidence |
 |---|---|---|---|
 | CC6.1 | Access control | GitHub permissions | Repo settings |
-| CC6.2 | Least privilege | Fine-grained tokens | POLICY §6 |
+| CC6.2 | Least privilege | Fine-grained tokens | POLICY — Approval & Authority |
 | CC6.3 | Credential protection | Secrets mgmt | GitHub secrets |
 | CC6.4 | Access revocation | Repo access logs | Audit logs |
 
