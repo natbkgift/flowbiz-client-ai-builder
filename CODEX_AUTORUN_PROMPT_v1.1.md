@@ -114,7 +114,7 @@ Every PR MUST include the following metadata in the PR body:
 PR_TYPE: MILESTONE | WIP | HOTFIX
 AUTO_RUN_MODE: STRICT | GUIDED
 MILESTONE_ID: PR-###
-BLUEPRINT_REF: Section 11 / PR-###
+BLUEPRINT_REF: BLUEPRINT - Milestone Index / PR-###
 ```
 
 ### Rules
