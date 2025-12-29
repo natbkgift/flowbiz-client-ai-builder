@@ -3,6 +3,7 @@ Generated: 2025-12-28T22:05:23.798Z
 
 | Merged | PR | MILESTONE_ID | BLUEPRINT_REF | Evidence |
 |---|---|---|---|---|
+| 2025-12-29 | [#55](https://github.com/natbkgift/flowbiz-client-ai-builder/pull/55) | _pending_ | _pending_ | 1 |
 | 2025-12-28 | [#48](https://github.com/natbkgift/flowbiz-client-ai-builder/pull/48) | PR-35 | Section 11 / PR-35 | 1 |
 | 2025-12-28 | [#49](https://github.com/natbkgift/flowbiz-client-ai-builder/pull/49) | PR-###            # Required for MILESTONE | Section 11 / PR-### | 1 |
 | 2025-12-28 | [#47](https://github.com/natbkgift/flowbiz-client-ai-builder/pull/47) | PR-35 | Section 11 / PR-35 | 0 |
@@ -182,4 +183,12 @@ _none_
 
 **Evidence Links**
 - https://github.com/natbkgift/flowbiz-client-ai-builder/pull/52
+
+## PR #55: Add agent-next-pr-ready compliance gate and canonical checklist
+- MILESTONE_ID: _pending_
+- BLUEPRINT_REF: _pending_
+- PR: https://github.com/natbkgift/flowbiz-client-ai-builder/pull/55
+
+**Evidence Links**
+- https://github.com/natbkgift/flowbiz-client-ai-builder/pull/55
 
