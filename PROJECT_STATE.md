@@ -21,11 +21,11 @@ Purpose: Baseline external memory snapshot for governance and audit. Unknown val
 - Runtime impact: Adds /v1/webhooks/github endpoint with optional signature verification
 
 ## Open/Planned PRs
-- Current PR: PR-XXX — External Memory update (PROJECT_STATE/DEFERRED/AUTORUN)
+- Current PR: PR-XXX — External Memory update (PROJECT_STATE/DEFERRED/AUTORUN) (PR #68)
 - Next PR: PR-018 — Orchestrator (not started)
 
 ## Compliance Notes
 - PR_TYPE: MILESTONE
 - MILESTONE_ID: PR-XXX
 - BLUEPRINT_REF: "BLUEPRINT — External Memory update"
-- Evidence: https://github.com/natbkgift/flowbiz-client-ai-builder/pull/TBD
+- Evidence: https://github.com/natbkgift/flowbiz-client-ai-builder/pull/68
