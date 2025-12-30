@@ -13,7 +13,7 @@ No overrides active for this PR. Standing authorizations are logged below.
 
 3) CI/Checks Handling
 - Never merge unless all required checks are present and green.
-- If checks are pending/queued: wait once; if polling unavailable → CONTROLLED_HALT (“CI pending — awaiting next execution cycle”).
+- If checks are pending/queued: wait for a short interval (e.g., 60s) before re-checking. If polling is unavailable or checks remain pending → CONTROLLED_HALT (“CI pending — awaiting next execution cycle”).
 - CI fix loop maximum: 3 attempts; then CONTROLLED_HALT.
 
 4) Fail-Safe / main Not Green
