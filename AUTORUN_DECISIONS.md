@@ -5,8 +5,8 @@ No overrides active for this PR. Standing authorizations are logged below.
 ## AUTO_RUN Standing Defaults
 
 1) Merge Strategy Default
-- Default merge method: REBASE (fast-forward) unless repo rules require squash/merge.
-- If branch ruleset warns about merge commits: prefer rebase to linearize history.
+- Default merge method: REBASE (fast-forward). This is the standing default for automated merges and takes precedence over the general preference for `SQUASH` in `PR_POLICY.md`.
+- If a branch ruleset strictly requires a different method (e.g., squash), that requirement will be honored.
 
 2) Unknown Commit Handling
 - If a commit appears “not created by agent”: STOP and CONTROLLED_HALT unless an explicit authorization exists in Authorization Log.
