@@ -3,6 +3,7 @@ Generated: 2025-12-30T01:53:24.678Z
 
 | Merged | PR | MILESTONE_ID | BLUEPRINT_REF | Evidence |
 |---|---|---|---|---|
+| 2025-12-30 | [#70](https://github.com/natbkgift/flowbiz-client-ai-builder/pull/70) | PR-XXX | BLUEPRINT — External Memory update | 1 |
 | 2025-12-30 | [#69](https://github.com/natbkgift/flowbiz-client-ai-builder/pull/69) | PR-XXX | BLUEPRINT — External Memory update | 1 |
 | 2025-12-30 | [#68](https://github.com/natbkgift/flowbiz-client-ai-builder/pull/68) | PR-XXX | BLUEPRINT — External Memory update | 1 |
 | 2025-12-30 | [#67](https://github.com/natbkgift/flowbiz-client-ai-builder/pull/67) | HOTFIX-SECURITY-SCAN | BLUEPRINT — SAFE / CONTROLLED HALT | 1 |
@@ -31,6 +32,16 @@ Generated: 2025-12-30T01:53:24.678Z
 | 2025-12-27 | [#5](https://github.com/natbkgift/flowbiz-client-ai-builder/pull/5) | _missing_ | _missing_ | 1 |
 | 2025-12-27 | [#4](https://github.com/natbkgift/flowbiz-client-ai-builder/pull/4) | _missing_ | _missing_ | 0 |
 
+
+## PR #70: Governance — AUTO_RUN Standing Defaults
+- MILESTONE_ID: PR-XXX
+- BLUEPRINT_REF: BLUEPRINT — External Memory update
+- PR: https://github.com/natbkgift/flowbiz-client-ai-builder/pull/70
+
+**Evidence Links**
+- https://github.com/natbkgift/flowbiz-client-ai-builder/pull/70
+
+---
 
 ## PR #69: External Memory sync (PROJECT_STATE/DEFERRED/AUTORUN)
 - MILESTONE_ID: PR-XXX
