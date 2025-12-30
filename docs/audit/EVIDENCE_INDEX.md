@@ -1,9 +1,9 @@
 # Evidence Index (Auto)
-Generated: 2025-12-30T01:30:56.622Z
+Generated: 2025-12-30T01:32:55.815Z
 
 | Merged | PR | MILESTONE_ID | BLUEPRINT_REF | Evidence |
 |---|---|---|---|---|
-| 2025-12-30 | [#TBD](https://github.com/natbkgift/flowbiz-client-ai-builder/pull/TBD) | PR-XXX | BLUEPRINT — External Memory update | 1 |
+| 2025-12-30 | [#68](https://github.com/natbkgift/flowbiz-client-ai-builder/pull/68) | PR-XXX | BLUEPRINT — External Memory update | 1 |
 | 2025-12-30 | [#67](https://github.com/natbkgift/flowbiz-client-ai-builder/pull/67) | HOTFIX-SECURITY-SCAN | BLUEPRINT — SAFE / CONTROLLED HALT | 1 |
 | 2025-12-30 | [#66](https://github.com/natbkgift/flowbiz-client-ai-builder/pull/66) | PR-017 | BLUEPRINT — PR-17: Webhook Watcher & Notifications | 2 |
 | 2025-12-29 | [#65](https://github.com/natbkgift/flowbiz-client-ai-builder/pull/65) | PR-XXX | BLUEPRINT — External Memory baseline | 0 |
@@ -31,13 +31,13 @@ Generated: 2025-12-30T01:30:56.622Z
 | 2025-12-27 | [#4](https://github.com/natbkgift/flowbiz-client-ai-builder/pull/4) | _missing_ | _missing_ | 0 |
 
 
-## PR #TBD: External Memory update (PROJECT_STATE/DEFERRED/AUTORUN)
+## PR #68: External Memory update (PROJECT_STATE/DEFERRED/AUTORUN)
 - MILESTONE_ID: PR-XXX
 - BLUEPRINT_REF: BLUEPRINT — External Memory update
-- PR: https://github.com/natbkgift/flowbiz-client-ai-builder/pull/TBD
+- PR: https://github.com/natbkgift/flowbiz-client-ai-builder/pull/68
 
 **Evidence Links**
-- https://github.com/natbkgift/flowbiz-client-ai-builder/pull/TBD
+- https://github.com/natbkgift/flowbiz-client-ai-builder/pull/68
 
 ---
 
