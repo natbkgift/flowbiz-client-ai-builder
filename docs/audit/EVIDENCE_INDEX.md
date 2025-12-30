@@ -1,9 +1,9 @@
 # Evidence Index (Auto)
-Generated: 2025-12-30T01:09:02.987Z
+Generated: 2025-12-30T01:10:41.516Z
 
 | Merged | PR | MILESTONE_ID | BLUEPRINT_REF | Evidence |
 |---|---|---|---|---|
-| 2025-12-30 | [#TBD](https://github.com/natbkgift/flowbiz-client-ai-builder/pull/TBD) | HOTFIX-SECURITY-SCAN | BLUEPRINT — SAFE / CONTROLLED HALT | 1 |
+| 2025-12-30 | [#67](https://github.com/natbkgift/flowbiz-client-ai-builder/pull/67) | HOTFIX-SECURITY-SCAN | BLUEPRINT — SAFE / CONTROLLED HALT | 1 |
 | 2025-12-30 | [#66](https://github.com/natbkgift/flowbiz-client-ai-builder/pull/66) | PR-017 | BLUEPRINT — PR-17: Webhook Watcher & Notifications | 2 |
 | 2025-12-29 | [#65](https://github.com/natbkgift/flowbiz-client-ai-builder/pull/65) | PR-XXX | BLUEPRINT — External Memory baseline | 0 |
 | 2025-12-29 | [#64](https://github.com/natbkgift/flowbiz-client-ai-builder/pull/64) | PR-016 | BLUEPRINT — Milestone Index / PR-016 — Policy Enforcer (Revert) | 1 |
@@ -30,10 +30,10 @@ Generated: 2025-12-30T01:09:02.987Z
 | 2025-12-27 | [#4](https://github.com/natbkgift/flowbiz-client-ai-builder/pull/4) | _missing_ | _missing_ | 0 |
 
 
-## PR #TBD: HOTFIX — Security Scan
+## PR #67: HOTFIX — Security Scan
 - MILESTONE_ID: HOTFIX-SECURITY-SCAN
 - BLUEPRINT_REF: BLUEPRINT — SAFE / CONTROLLED HALT
-- PR: https://github.com/natbkgift/flowbiz-client-ai-builder/pull/TBD
+- PR: https://github.com/natbkgift/flowbiz-client-ai-builder/pull/67
 
 **Evidence Links**
 - https://github.com/natbkgift/flowbiz-client-ai-builder/actions
