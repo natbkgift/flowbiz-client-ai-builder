@@ -4,25 +4,28 @@ Purpose: Baseline external memory snapshot for governance and audit. Unknown val
 
 ## Repository
 - Repository: natbkgift/flowbiz-client-ai-builder
-- Branch: feature/pr-external-memory-baseline (based on main)
-- HEAD: <sha-to-be-updated-on-merge>
-- Generated: 2025-12-29
+- Branch: main
+- HEAD: cfbd3d77551b6f5286385fc47cc3bb3cba9465b6
+- Generated: 2025-12-30
 
 ## Milestones
-- Latest completed: PR-15 — Evidence Model + Artifact Registry (merged 2025-12-29)
+- Latest completed: PR-17 — Webhook Watcher & Notifications (merged 2025-12-30)
 - Deferred: PR-16 — Policy Enforcer (deferred; see DEFERRED_PRs.md)
-- Next planned: PR-17 — Webhook Watcher & Notifications
-- AUTO_RUN status: READY (STRICT); exception: PR-16 deferred under GUIDED authorization
+- Next planned: PR-18 — Orchestrator
+- AUTO_RUN status: READY (STRICT) — main green after HOTFIX-SECURITY-SCAN (PR-67); exception: PR-16 deferred under GUIDED authorization
 
 ## Workstreams
-- External Memory baseline: Adds PROJECT_STATE.md, DEFERRED_PRs.md, AUTORUN_DECISIONS.md
-- Runtime impact: None (documentation/state files only)
+- PR-17 Webhook Watcher & Notifications: Adds GitHub webhook ingestion, schemas, and log notifications
+- HOTFIX-SECURITY-SCAN (PR-67): Pin gitleaks action to v2.3.9 to restore Security Scan
+- External memory update: Refresh PROJECT_STATE/DEFERRED/AUTORUN after PR-17 + HOTFIX-67
+- Runtime impact: Adds /v1/webhooks/github endpoint with optional signature verification
 
 ## Open/Planned PRs
-- Current PR: PR-XXX — External Memory baseline (PROJECT_STATE/DEFERRED/AUTORUN)
+- Current PR: PR-XXX — External Memory update (PROJECT_STATE/DEFERRED/AUTORUN)
+- Next PR: PR-018 — Orchestrator (not started)
 
 ## Compliance Notes
 - PR_TYPE: MILESTONE
 - MILESTONE_ID: PR-XXX
-- BLUEPRINT_REF: "BLUEPRINT — External Memory baseline"
-- Evidence: [PROJECT_STATE.md](PROJECT_STATE.md), [DEFERRED_PRs.md](DEFERRED_PRs.md), [AUTORUN_DECISIONS.md](AUTORUN_DECISIONS.md)
+- BLUEPRINT_REF: "BLUEPRINT — External Memory update"
+- Evidence: https://github.com/natbkgift/flowbiz-client-ai-builder/pull/TBD
