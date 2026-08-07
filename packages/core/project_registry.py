@@ -29,7 +29,7 @@ class ProjectGenerationConflictError(ProjectRegistryError):
 
 
 class ProjectRegistry:
-    """Deterministic registry with copy-on-read semantics."""
+    """Deterministic registry with copy-on-read/write semantics."""
 
     def __init__(self) -> None:
         self._records: dict[str, ProjectRecord] = {}
@@ -38,7 +38,8 @@ class ProjectRegistry:
         if manifest.project_id in self._records:
             raise ProjectAlreadyExistsError(manifest.project_id)
 
-        record = ProjectRecord(manifest=manifest)
+        stored_manifest = manifest.model_copy(deep=True)
+        record = ProjectRecord(manifest=stored_manifest)
         self._records[manifest.project_id] = record
         return deepcopy(record)
 
@@ -66,7 +67,7 @@ class ProjectRegistry:
             )
 
         updated = ProjectRecord(
-            manifest=manifest,
+            manifest=manifest.model_copy(deep=True),
             generation=current.generation + 1,
             created_at=current.created_at,
             updated_at=datetime.now(timezone.utc),
