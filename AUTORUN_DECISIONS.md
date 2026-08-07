@@ -1,34 +1,50 @@
 # AUTORUN_DECISIONS
 
-No overrides active for this PR. Standing authorizations are logged below.
+Standing authorizations and execution defaults for FlowBiz AI Builder.
 
-## AUTO_RUN Standing Defaults
+## AUTO_RUN Standing Defaults — v11
 
-1) Merge Strategy Default
-- Default merge method: REBASE (fast-forward). This is the standing default for automated merges and takes precedence over the general preference for `SQUASH` in `PR_POLICY.md`.
-- If a branch ruleset strictly requires a different method (e.g., squash), that requirement will be honored.
+### 1. Merge Strategy
+- Default automated merge method remains REBASE when repository rules permit.
+- Repository rules take precedence when they require a different merge method.
 
-2) Unknown Commit Handling
-- If a commit appears “not created by agent”: STOP and CONTROLLED_HALT unless an explicit authorization exists in Authorization Log.
+### 2. Unknown Commit Handling
+- If an exact commit cannot be attributed/resolved against the intended branch/PR, `CONTROLLED_HALT`.
+- A new commit after Runner validation invalidates that validation for merge/release purposes.
 
-3) CI/Checks Handling
-- Never merge unless all required checks are present and green.
-- If checks are pending/queued: wait for a short interval (e.g., 60s) before re-checking. If polling is unavailable or checks remain pending → CONTROLLED_HALT (“CI pending — awaiting next execution cycle”).
-- CI fix loop maximum: 3 attempts; then CONTROLLED_HALT with reason: “CI fix attempts exceeded — escalate for human review”.
+### 3. CI / Checks Authority
+- v11 authoritative CI/build evidence comes from **FlowBiz Runner** against an exact SHA.
+- Legacy GitHub Actions may continue during transition as supplemental/non-authoritative checks.
+- Autonomous operation must not depend on GitHub Actions availability, quota, workflow approval, or workflow token scope.
+- Do not remove/disable legacy workflows until FlowBiz Runner parity is proven; this avoids a validation gap.
+- Runner fix/retry loops are bounded. After the configured maximum attempts, `CONTROLLED_HALT` and preserve evidence.
 
-4) Fail-Safe / main Not Green
-- If main is red after merge or a critical workflow fails: open HOTFIX PR immediately to restore green before continuing milestones.
+### 4. Single-VPS Production Protection
+- Production workload has priority over Runner workload.
+- Initial Runner concurrency is 1.
+- Runner jobs are ephemeral and must not use production database credentials.
+- Resource pressure or unhealthy production state defers CI/build jobs rather than competing with production.
 
-5) Human Approval Declaration
-- PR Final Declaration: always include "Approved by: <human> / Date: <YYYY-MM-DD>" when AUTO_RUN_MODE is STRICT and repo policy requires it.
-- If approver/date is missing and required: CONTROLLED_HALT.
+### 5. Production Mutation
+- Production changes require auditable policy approval according to risk class.
+- Deploy only validated exact main SHA or immutable release artifact.
+- Backup/rollback readiness is required before risky mutation.
+- Arbitrary model-generated shell/SSH is not an approved production execution path.
 
-6) Evidence Discipline
-- If guardrails require evidence index updates: always append a new entry in docs/audit/EVIDENCE_INDEX.md for every PR.
-- Evidence must include CI run link(s) when available.
+### 6. Evidence Discipline
+- Every terminal run state must have timestamped evidence tied to project, exact SHA, run ID, and milestone.
+- FlowBiz Runner / Control Plane evidence is canonical under v11.
+- GitHub links may supplement evidence but are not required as the only CI/deployment proof.
+
+### 7. 24/7 Autonomous Operation
+- Approved low/medium-risk workflows may continue without repeated owner confirmation when all governing controls and evidence gates are satisfied.
+- High-risk/destructive operations remain approval-gated.
+- Unverifiable state always produces `CONTROLLED_HALT` rather than an inferred or guessed action.
 
 ## Authorization Log
+
 | Date | Authorized By | Mode | Scope | Reason | Status |
 | --- | --- | --- | --- | --- | --- |
 | 2025-12-29 | natbkgift | GUIDED | PR-016 deferral | Architectural review required before re-implementation | ACTIVE |
-| 2025-12-30 | natbkgift | STRICT | AUTO_RUN Standing Defaults | Reduce routine confirmations; keep automation audit-safe | ACTIVE |
+| 2025-12-30 | natbkgift | STRICT | AUTO_RUN Standing Defaults v10 | Reduce routine confirmations; keep automation audit-safe | SUPERSEDED_BY_V11 |
+| 2026-08-07 | natbkgift | STRICT | BLUEPRINT v11 / PR-18 | Single-VPS Autonomous Control Plane; 24/7; FlowBiz Runner authority; remove GitHub Actions dependency from target architecture; move Project Registry/Provisioner ahead of engineering-agent milestones | ACTIVE |
