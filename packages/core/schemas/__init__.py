@@ -14,6 +14,22 @@ from packages.core.schemas.agents import (
     SREInput,
 )
 from packages.core.schemas.base import BaseResponse
+from packages.core.schemas.control_plane import (
+    ControlPlaneRun,
+    ControlPlaneRunState,
+    CustomizationPolicy,
+    InfrastructureMode,
+    ProjectManifest,
+    ProjectMode,
+    ProjectRecord,
+    ProjectRepository,
+    ProvisioningOperation,
+    ProvisioningPlan,
+    ProvisioningStep,
+    ReleaseConfig,
+    RunnerConfig,
+    RuntimeTarget,
+)
 from packages.core.schemas.error import ErrorResponse
 from packages.core.schemas.gates import (
     CIGateResult,
@@ -81,6 +97,21 @@ __all__ = [
     "QualityAssuranceInput",
     "SREInput",
     "SquadOutput",
+    # Control Plane schemas
+    "ControlPlaneRun",
+    "ControlPlaneRunState",
+    "CustomizationPolicy",
+    "InfrastructureMode",
+    "ProjectManifest",
+    "ProjectMode",
+    "ProjectRecord",
+    "ProjectRepository",
+    "ProvisioningOperation",
+    "ProvisioningPlan",
+    "ProvisioningStep",
+    "ReleaseConfig",
+    "RunnerConfig",
+    "RuntimeTarget",
     # Gate schemas
     "CIGateResult",
     "GatePipeline",

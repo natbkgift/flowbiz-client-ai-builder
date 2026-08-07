@@ -1,219 +1,161 @@
-# PR Policy — FlowBiz AI Builder
+# PR Policy — FlowBiz AI Builder v11
 
-**Based on BLUEPRINT v10 Human-Inspired Engineering Model**
+**Architecture:** Single-VPS Autonomous Control Plane  
+**CI authority:** FlowBiz Runner  
+**Source authority:** GitHub
 
 ---
 
-## 1. PR is Valid Only With Evidence
+## 1. PR Validity
 
-Every PR **MUST** contain evidence across all sections:
+Every material PR MUST include auditable evidence for:
+- problem/context and acceptance criteria `[BA]`;
+- test/regression plan `[QA]`;
+- deploy/verify/rollback impact `[SRE]`;
+- implementation notes `[DEV]`;
+- scope lock;
+- risk assessment;
+- evidence references;
+- learning/follow-up notes.
 
-### Required PR Template Sections
+One PR maps to one approved milestone/scope lock.
 
-```markdown
-## Feature / Problem [BA]
-- Problem statement and value
-- Link to PRD/DoD if available
+---
 
-## Acceptance Criteria [BA]
-- [ ] Criterion 1
-- [ ] Criterion 2
-- [ ] ...
+## 2. Gate Rules
 
-## Test Impact [QA]
-- Tests added/updated
-- Smoke/Regression coverage
-- Test execution results
+### Gate -1 — Safety
+- forbidden/sensitive paths checked;
+- secrets not leaked;
+- permissions valid;
+- no arbitrary production shell path introduced.
 
-## Deploy / Verify Notes [SRE]
-- Deployment impact
-- Environment requirements
-- Verify and rollback steps
+### Gate 0 — Planning
+- intent/PRD/DoD documented;
+- acceptance criteria defined;
+- test plan exists;
+- deploy/verify/rollback plan exists where applicable.
 
-## Automation & Quality [DEV]
-- [ ] Tests updated
-- [ ] No new manual steps
-- [ ] CI passing
+### Gate 1 — FlowBiz Runner CI
+Authoritative evidence is produced by FlowBiz Runner against an exact commit SHA.
 
-## Scope Lock
-**In-scope:**
-- Item 1
-- Item 2
+Where applicable:
+- lint;
+- unit/integration tests;
+- security/dependency scan;
+- build;
+- migration rehearsal;
+- E2E/browser tests;
+- artifact checksum.
 
-**Out-of-scope:**
-- Item 1
-- Item 2
+Legacy GitHub Actions may run during migration but are supplemental/non-authoritative and MUST NOT be the sole condition for a v11 merge/deploy decision.
 
-## Knowledge Notes
-- Lessons learned
-- Known risks
-- Future improvement notes
+### Gate 2 — Staging / Isolated Rehearsal
+- staging exact SHA when staging exists, or approved isolated rehearsal;
+- smoke/regression evidence;
+- no production credentials in Runner test environments.
+
+### Gate 3 — Production
+- deploy only validated exact main SHA or immutable artifact;
+- backup/rollback readiness before risky mutation;
+- controlled migration;
+- health/smoke/public verification;
+- automatic rollback or `CONTROLLED_HALT` on failure.
+
+### Gate 4 — Learning
+- post-run report;
+- evidence finalization;
+- lessons/improvement proposal where applicable.
+
+---
+
+## 3. Source Change Rules
+
+### DO
+- use branches and PRs;
+- identify exact SHA;
+- keep changes scoped;
+- use FlowBiz Runner evidence;
+- keep production releases immutable;
+- make rollback deterministic.
+
+### DO NOT
+- push normal feature work directly to `main`;
+- edit active production release files as the normal customization path;
+- expose unrestricted shell/SSH tools to AI;
+- use production DB credentials in Runner jobs;
+- rely on GitHub Actions availability for autonomous operation;
+- merge/deploy when required evidence is missing.
+
+---
+
+## 4. Workflow
+
+```text
+Branch / PR
+    ↓
+Exact SHA
+    ↓
+FlowBiz Runner
+    ↓
+CI Evidence
+    ↓
+Review / Policy Decision
+    ↓
+Merge
+    ↓
+Exact main SHA release validation
+    ↓
+Control Plane Production Gate
 ```
 
----
-
-## 2. Gate Rules (Enforced by CI/CD)
-
-### 🔐 Gate -1: Safety Gate
-- ❌ Forbidden paths not touched (secrets, config)
-- ❌ No secrets leaked
-- ✅ Permissions valid
-
-### 🔐 Gate 0: Planning Gate
-- ✅ PRD / DoD documented (BA)
-- ✅ Test Plan exists (QA)
-- ✅ Deploy & Verify Plan (SRE)
-
-### 🔐 Gate 1: CI Gate
-- ✅ Lint passes (ruff)
-- ✅ Unit tests pass (pytest)
-- ✅ Security scan passes (gitleaks + pip-audit)
-- ✅ Build succeeds
-- ✅ Dependency & budget policy met
-
-### 🔐 Gate 2: Staging Gate *(Future)*
-- Deploy PR SHA to staging
-- Smoke tests pass
-- Evidence attached
-
-### 🔐 Gate 3: Production Gate *(Future)*
-- Deploy main SHA
-- Verify success
-- Auto rollback on failure
-
-### 🔐 Gate 4: Learning Gate *(Future)*
-- Post-run report
-- Knowledge artifacts
-- Suggestion PR / Issue if needed
+Documentation-only changes may use a reduced Runner gate when the Control Plane classifies them as no-runtime-impact, but planning/evidence requirements still apply.
 
 ---
 
-## 3. PR Best Practices
+## 5. Merge Policy
 
-### DO ✅
-- **One Feature = One PR** — Keep PRs focused and small
-- **Test First** — Write tests before or with your code
-- **Document Impact** — Explain deployment and verification steps
-- **Link Related Issues** — Reference issue numbers
-- **Self-Review** — Review your own changes before requesting review
-- **Update Documentation** — Keep docs in sync with code changes
+Merge method follows active owner authorization and repository rules.
 
-### DON'T ❌
-- **No Rush & Merge** — Every PR needs evidence
-- **No Scope Creep** — Stick to defined scope
-- **No Breaking Changes** — Without migration plan
-- **No Untested Code** — All code must have tests
-- **No Manual Steps** — Automate everything possible
-- **No Security Risks** — Must pass security scans
+A PR MUST NOT be treated as ready when:
+- required FlowBiz Runner evidence is missing/failed;
+- scope lock is violated;
+- required approval is absent;
+- material review threads remain unresolved;
+- exact SHA changed after validation without a new validation run;
+- production plan lacks rollback for a risky mutation.
 
 ---
 
-## 4. PR Workflow
+## 6. GitHub Actions Transition
 
-1. **Create Feature Branch**
-   ```bash
-   git checkout -b feature/your-feature-name
-   ```
+Existing `.github/workflows/` files are legacy transition assets until FlowBiz Runner parity is proven.
 
-2. **Follow Human-Inspired Model**
-   - 🔍 Discovery — Understand the problem
-   - 📋 Plan — Define acceptance criteria
-   - 🔨 Build — Implement with tests
-   - 🚀 Release — Deploy with evidence
-   - 📚 Learn — Document learnings
+They may remain enabled temporarily for visibility or supplemental checks, but:
+- no new production deployment dependency may be added to them;
+- no v11 component may require them as its only execution path;
+- their outage/quota/approval state must not stop the future 24/7 Control Plane once Runner evidence is active.
 
-3. **Open PR with Template**
-   - Fill all required sections
-   - Link related issues
-   - Request reviews from appropriate team
-
-4. **Pass All Gates**
-   - ✅ CI must be green
-   - ✅ All checks must pass
-   - ✅ No unresolved comments
-
-5. **Merge**
-   - Prefer **squash merge** for clean history
-   - Delete branch after merge
-
----
-
-## 5. Review Guidelines
-
-### For Reviewers
-- **Check Evidence** — Ensure all sections are filled
-- **Verify Tests** — Run tests locally if needed
-- **Check Scope** — Ensure no scope creep
-- **Security Review** — Look for security issues
-- **Performance** — Consider performance implications
-- **Provide Constructive Feedback** — Be specific and helpful
-
-### For Authors
-- **Respond to All Comments** — Address or explain each comment
-- **Update PR Description** — Keep it current with changes
-- **Re-request Review** — After addressing comments
-- **Be Patient** — Quality takes time
-
----
-
-## 6. Special PR Types
-
-### Hotfix PRs
-- Must include `[HOTFIX]` in title
-- Must explain urgency and impact
-- Still requires all evidence sections
-- Can skip staging gate with approval
-
-### Documentation PRs
-- Can skip build/test gates if truly doc-only
-- Must update relevant docs together
-- Examples, diagrams encouraged
-
-### Dependency Update PRs
-- Must explain why update is needed
-- Must include security scan results
-- Must verify no breaking changes
+Workflow removal/disablement is a later controlled change after Runner parity evidence exists.
 
 ---
 
 ## 7. Enforcement
 
-### Automated
-- **CI Workflow** — Blocks merge if lint/test/security fails
-- **PR Template** — Required fields enforced
-- **Branch Protection** — Main branch protected
+Authoritative enforcement belongs to FlowBiz Control Plane + Runner contracts.
 
-### Manual
-- **Code Review** — Required approval from at least 1 reviewer
-- **Policy Check** — Guardrails workflow checks for scope violations
-- **Security Review** — For sensitive changes
+GitHub branch protection and workflow checks may provide defense in depth, but named GitHub Actions jobs are not the architectural source of control effectiveness in v11.
+
+Violations produce `CONTROLLED_HALT` with a documented reason and preserved state.
 
 ---
 
-## 8. Violations
+## 8. References
 
-### Minor Violations
-- Missing optional sections → Warning comment
-- Minor formatting issues → Auto-fix suggestion
+- `POLICY.md`
+- `CONTROLS.md`
+- `BLUEPRINT.md`
+- `EVIDENCE.md`
+- `COMPLIANCE_CHECKLIST.md`
 
-### Major Violations
-- Missing required sections → PR blocked
-- Failed security scan → PR blocked
-- No tests → PR blocked
-- Scope creep detected → Review required
-
-### Escalation
-- Repeated violations → Team discussion
-- Security issues → Immediate block + alert
-
----
-
-## 9. References
-
-- **BLUEPRINT.md** — Engineering model and philosophy
-- **RUNBOOK.md** — Operational procedures
-- **GitHub Actions** — CI/CD workflows in `.github/workflows/`
-
----
-
-**Remember:** Every PR proves it followed the model. Quality over speed.
+**Rule:** GitHub stores source; FlowBiz Runner proves it; FlowBiz Control Plane decides and executes it.
