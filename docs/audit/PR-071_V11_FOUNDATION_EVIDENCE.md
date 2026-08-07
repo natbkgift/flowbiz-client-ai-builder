@@ -58,6 +58,26 @@ Therefore:
 - no claim of full-repository or Runner parity is made;
 - full authoritative validation remains a merge gate.
 
+## Legacy GitHub Actions Observation
+At PR head `c28e041f0de2317eaf0c89c0a94999a6f829b551`, the GitHub connector reported all seven PR-triggered legacy workflows as `completed/failure`:
+
+- `CI`
+- `Guardrails`
+- `Policy Check`
+- `PR Labels`
+- `iso-mapping-confirmed`
+- `agent-next-pr-ready`
+- `evidence-links-present`
+
+For the inspected `CI / Test` job, GitHub returned no executable step records, and the decoded-log download path returned no usable log blob. The combined commit-status endpoint returned no status entries.
+
+Interpretation for PR-18:
+- this is **not accepted as PASS evidence**;
+- the PR stays Draft;
+- no attempt is made to weaken controls or mark checks green artificially;
+- it reinforces the v11 requirement that autonomous validation cannot depend on GitHub-hosted Actions availability;
+- legacy workflows are still retained until FlowBiz Runner parity exists, to avoid silently deleting the previous control path.
+
 ## Production Safety Evidence
 Production operations performed: **0**.
 
