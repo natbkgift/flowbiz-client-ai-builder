@@ -6,7 +6,7 @@ into semantic provisioning steps only. Execution adapters arrive in later milest
 
 from __future__ import annotations
 
-from uuid import uuid4
+from hashlib import sha256
 
 from packages.core.schemas.control_plane import (
     ProjectManifest,
@@ -64,8 +64,12 @@ class Provisioner:
             ]
         )
 
+        manifest_fingerprint = sha256(
+            manifest.model_dump_json().encode("utf-8")
+        ).hexdigest()[:16]
+
         return ProvisioningPlan(
-            plan_id=f"provision-{uuid4()}",
+            plan_id=f"provision-{manifest.project_id}-{manifest_fingerprint}",
             project_id=manifest.project_id,
             infrastructure_mode=manifest.infrastructure_mode,
             steps=steps,
