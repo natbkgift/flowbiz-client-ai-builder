@@ -1,31 +1,60 @@
 # PROJECT_STATE
 
-Purpose: Baseline external memory snapshot for governance and audit. Unknown values use placeholders until merge.
+Purpose: Current external-memory snapshot for FlowBiz AI Builder v11 migration.
 
 ## Repository
-- Repository: natbkgift/flowbiz-client-ai-builder
-- Branch: main
-- HEAD: e0c864965dc247ea8bb6e78fca9192818be2724e
-- Generated: 2025-12-30
+- Repository: `natbkgift/flowbiz-client-ai-builder`
+- Main base HEAD at PR-18 start: `80149cf2ea510168e99c513fae6705619f467aec`
+- Active branch: `feature/pr-18-v11-single-vps-control-plane`
+- Snapshot date: 2026-08-07
+
+## Architecture Decision
+- Target: **FlowBiz AI Builder v11 — Single-VPS Autonomous Control Plane**
+- Availability target: **24/7 autonomous operation**
+- Current infrastructure mode: `single-vps`
+- GitHub: Source Authority
+- FlowBiz Runner: CI / Build Authority
+- FlowBiz Control Plane: Decision + Execution Authority
+- Production VPS: Runtime Authority
+- GitHub Actions: legacy/optional/non-authoritative transition path; not a target architecture dependency
 
 ## Milestones
-- Latest completed: PR-17 — Webhook Watcher & Notifications (merged 2025-12-30)
-- Deferred: PR-16 — Policy Enforcer (deferred; see DEFERRED_PRs.md)
-- Next planned: PR-18 — Orchestrator
-- AUTO_RUN status: READY (STRICT) — main green after HOTFIX-SECURITY-SCAN (PR-67); exception: PR-16 deferred under GUIDED authorization
+- Historical completed functional milestone: PR-17 — Webhook Watcher & Notifications
+- Deferred historical milestone: PR-16 — Policy Enforcer (requires redesign)
+- **Current: PR-18 — Control Plane Orchestrator Foundation**
+- Former v10 PR-19–38 order: superseded/resequenced by BLUEPRINT v11
 
-## Workstreams
-- PR-17 Webhook Watcher & Notifications: Adds GitHub webhook ingestion, schemas, and log notifications
-- HOTFIX-SECURITY-SCAN (PR-67): Pin gitleaks action to v2.3.9 to restore Security Scan
-- External memory update: Sync PROJECT_STATE to main HEAD e0c864 after PR-68 governance merge
-- Runtime impact: Adds /v1/webhooks/github endpoint with optional signature verification
+## PR-18 Scope
+- BLUEPRINT v11 architecture baseline
+- governing-doc alignment for FlowBiz Runner/Control Plane authority
+- Project Manifest contract
+- Project Registry foundation
+- Provisioner plan-only foundation
+- deterministic Orchestrator state machine
+- foundation tests
 
-## Open/Planned PRs
-- Current PR: PR-XXX — External Memory sync to main HEAD e0c864 (PR #69)
-- Next PR: PR-018 — Orchestrator (not started)
+Explicitly out of scope for PR-18:
+- VPS/SSH mutation
+- production deployment
+- database mutation
+- Nginx/firewall changes
+- real secrets
+- disabling/removing legacy GitHub Actions before Runner parity proof
+- unrestricted shell tools
 
-## Compliance Notes
-- PR_TYPE: MILESTONE
-- MILESTONE_ID: PR-XXX
-- BLUEPRINT_REF: "BLUEPRINT — External Memory update"
-- Evidence: https://github.com/natbkgift/flowbiz-client-ai-builder/pull/69
+## Validation
+- Isolated PR-18 control-plane harness: PASS (Pydantic model validation + registry + provisioner + orchestrator state transition)
+- Python compile check for new foundation modules: PASS
+- Full repository FlowBiz Runner validation: PENDING (Runner milestone not implemented yet)
+- Production operations performed by PR-18: 0
+
+## Next Dependency
+After PR-18 foundation is reviewed and validated:
+1. PR-19 — FlowBiz Runner + CI Authority + single-VPS resource guard
+2. PR-20 — restricted single-VPS execution boundary
+3. PR-21 — immutable release / Production Manager / rollback
+4. PR-22 — MCP + approval gateway
+5. engineering agents follow after the Control Plane foundation
+
+## Owner Authorization
+See `AUTORUN_DECISIONS.md` entry dated 2026-08-07.
