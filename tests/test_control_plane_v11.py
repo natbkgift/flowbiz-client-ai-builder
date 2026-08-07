@@ -72,14 +72,31 @@ def test_project_registry_is_deterministic_and_generation_checked() -> None:
         registry.update(updated_manifest, expected_generation=1)
 
 
-def test_provisioner_is_plan_only_and_never_grants_execution() -> None:
-    plan = Provisioner().plan(make_manifest())
+def test_project_registry_isolates_internal_state_from_caller_mutation() -> None:
+    registry = ProjectRegistry()
+    manifest = make_manifest()
+    registry.register(manifest)
 
-    assert plan.project_id == "amp-template"
-    assert plan.plan_only is True
-    assert plan.execution_permitted is False
-    assert plan.steps
-    assert all(step.target for step in plan.steps)
+    manifest.services.append("worker")
+
+    stored = registry.get("amp-template")
+    assert stored.manifest.services == ["web", "api", "postgres"]
+
+
+def test_provisioner_is_plan_only_deterministic_and_never_grants_execution() -> None:
+    provisioner = Provisioner()
+    manifest = make_manifest()
+
+    first = provisioner.plan(manifest)
+    second = provisioner.plan(manifest)
+
+    assert first.project_id == "amp-template"
+    assert first.plan_only is True
+    assert first.execution_permitted is False
+    assert first.steps
+    assert all(step.target for step in first.steps)
+    assert first.plan_id == second.plan_id
+    assert first.steps == second.steps
 
 
 def test_orchestrator_requires_exact_sha_before_ci_execution_states() -> None:
