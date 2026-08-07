@@ -99,14 +99,13 @@ def test_provisioner_is_plan_only_deterministic_and_never_grants_execution() -> 
     assert first.steps == second.steps
 
 
-def test_orchestrator_requires_exact_sha_before_ci_execution_states() -> None:
+def test_orchestrator_requires_exact_sha_before_ready_for_ci() -> None:
     orchestrator = ControlPlaneOrchestrator()
     orchestrator.register_project(make_manifest())
     run = orchestrator.create_run("amp-template")
 
-    run = orchestrator.transition(run.run_id, ControlPlaneRunState.READY_FOR_CI)
     with pytest.raises(InvalidRunTransitionError):
-        orchestrator.transition(run.run_id, ControlPlaneRunState.CI_RUNNING)
+        orchestrator.transition(run.run_id, ControlPlaneRunState.READY_FOR_CI)
 
 
 def test_orchestrator_enforces_forward_state_machine() -> None:
