@@ -115,12 +115,14 @@ class ControlPlaneOrchestrator:
         if target not in _ALLOWED_TRANSITIONS[current.state]:
             raise InvalidRunTransitionError(f"{current.state.value} -> {target.value}")
 
-        if target in {
+        sha_required_states = {
+            ControlPlaneRunState.READY_FOR_CI,
             ControlPlaneRunState.CI_RUNNING,
             ControlPlaneRunState.CI_PASSED,
             ControlPlaneRunState.READY_FOR_RELEASE,
             ControlPlaneRunState.COMPLETED,
-        } and current.exact_sha is None:
+        }
+        if target in sha_required_states and current.exact_sha is None:
             raise InvalidRunTransitionError(
                 f"exact SHA required before transition to {target.value}"
             )
